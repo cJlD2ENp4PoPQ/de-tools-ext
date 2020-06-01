@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "DE",
+  "version": "1.0",
+
+  "description": "DE Tools",
+
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+
+"permissions": [
+    "*://sde.bgam.es/*",
+	"*://rde.bgam.es/*",
+    "*://xde.bgam.es/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.bgam.es/dm.php","*://*.bgam.es/sector.php*"],
+      "js": ["de.js","sek.js"]
+    }
+  ]
+}
