@@ -55,67 +55,45 @@ var deExtension = {
    */
   createIFrame: function (title, url) {
     let container = document.createElement("div");
-    container.style = "position: absolute; height: 395px; width: 430px; top: 581px; left: 1487px; display: block;";
-    container.tabIndex = "-2";
-    container.role = "dialog";
-    container.setAttribute("aria-describedby", "chat_popup");
-    container.setAttribute("aria-labelledby", "ui-id-1");
-
-    // Header
-    let header = document.createElement("div");
-    header.classList = ["ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix"];
-    let titleNode = document.createElement("span")
-    titleNode.classList = ["ui-dialog-title"];
-    titleNode.textContent = title;
-    let closeButton = document.createElement("button");
-    closeButton.type = "button";
-    closeButton.classList = ["ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close"];
-    let closeButtonInner1 = document.createElement("span");
-    closeButtonInner1.classList = ["ui-button-icon ui-icon ui-icon-closethick"];
-    let closeButtonInner2 = document.createElement("span");
-    closeButtonInner2.classList = ["ui-button-icon-space"];
-    closeButton.insertBefore(closeButtonInner1, null);
-    closeButton.insertBefore(closeButtonInner2, null);
-    header.insertBefore(titleNode, null);
-    header.insertBefore(closeButton, null);
-
-    //Body
-    let body = document.createElement("div");
-    body.style = "overflow: hidden; height: 366px; width: 426px; min-height: 0px; max-height: none;";
-    body.classList = "ui-dialog-content ui-widget-content";
-    body.id = "chat_popup";
+    container.id = "ext-iframe-container"
+    container.style ="position: absolute; width: 65%; height: 85%; right: 0px; top: 58px; z-index: 100;";
     let iframe = document.createElement("iframe");
     iframe.src = url;
     iframe.height = "100%";
     iframe.width = "100%";
-    iframe.frameBorder = 0;
-    body.insertBefore(iframe, null);
-
-    container.insertBefore(header, null);
-    container.insertBefore(body, null);
-
-    //resizeable anchor
-    container.insertBefore(deExtension.createResizeable("ui-resizable-n"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-e"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-s"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-w"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-sw"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-nw"), null);
-    container.insertBefore(deExtension.createResizeable("ui-resizable-ne"), null);
+    iframe.style = "position: absolute; width: 90%; height: 100%; right: 0px; top: 58px;"
+    container.insertBefore(iframe, null);
     return container;
   },
 
   /**
-   * create anchor for resizable iframe
-   * @param classValue css classes
+   * create a new iframe node
+   * @param title the title of iframe
+   * @param url the location of content
    * @returns {HTMLDivElement}
    */
-  createResizeable: function (classValue) {
-    let res = document.createElement("div");
-    res.classList = ["ui-resizable-handle " + classValue];
-    res.style = "z-index: 90;";
-    return res;
+  createIFrameCloser: function () {
+    let container = document.createElement("div");
+    container.id = "ext-iframe-closer";
+    container.style = "position: absolute; right: 620px; top:58px; width: 29px; height: 31px; background-color: rgba(0,0,0, 0.8)" +
+      "border-bottom: 1px solid rgba(22,22,22, 0.8); border-right: 1px solid #222222; cursor: pointer; z-index: 101;";
+    container.addEventListener("click", deExtension.closeIframe, true)
+    let closeImg = document.createElement("img");
+    closeImg.src = "g/close_icon.png";
+    closeImg.style = "height: 26px; width: auto; margin-left: 4px; margin-top: 4px;"
+    container.insertBefore(closeImg, null);
+    return container;
+  },
+
+  closeIframe: function() {
+    let container = document.getElementById("ext-iframe-container");
+    if(container) {
+      container.remove();
+    }
+    let closer = document.getElementById("ext-iframe-closer");
+    if(closer) {
+      closer.remove();
+    }
   },
 
   /**
@@ -130,7 +108,6 @@ var deExtension = {
   },
 
   /**
-   *
    * @param document
    */
   onMobilePageLoad: function (document) {
@@ -147,7 +124,10 @@ var deExtension = {
    * @param url the url of the page.
    */
   onMenuEntrySelected: function (event, title, url) {
+    deExtension.closeIframe();
     let iframe = deExtension.createIFrame(title, url);
-    document.body.insertBefore(iframe, null);
+    let closer = deExtension.createIFrameCloser();
+    document.body.insertBefore(closer, null);
+    document.body.insertBefore(iframe, closer);
   }
 };
