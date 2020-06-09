@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "DE",
-  "version": "0.2",
+  "version": "0.3",
 
   "description": "DE Tools",
 
@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.bgam.es/dm.php","*://*.bgam.es/sector.php*"],
-      "js": ["de.js","sek.js"]
+      "js": ["de.js","sek.js","military.js","secret.js"]
     }
   ]
 }

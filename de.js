@@ -3,10 +3,14 @@ window.addEventListener("load", function load (event) {
   deExtension.init();
 }, false);
 
+deksOpen = false;
+
 var deExtension = {
+
   init: function () {
     var appcontent = document.getElementById("iframe_main_container"); // content
     if (appcontent) {
+      this.saveRace();
       appcontent.addEventListener("load", function (event) {
         deExtension.onPageLoad(event);
       }, true)
@@ -25,7 +29,7 @@ var deExtension = {
     let techNode = document.evaluate("//span[text()='Technologien']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     if (techNode) {
       let menu = techNode.parentNode;
-      let deksEntry = deExtension.createMenuEntry("Kampfsimulator", "https://deks.popq.de");
+      let deksEntry = deExtension.createMenuEntry("Kampfsimulator", "https://deks.popq.de", "deks");
       menu.insertBefore(deksEntry, null);
     }
   },
@@ -34,14 +38,15 @@ var deExtension = {
    * create a new menu entry node.
    * @param title the title of entry window.
    * @param url the location of menu content.
+   * @param type the identifier of content-
    * @returns {HTMLSpanElement}
    */
-  createMenuEntry: function (title, url) {
+  createMenuEntry: function (title, url, type) {
     let entryNode = document.createElement("span");
     entryNode.classList = ["btn"];
     entryNode.id = "menu_deks";
     entryNode.addEventListener("click", function (event) {
-      deExtension.onMenuEntrySelected(event, title, url);
+      deExtension.onMenuEntrySelected(event, title, url, type);
     }, true)
     entryNode.textContent = title;
     return entryNode;
@@ -51,13 +56,16 @@ var deExtension = {
    * create a new iframe node
    * @param title the title of iframe
    * @param url the location of content
+   * @param type the identifier of content
    * @returns {HTMLDivElement}
    */
-  createIFrame: function (title, url) {
+  createIFrame: function (title, url, type) {
     let container = document.createElement("div");
     container.id = "ext-iframe-container"
     container.style ="position: absolute; width: 65%; height: 85%; right: 0px; top: 58px; z-index: 100;";
     let iframe = document.createElement("iframe");
+    iframe.setAttribute("content",type);
+    iframe.id = "ext-iframe";
     iframe.src = url;
     iframe.height = "100%";
     iframe.width = "100%";
@@ -94,6 +102,11 @@ var deExtension = {
     if(closer) {
       closer.remove();
     }
+    let mainContainer = document.getElementById("iframe_main_container");
+    if(mainContainer && mainContainer.children.length >= 1) {
+      MilitaryExtension.cleanup(mainContainer.children[0].contentDocument)
+      SecretExtension.cleanup(mainContainer.children[0].contentDocument)
+    }
   },
 
   /**
@@ -102,8 +115,23 @@ var deExtension = {
    */
   onPageLoad: function (page) {
     let src = page.target.src;
-    if (src.includes('sector.php')) {
-      SekExtension.onPageLoad(page.target.contentDocument);
+    let contentDocument = page.target.contentDocument;
+    this.updateExtensions(contentDocument);
+  },
+
+  updateExtensions: function (contentDocument) {
+    if (contentDocument.querySelector('form[action="sector.php"]')) {
+      SekExtension.onPageLoad(contentDocument);
+    }
+    if (contentDocument.querySelector('form[action="military.php"]')) {
+      let iframe = document.getElementById("ext-iframe");
+      let deksOpen = iframe && iframe.getAttribute("content") === 'deks';
+      MilitaryExtension.onPageLoad(contentDocument, deksOpen);
+    }
+    if (contentDocument.querySelector('form[action="secret.php"]')) {
+      let iframe = document.getElementById("ext-iframe");
+      let deksOpen = iframe && iframe.getAttribute("content") === 'deks';
+      SecretExtension.onPageLoad(contentDocument, deksOpen);
     }
   },
 
@@ -117,17 +145,37 @@ var deExtension = {
     }
   },
 
+  saveRace: function () {
+    let race;
+    race = document.querySelector("img[src='g/derassenlogo1.png']") ? 'E' : undefined;
+    if(!race) {
+      race = document.querySelector("img[src='g/derassenlogo2.png']") ? 'I' : undefined;
+    }
+    if(!race) {
+      race = document.querySelector("img[src='g/derassenlogo3.png']") ? 'K' : undefined;
+    }
+    if(!race) {
+      race = document.querySelector("img[src='g/derassenlogo4.png']") ? 'Z' : undefined;
+    }
+    window.race = race;
+  },
+
   /**
    * Event listener for additional menu entries.
    * @param event the event.
    * @param title the title of page.
    * @param url the url of the page.
+   * @param the identifier of content.
    */
-  onMenuEntrySelected: function (event, title, url) {
+  onMenuEntrySelected: function (event, title, url, type) {
     deExtension.closeIframe();
-    let iframe = deExtension.createIFrame(title, url);
+    let iframe = deExtension.createIFrame(title, url, type);
     let closer = deExtension.createIFrameCloser();
     document.body.insertBefore(closer, null);
     document.body.insertBefore(iframe, closer);
+    let mainContainer = document.getElementById("iframe_main_container");
+    if(mainContainer && mainContainer.children.length >= 1) {
+      this.updateExtensions(mainContainer.children[0].contentDocument);
+    }
   }
 };
