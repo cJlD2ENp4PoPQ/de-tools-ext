@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "DE - Tools",
-  "version": "0.2",
+  "name": "Die-Ewigen Extension",
+  "version": "0.3.4",
 
-  "description": "DE Tools",
+  "description": "Erweiterung für das Browsergame Die-Ewigen",
 
   "icons": {
     "48": "icons/border-48.png"

@@ -1,3 +1,4 @@
+const raceMapping = {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'};
 
 const SecretExtension = {
   onPageLoad: function(content, deksOpen) {
@@ -67,11 +68,12 @@ const SecretExtension = {
       let col = lines[i].children[parseInt(id[1]) + 1];
       fleet.push(parseInt(col.innerText.toString().replace('.', "")))
     }
+    let raceKey = lines[2].children[0].innerText;
     let deksEnabled = document.getElementById('ext-iframe');
     if(deksEnabled) {
       deksEnabled.contentWindow.postMessage({
         attack: id[0] === 'A',
-        race: window.race,
+        race: raceMapping[raceKey],
         fleet: fleet
       }, 'https://deks.popq.de');
     }

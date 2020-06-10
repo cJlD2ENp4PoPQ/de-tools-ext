@@ -32,7 +32,7 @@ const SekExtension = {
           fpNode.style = "text-align: right;"
           fpNode.textContent = fp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
           node.insertBefore(fpNode, node.childNodes[6]);
-        } else if (i == 0) {
+        } else if (i === 0) {
           let header = document.createElement("td");
           header.textContent = "Flottenpunkte"
           node.insertBefore(header, node.childNodes[12]);
