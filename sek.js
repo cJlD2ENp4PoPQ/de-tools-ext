@@ -3,7 +3,10 @@ const kolliPoints = {0:10000,1:10500,2:11000,3:11500,4:12000,5:12500,6:13000,7:1
 
 const SekExtension = {
   onPageLoad: function(content) {
-    SekExtension.addFleetpoints(content);
+    let fpNodes = content.querySelectorAll('td.fp-node');
+    if(fpNodes.length === 0) {
+      SekExtension.addFleetpoints(content);
+    }
   },
 
   addFleetpoints : function (content) {
@@ -28,7 +31,7 @@ const SekExtension = {
 
           let fp = (players[i-1].points - players[i-1].kollis * kolliPoints[kolliStep > 20 ? 20 : kolliStep]);
           let fpNode = document.createElement("td");
-          fpNode.classList = ["cell tac text2"];
+          fpNode.classList = ["cell tac text2 fp-node"];
           fpNode.style = "text-align: right;"
           fpNode.textContent = fp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
           node.insertBefore(fpNode, node.childNodes[6]);
