@@ -75,6 +75,10 @@ var deExtension = {
       let deksOpen = iframe && iframe.getAttribute("content") === 'deks';
       SecretExtension.onPageLoad(contentDocument, deksOpen);
     }
+    if (contentDocument.querySelector('form[action="production.php"]')) {
+      let iframe = document.getElementById("ext-iframe");
+      ProductionExtension.onPageLoad(contentDocument);
+    }
   },
 
   /**
