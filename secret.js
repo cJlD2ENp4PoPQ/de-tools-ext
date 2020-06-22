@@ -66,7 +66,7 @@ const SecretExtension = {
         continue; //skip Transmitter
       }
       let col = lines[i].children[parseInt(id[1]) + 1];
-      fleet.push(parseInt(col.innerText.toString().replace('.', "")))
+      fleet.push(parseInt(col.innerText.toString().split('.').join("")))
     }
     let raceKey = lines[2].children[0].innerText;
     let deksEnabled = document.getElementById('ext-iframe');

@@ -64,14 +64,14 @@ const MilitaryExtension = {
       }
       if(id[1] === '0') {
         let td = contentNode.querySelector('#m' + i + '_0');
-        fleet.push(parseInt(td.innerText.toString().replace('.', "")))
+        fleet.push(parseInt(td.innerText.toString().split('.').join("")))
       } else {
         let td = contentNode.querySelector('#mn' + i + '_' + id[1]);
         if(td.innerText === '') {
           let fleetInput = contentNode.querySelector('#m' + i + '_' + id[1]);
-          fleet.push(parseInt(fleetInput.value.toString().replace('.', "")));
+          fleet.push(parseInt(fleetInput.value.toString().split('.').join("")));
         } else {
-          fleet.push(parseInt(td.innerText.toString().replace('.', "")))
+          fleet.push(parseInt(td.innerText.toString().split('.').join("")))
         }
       }
     }
