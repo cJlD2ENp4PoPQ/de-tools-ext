@@ -1,0 +1,9 @@
+.fieldset-fields div.fieldset-row {
+    flex: 1 0 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.fieldset-fields div.fieldset-row .field {
+    flex-basis: 50%;
+}

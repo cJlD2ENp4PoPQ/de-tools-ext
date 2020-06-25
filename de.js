@@ -76,8 +76,11 @@ var deExtension = {
       SecretExtension.onPageLoad(contentDocument, deksOpen);
     }
     if (contentDocument.querySelector('form[action="production.php"]')) {
-      let iframe = document.getElementById("ext-iframe");
       ProductionExtension.onPageLoad(contentDocument);
+    }
+    if (contentDocument.querySelector('head title')
+      && contentDocument.querySelector('head title').innerText === 'Auktion') {
+      TradeExtension.onPageLoad(contentDocument);
     }
   },
 

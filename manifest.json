@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.4.0",
+  "version": "0.4.1",
 
   "description": "Erweiterung für das Browsergame Die-Ewigen",
 
@@ -15,12 +15,13 @@
     "*://xde.bgam.es/*"
   ],
 
-  "web_accessible_resources": ["icons/icons8-move-50.png"],
+  "web_accessible_resources": ["icons/icons8-move-50.png", "css/fields.css"],
 
   "content_scripts": [
     {
       "matches": ["*://*.bgam.es/dm.php","*://*.bgam.es/sector.php*","*://*.bgam.es/production.php*"],
-      "js": ["de.js","frame.js","sek.js","military.js","secret.js", "production.js"]
+      "js": ["de.js","frame.js","fields.js","sek.js","military.js","secret.js", "production.js", "trade.js"],
+      "css":["css/fields.css"]
     }
   ]
 }

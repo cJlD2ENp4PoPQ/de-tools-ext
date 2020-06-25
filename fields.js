@@ -1,0 +1,64 @@
+const fields = {
+
+  /**
+   * Create a fieldset HTML DOM element with given field rows
+   * @param {String} title the title of the field set
+   * @param {HTMLDivElement[]} rows the field rows array.
+   * @returns {HTMLFieldSetElement}
+   */
+  createFieldset: function (title, rows) {
+    let fieldset = document.createElement("fieldset");
+    fieldset.classList = ['fieldset-fields'];
+    let htmlLegendElement = document.createElement("legend");
+    htmlLegendElement.innerText = title;
+    fieldset.insertBefore(htmlLegendElement, null);
+    rows.forEach(row => {
+      fieldset.insertBefore(row, null);
+    })
+    return fieldset;
+  },
+
+  /**
+   * Create a fieldset row with given fields
+   * @param {HTMLDivElement[]} fields the fields in a row
+   * @returns {HTMLDivElement} the row HTML element
+   */
+  createRow: function (fields) {
+    let row = document.createElement("div");
+    row.classList = ['fieldset-row'];
+    fields.forEach(field => {
+      row.insertBefore(field, null);
+    })
+    return row;
+  },
+
+  /**
+   * Create a field element from given input element
+   * @param {HTMLInputElement} inputElement to be added to the field
+   * @returns {HTMLDivElement} the field HTML element
+   */
+  createField: function (inputElement) {
+    let field = document.createElement("div");
+    field.classList = ['field'];
+    field.insertBefore(inputElement, null);
+    return field;
+  },
+
+  /**
+   * Create a select input element with given options
+   * @param {Object[]} options with id and value
+   * @returns {HTMLSelectElement} the HTML select element options
+   */
+  createSelectField: function (options) {
+    let select = document.createElement("select");
+    options.map(option => {
+        let optElement = document.createElement("option");
+        optElement.id = option.id;
+        optElement.innerText = option.value;
+        return optElement;
+    }).forEach(optElement => {
+      select.insertBefore(optElement, null);
+    })
+    return select;
+  }
+}
