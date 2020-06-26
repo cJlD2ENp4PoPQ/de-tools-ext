@@ -8,7 +8,7 @@ const fields = {
    */
   createFieldset: function (title, rows) {
     let fieldset = document.createElement('fieldset');
-    fieldset.classList = ['fieldset-fields'];
+    fieldset.classList = ['fieldset-fields '+ window.race];
     let htmlLegendElement = document.createElement('legend');
     htmlLegendElement.innerText = title;
     fieldset.insertBefore(htmlLegendElement, null);

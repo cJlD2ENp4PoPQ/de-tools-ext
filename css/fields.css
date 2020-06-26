@@ -7,3 +7,23 @@
 .fieldset-fields div.fieldset-row .field {
     flex-basis: 50%;
 }
+
+fieldset.Z {
+    border-color: #02a006;
+}
+fieldset.K {
+    border-color: #991606;
+}
+fieldset.I {
+    border-color: #1cacc0;
+}
+fieldset.E {
+    border-color: #0ba6ff;
+}
+fieldset legend {
+    font-size: 11pt;
+    font-weight: bold;
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+}
