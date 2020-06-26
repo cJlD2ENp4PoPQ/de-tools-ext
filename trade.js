@@ -67,10 +67,10 @@ const TradeExtension = {
       if (selectedOption.id !== 'de-disabled') {
         rows.forEach(row => {
           if (selectedOption.id === 'de-all') {
-            if (new RegExp(vsRes.join("|")).test(row.innerText)) {
+            if (new RegExp(vsRes.join("|")).test(row.children[1].innerText)) {
               row.classList.add('disabled');
             }
-          } else if (!new RegExp(selectedOption.innerText).test(row.innerText)) {
+          } else if (!new RegExp(selectedOption.innerText).test(row.children[1].innerText)) {
             row.classList.add('disabled');
           }
         })
@@ -82,10 +82,10 @@ const TradeExtension = {
       if (selectedOption.id !== 'vs-disabled') {
         rows.forEach(row => {
           if (selectedOption.id === 'vs-all') {
-            if (new RegExp(deRes.join("|")).test(row.innerText)) {
+            if (new RegExp(deRes.join("|")).test(row.children[1].innerText)) {
               row.classList.add('disabled');
             }
-          } else if (!new RegExp(selectedOption.innerText).test(row.innerText)) {
+          } else if (!new RegExp(selectedOption.innerText).test(row.children[1].innerText)) {
             row.classList.add('disabled');
           }
         })
