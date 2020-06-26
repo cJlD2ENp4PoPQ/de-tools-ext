@@ -29,17 +29,21 @@ const vsRes = ['Eisen', 'Titan', 'Mexit', 'Dulexit', 'Tekranit', 'Ylesenium', 'S
 
 const TradeExtension = {
   onPageLoad: function(content) {
-    let fieldsCss = content.createElement('link');
-    fieldsCss.href = chrome.extension.getURL('css/fields.css');
-    fieldsCss.type = 'text/css';
-    fieldsCss.rel = 'stylesheet';
-    content.getElementsByTagName("head")[0].appendChild(fieldsCss);
-    let tradeCss = content.createElement('link');
-    tradeCss.href = chrome.extension.getURL('css/trade.css');
-    tradeCss.type = 'text/css';
-    tradeCss.rel = 'stylesheet';
-    content.getElementsByTagName("head")[0].appendChild(tradeCss);
-    this.addFilter(content);
+    if(!content.querySelector('link.ext-css')) {
+      let fieldsCss = content.createElement('link');
+      fieldsCss.href = chrome.extension.getURL('css/fields.css');
+      fieldsCss.type = 'text/css';
+      fieldsCss.classList = ['ext-css'];
+      fieldsCss.rel = 'stylesheet';
+      content.getElementsByTagName("head")[0].appendChild(fieldsCss);
+      let tradeCss = content.createElement('link');
+      tradeCss.classList = ['ext-css'];
+      tradeCss.href = chrome.extension.getURL('css/trade.css');
+      tradeCss.type = 'text/css';
+      tradeCss.rel = 'stylesheet';
+      content.getElementsByTagName("head")[0].appendChild(tradeCss);
+      this.addFilter(content);
+    }
   },
 
   addFilter : function (content) {
@@ -91,5 +95,5 @@ const TradeExtension = {
         })
       }
     }
-  }
+  },
 };

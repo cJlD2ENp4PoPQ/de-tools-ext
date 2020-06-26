@@ -66,8 +66,8 @@ const frame = {
     }
     let mainContainer = document.getElementById("iframe_main_container");
     if(mainContainer && mainContainer.children.length >= 1) {
-      MilitaryExtension.cleanup(mainContainer.children[0].contentDocument)
-      SecretExtension.cleanup(mainContainer.children[0].contentDocument)
+      MilitaryExtension.cleanup(mainContainer.children[0].contentDocument);
+      SecretExtension.cleanup(mainContainer.children[0].contentDocument);
     }
   },
 

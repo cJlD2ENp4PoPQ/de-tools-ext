@@ -8,6 +8,10 @@
     flex-basis: 50%;
 }
 
+fieldset {
+    width: 575px;
+}
+
 fieldset.Z {
     border-color: #02a006;
 }
