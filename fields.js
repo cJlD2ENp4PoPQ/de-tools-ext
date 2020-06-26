@@ -7,14 +7,14 @@ const fields = {
    * @returns {HTMLFieldSetElement}
    */
   createFieldset: function (title, rows) {
-    let fieldset = document.createElement("fieldset");
+    let fieldset = document.createElement('fieldset');
     fieldset.classList = ['fieldset-fields'];
-    let htmlLegendElement = document.createElement("legend");
+    let htmlLegendElement = document.createElement('legend');
     htmlLegendElement.innerText = title;
     fieldset.insertBefore(htmlLegendElement, null);
     rows.forEach(row => {
       fieldset.insertBefore(row, null);
-    })
+    });
     return fieldset;
   },
 
@@ -24,11 +24,11 @@ const fields = {
    * @returns {HTMLDivElement} the row HTML element
    */
   createRow: function (fields) {
-    let row = document.createElement("div");
+    let row = document.createElement('div');
     row.classList = ['fieldset-row'];
     fields.forEach(field => {
       row.insertBefore(field, null);
-    })
+    });
     return row;
   },
 
@@ -38,7 +38,7 @@ const fields = {
    * @returns {HTMLDivElement} the field HTML element
    */
   createField: function (inputElement) {
-    let field = document.createElement("div");
+    let field = document.createElement('div');
     field.classList = ['field'];
     field.insertBefore(inputElement, null);
     return field;
@@ -46,19 +46,24 @@ const fields = {
 
   /**
    * Create a select input element with given options
+   * @param {String} id input element id
    * @param {Object[]} options with id and value
+   * @param {function} changeListener the change listener of select field.
    * @returns {HTMLSelectElement} the HTML select element options
    */
-  createSelectField: function (options) {
-    let select = document.createElement("select");
+  createSelectField: function (id, options, changeListener) {
+    let select = document.createElement('select');
+    select.id = id;
+    select.addEventListener('change', changeListener);
     options.map(option => {
-        let optElement = document.createElement("option");
+        let optElement = document.createElement('option');
         optElement.id = option.id;
+        optElement.value = option.id;
         optElement.innerText = option.value;
         return optElement;
     }).forEach(optElement => {
       select.insertBefore(optElement, null);
-    })
+    });
     return select;
   }
-}
+};

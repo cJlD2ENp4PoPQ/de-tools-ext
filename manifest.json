@@ -15,13 +15,13 @@
     "*://xde.bgam.es/*"
   ],
 
-  "web_accessible_resources": ["icons/icons8-move-50.png", "css/fields.css"],
+  "web_accessible_resources": ["icons/icons8-move-50.png", "css/fields.css", "css/trade.css"],
 
   "content_scripts": [
     {
       "matches": ["*://*.bgam.es/dm.php","*://*.bgam.es/sector.php*","*://*.bgam.es/production.php*"],
       "js": ["de.js","frame.js","fields.js","sek.js","military.js","secret.js", "production.js", "trade.js"],
-      "css":["css/fields.css"]
+      "css":["css/fields.css","css/trade.css"]
     }
   ]
 }

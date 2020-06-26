@@ -6,7 +6,6 @@ const optionsDE = [
   {id:'de-i', value:'Iradium'},
   {id:'de-e', value:'Eternium'},
   {id:'de-c', value:'Credits'},
-  {id:'de-p', value:'Palenium'},
 ];
 
 const optionsVS = [
@@ -24,27 +23,73 @@ const optionsVS = [
   {id:'vs-o', value:'Octagium'},
 ];
 
+const deRes = ['Multiplex', 'Dyharra', 'Iradium', 'Eternium', 'Credits'];
+const vsRes = ['Eisen', 'Titan', 'Mexit', 'Dulexit', 'Tekranit', 'Ylesenium', 'Serodium', 'Rowalganium', 'Sextagit', 'Octagium'];
+
 
 const TradeExtension = {
   onPageLoad: function(content) {
-    var link = content.createElement("link");
-    link.href = chrome.extension.getURL("css/fields.css");
-    link.type = "text/css";
-    link.rel = "stylesheet";
-    content.getElementsByTagName("head")[0].appendChild(link);
-    this.addfilter(content);
+    let fieldsCss = content.createElement('link');
+    fieldsCss.href = chrome.extension.getURL('css/fields.css');
+    fieldsCss.type = 'text/css';
+    fieldsCss.rel = 'stylesheet';
+    content.getElementsByTagName("head")[0].appendChild(fieldsCss);
+    let tradeCss = content.createElement('link');
+    tradeCss.href = chrome.extension.getURL('css/trade.css');
+    tradeCss.type = 'text/css';
+    tradeCss.rel = 'stylesheet';
+    content.getElementsByTagName("head")[0].appendChild(tradeCss);
+    this.addFilter(content);
   },
 
-  addfilter : function (content) {
-    let selectDe = fields.createSelectField(optionsDE);
-    let selectVs = fields.createSelectField(optionsVS);
+  addFilter : function (content) {
+    let selectDe = fields.createSelectField('de-filter', optionsDE, this.onChange);
+    let selectVs = fields.createSelectField('vs-filter', optionsVS, this.onChange);
     let deField = fields.createField(selectDe);
     let vsField = fields.createField(selectVs);
     let row = fields.createRow([deField, vsField]);
-    let fieldset = fields.createFieldset("Filter", [row]);
+    let fieldset = fields.createFieldset('Filter', [row]);
 
     let target = content.querySelector('div');
     let before = content.querySelector('table');
     target.insertBefore(fieldset, before);
   },
+
+  onChange : function (event) {
+    let id = event.target.id;
+    let ownerDocument = event.target.ownerDocument;
+    let selectedOption = event.target.selectedOptions[0];
+    ownerDocument.querySelectorAll('tr.disabled').forEach(tr => tr.classList.remove('disabled'));
+    if(id === 'de-filter') {
+      let vsFilter = ownerDocument.getElementById('vs-filter');
+      vsFilter.value = 'vs-disabled';
+      let rows = ownerDocument.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (selectedOption.id !== 'de-disabled') {
+        rows.forEach(row => {
+          if (selectedOption.id === 'de-all') {
+            if (new RegExp(vsRes.join("|")).test(row.innerText)) {
+              row.classList.add('disabled');
+            }
+          } else if (!new RegExp(selectedOption.innerText).test(row.innerText)) {
+            row.classList.add('disabled');
+          }
+        })
+      }
+    } else if (id === 'vs-filter') {
+      let deFilter = ownerDocument.getElementById('de-filter');
+      deFilter.value = 'de-disabled';
+      let rows = ownerDocument.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (selectedOption.id !== 'vs-disabled') {
+        rows.forEach(row => {
+          if (selectedOption.id === 'vs-all') {
+            if (new RegExp(deRes.join("|")).test(row.innerText)) {
+              row.classList.add('disabled');
+            }
+          } else if (!new RegExp(selectedOption.innerText).test(row.innerText)) {
+            row.classList.add('disabled');
+          }
+        })
+      }
+    }
+  }
 };
