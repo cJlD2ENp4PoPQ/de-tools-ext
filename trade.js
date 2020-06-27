@@ -42,8 +42,19 @@ const TradeExtension = {
       tradeCss.type = 'text/css';
       tradeCss.rel = 'stylesheet';
       content.getElementsByTagName("head")[0].appendChild(tradeCss);
+      this.replaceSpacer(content);
       this.addFilter(content);
     }
+  },
+
+  replaceSpacer : function (content) {
+    content.querySelectorAll('table table tr').forEach(tr => {
+      if(!tr.getAttribute('style')) {
+        tr.remove();
+      } else {
+        tr.classList.add('trade_entry');
+      }
+    })
   },
 
   addFilter : function (content) {

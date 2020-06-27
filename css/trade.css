@@ -1,3 +1,10 @@
 .disabled {
     display: none;
 }
+
+.cell {
+    border-top: 1px solid #666666;
+    height: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
