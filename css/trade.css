@@ -2,7 +2,7 @@
     display: none;
 }
 
-.cell {
+tr.trade_entry td {
     border-top: 1px solid #666666;
     height: 3px;
     padding-top: 5px;

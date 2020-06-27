@@ -63,7 +63,10 @@ const TradeExtension = {
     let deField = fields.createField(selectDe);
     let vsField = fields.createField(selectVs);
     let row = fields.createRow([deField, vsField]);
-    let fieldset = fields.createFieldset('Filter', [row]);
+    let label = content.createElement('span');
+    label.classList.add('filter_label');
+    label.innerText = 'Währung';
+    let fieldset = fields.createFieldset('Filter', [label,row]);
 
     let target = content.querySelector('div');
     let before = content.querySelector('table');
