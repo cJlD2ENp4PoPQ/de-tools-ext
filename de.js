@@ -8,14 +8,14 @@ deksOpen = false;
 var deExtension = {
 
   init: function () {
-    var appcontent = document.getElementById("iframe_main_container"); // content
+    let appcontent = document.getElementById("iframe_main_container"); // content
     if (appcontent) {
       this.saveRace(false);
       appcontent.addEventListener("load", function (event) {
         deExtension.onPageLoad(event);
       }, true)
       this.addMenuEntries(document);
-    } else {
+    } else if (!!window.parent && !window.parent.document.URL.includes('dm.php')) {
       this.saveRace(true);
       this.onMobilePageLoad(document)
     }
