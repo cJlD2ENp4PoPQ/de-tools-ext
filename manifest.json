@@ -19,9 +19,19 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.bgam.es/dm.php","*://*.bgam.es/sector.php*","*://*.bgam.es/production.php*","*://*.bgam.es/auction.php*"],
-      "js": ["de.js","frame.js","fields.js","sek.js","military.js","secret.js", "production.js", "trade.js"],
-      "css":["css/fields.css","css/trade.css"],
+      "matches": ["*://*.bgam.es/dm.php",
+        "*://*.bgam.es/sector.php*",
+        "*://*.bgam.es/production.php*",
+        "*://*.bgam.es/auction.php*"],
+      "js": ["js/pages/de.js",
+        "js/utils/frame.js",
+        "js/utils/fields.js",
+        "js/pages/sek.js",
+        "js/pages/military.js",
+        "js/pages/secret.js",
+        "js/pages/production.js",
+        "js/pages/trade.js"],
+      "css":["css/fields.css", "css/trade.css"],
       "run_at": "document_start",
       "all_frames": true
     }
