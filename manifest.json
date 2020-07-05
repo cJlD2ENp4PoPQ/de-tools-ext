@@ -12,7 +12,10 @@
 "permissions": [
     "*://sde.bgam.es/*",
 	"*://rde.bgam.es/*",
-    "*://xde.bgam.es/*"
+    "*://xde.bgam.es/*",
+    "*://dde.bgam.es/*",
+    "*://ede.bgam.es/*",
+    "*://cde.bgam.es/*"
   ],
 
   "web_accessible_resources": ["icons/icons8-move-50.png", "css/fields.css", "css/trade.css"],
