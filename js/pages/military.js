@@ -1,9 +1,17 @@
-
+/**
+ * Extends the military page of Die-Ewigen /military.php
+ * @type {{addDeksIntegration: MilitaryExtension.addDeksIntegration, onPageLoad: MilitaryExtension.onPageLoad, pushToDeks: MilitaryExtension.pushToDeks, cleanup: MilitaryExtension.cleanup, createTd: (function(String, String, String): HTMLTableDataCellElement)}}
+ */
 const MilitaryExtension = {
   onPageLoad: function(content, deksOpen) {
     this.addDeksIntegration(content, deksOpen);
   },
 
+  /**
+   * Add DEKS integration to given document.
+   * @param {Document} content the document which contains the fleet scan table.
+   * @param {boolean} deksOpen activates the DEKS integration only if DEKS iframe is opened.
+   */
   addDeksIntegration : function (content, deksOpen) {
     if(deksOpen) {
       let tbodies = content.getElementsByTagName('tbody');
@@ -40,6 +48,13 @@ const MilitaryExtension = {
     }
   },
 
+  /**
+   * Creates add-to-DEKS button table cell with given parameters.
+   * @param {String} fleet the number suffix
+   * @param {String} idSuffix fleet att/def type identifier
+   * @param {String} value the button label
+   * @return {HTMLTableDataCellElement} the cell HTML node with add-to-DEKS button.
+   */
   createTd : function (fleet, idSuffix, value) {
     let td = document.createElement('td');
     td.classList = ['cc'];
@@ -54,6 +69,10 @@ const MilitaryExtension = {
     return td;
   },
 
+  /**
+   * Event listener add fleet to DEKS.
+   * @param event the add-to-DEKS button click event
+   */
   pushToDeks : function (event) {
     let id = event.target.id;
     let contentNode = event.target.parentNode.parentNode.parentNode;
@@ -85,6 +104,10 @@ const MilitaryExtension = {
     }
   },
 
+  /**
+   * Remove all extension data from page.
+   * @param {Document} content the page content.
+   */
   cleanup : function (content) {
     let deksRows = content.querySelectorAll('.deks');
     deksRows.forEach(value => value.remove());

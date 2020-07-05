@@ -1,8 +1,16 @@
+/**
+ * Extends the production page of Die-Ewigen /production.php
+ * @type {{onPageLoad: ProductionExtension.onPageLoad, update: ProductionExtension.update, addResDistrKey: ProductionExtension.addResDistrKey, createTd: (function(String, String): HTMLTableDataCellElement)}}
+ */
 const ProductionExtension = {
   onPageLoad: function (content) {
     this.addResDistrKey(content);
   },
 
+  /**
+   * Add resource output distribution key row to production page.
+   * @param {Document} content the document which contains the production form.
+   */
   addResDistrKey: function (content) {
     let resultTable = content.querySelector('form[action="production.php"] table:nth-child(2) tr td table tbody');
     let inputFields = content.querySelectorAll('form[action="production.php"] input[onkeyup="berechnepreise();"');
@@ -19,6 +27,12 @@ const ProductionExtension = {
     resultTable.insertBefore(tr, lastRow);
   },
 
+  /**
+   * Creates a resource distribution key cell.
+   * @param {String} idSuffix resource ID suffix.
+   * @param {String} value content of table cell.
+   * @return {HTMLTableDataCellElement} the a table cell.
+   */
   createTd : function (idSuffix, value) {
     let td = document.createElement('td');
     td.classList = ['cell1'];
@@ -28,6 +42,10 @@ const ProductionExtension = {
     return td;
   },
 
+  /**
+   * Change event listener which calculates the needed resource output distribution keys.
+   * @param event the change event of input field.
+   */
   update : function (event) {
     let ownerDocument = event.target.ownerDocument;
     let m = parseInt(ownerDocument.getElementById("m").innerText.split('.').join(''));

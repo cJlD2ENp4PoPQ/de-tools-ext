@@ -1,10 +1,20 @@
-const raceMapping = {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'};
-
+/**
+ * Extends the secret page of Die-Ewigen /secret.php
+ * @type {{addDeksIntegration: SecretExtension.addDeksIntegration, onPageLoad: SecretExtension.onPageLoad, pushToDeks: SecretExtension.pushToDeks, cleanup: SecretExtension.cleanup, createTd: (function(String, String, String): HTMLTableDataCellElement)}}
+ */
 const SecretExtension = {
+
+  raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'},
+
   onPageLoad: function(content, deksOpen) {
     this.addDeksIntegration(content, deksOpen);
   },
 
+  /**
+   * Add DEKS integration to given document.
+   * @param {Document} content the document which contains the fleet scan table.
+   * @param {boolean} deksOpen activates the DEKS integration only if DEKS iframe is opened.
+   */
   addDeksIntegration : function (content, deksOpen) {
     if (deksOpen) {
       if (content.evaluate("//b[contains(., 'Flottenaufstellung')]", content, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue) {
@@ -43,6 +53,13 @@ const SecretExtension = {
     }
   },
 
+  /**
+   * Creates add-to-DEKS button table cell with given parameters.
+   * @param {String} fleet the number suffix
+   * @param {String} idSuffix fleet att/def type identifier
+   * @param {String} value the button label
+   * @return {HTMLTableDataCellElement} the cell HTML node with add-to-DEKS button.
+   */
   createTd : function(fleet, idSuffix, value) {
     let td = document.createElement('td');
     td.classList = ['cc'];
@@ -57,6 +74,10 @@ const SecretExtension = {
     return td;
   },
 
+  /**
+   * Event listener add fleet to DEKS.
+   * @param event the add-to-DEKS button click event
+   */
   pushToDeks : function (event) {
     let id = event.target.id;
     let lines = event.target.parentNode.parentNode.parentNode.children;
@@ -73,12 +94,16 @@ const SecretExtension = {
     if(deksEnabled) {
       deksEnabled.contentWindow.postMessage({
         attack: id[0] === 'A',
-        race: raceMapping[raceKey],
+        race: SecretExtension.raceMapping[raceKey],
         fleet: fleet
       }, 'https://deks.popq.de');
     }
   },
 
+  /**
+   * Remove all extension data from page.
+   * @param {Document} content the page content.
+   */
   cleanup : function (content) {
     let deksRows = content.querySelectorAll('.deks');
     deksRows.forEach(value => value.remove());

@@ -5,7 +5,7 @@ window.addEventListener("load", function load (event) {
 
 deksOpen = false;
 
-var deExtension = {
+const deExtension = {
 
   init: function () {
     let appcontent = document.getElementById("iframe_main_container"); // content
