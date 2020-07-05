@@ -49,9 +49,10 @@ const fields = {
    * @param {String} id input element id
    * @param {Object[]} options with id and value
    * @param {function} changeListener the change listener of select field.
+   * @param {string} preselected the id of preselected entry or undefined.
    * @returns {HTMLSelectElement} the HTML select element options
    */
-  createSelectField: function (id, options, changeListener) {
+  createSelectField: function (id, options, changeListener, preselected) {
     let select = document.createElement('select');
     select.id = id;
     select.addEventListener('change', changeListener);
@@ -60,6 +61,9 @@ const fields = {
         optElement.id = option.id;
         optElement.value = option.id;
         optElement.innerText = option.value;
+        if(option.id === preselected) {
+          optElement.selected = true;
+        }
         return optElement;
     }).forEach(optElement => {
       select.insertBefore(optElement, null);

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.4.6",
+  "version": "0.4.7",
 
   "description": "Erweiterung für das Browsergame Die-Ewigen",
 
@@ -26,6 +26,7 @@
       "js": ["js/pages/de.js",
         "js/utils/frame.js",
         "js/utils/fields.js",
+        "js/utils/storage.js",
         "js/pages/sek.js",
         "js/pages/military.js",
         "js/pages/secret.js",
