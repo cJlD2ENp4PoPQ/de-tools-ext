@@ -36,8 +36,10 @@ const SekExtension = {
     }
     tableContent.forEach((node, i) => {
         if(i <= players.length && i > 0) {
-          let kolliStep = Math.floor(players[i-1].kollis / 50);
-
+          let kolliStep = 0;
+          if(players[i-1].kollis >= 100) {
+            kolliStep = Math.floor(players[i-1].kollis / 50) - 1;
+          }
           let fp = (players[i-1].points - players[i-1].kollis * SekExtension.kolliPoints[kolliStep > 20 ? 20 : kolliStep]);
           let fpNode = document.createElement("td");
           fpNode.classList = ["cell tac text2 fp-node"];
