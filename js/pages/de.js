@@ -87,6 +87,9 @@ const deExtension = {
       && contentDocument.querySelector('head title').innerText === 'Auktion') {
       TradeExtension.onPageLoad(contentDocument);
     }
+    if (contentDocument.querySelector('form[action="sysnews.php"]')) {
+      NewsExtension.onPageLoad(contentDocument);
+    }
   },
 
   /**
@@ -101,6 +104,8 @@ const deExtension = {
       TradeExtension.onPageLoad(document);
     } else if (url.includes('production.php')) {
       ProductionExtension.onPageLoad(document);
+    } else if (url.includes('sysnews.php')) {
+      NewsExtension.onPageLoad(document);
     }
   },
 
