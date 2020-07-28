@@ -90,6 +90,11 @@ const deExtension = {
     if (contentDocument.querySelector('form[action="sysnews.php"]')) {
       NewsExtension.onPageLoad(contentDocument);
     }
+    if (contentDocument.querySelector('head title')
+      && (contentDocument.querySelector('head title').innerText === 'Vergessene Systeme'
+        || contentDocument.querySelector('head title').innerText === 'Systeminformationen')) {
+      VSysExtension.onPageLoad(contentDocument);
+    }
   },
 
   /**
@@ -106,6 +111,10 @@ const deExtension = {
       ProductionExtension.onPageLoad(document);
     } else if (url.includes('sysnews.php')) {
       NewsExtension.onPageLoad(document);
+    } else if (url.includes('map_mobile.php')) {
+      VSysExtension.onPageLoad(document);
+    }  else if (url.includes('map_system.php')) {
+      VSysExtension.onPageLoad(document);
     }
   },
 
