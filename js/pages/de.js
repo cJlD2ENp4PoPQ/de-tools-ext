@@ -11,6 +11,8 @@ const deExtension = {
     let appcontent = document.getElementById("iframe_main_container"); // content
     if (appcontent) {
       this.saveRace(false);
+      this.saveServer();
+      this.addTimerSwitch();
       appcontent.addEventListener("load", function (event) {
         deExtension.onPageLoad(event);
       }, true)
@@ -119,6 +121,49 @@ const deExtension = {
   },
 
   /**
+   * adds a battle mode switch to the tick area.
+   */
+  addTimerSwitch: function () {
+    let element = document.querySelector('img[src="g/tb_timedata.png"]');
+    element.src = chrome.runtime.getURL("icons/tb_timedata.png");
+    let tbTime = document.getElementById('tb_time1');
+    document.getElementById('tb_time2').style = 'position: absolute; top: 22px; left: 34px;';
+    document.getElementById('tb_time3').style = 'position: absolute; top: 42px; left: 34px;';
+    let switcher = document.createElement('div');
+    switcher.id = 'time_mode_switch'
+    let switcherIcon = document.createElement('img');
+    switcherIcon.style = 'width:25px; padding-left:2px; padding-top:12px';
+    switcherIcon.src = chrome.runtime.getURL("icons/flight.svg");
+    let config = Storage.getConfig('de', 'time');
+    if (config && config.battleMode === true) {
+      tbTime.style = 'position: absolute; top: 1px; left: 20px;';
+      Time.startTime();
+      switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
+    } else {
+      switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
+    }
+    switcher.insertBefore(switcherIcon, null);
+    switcher.addEventListener('click', ev => {
+      let config = Storage.getConfig('de', 'time');
+      let switcher = ev.target.ownerDocument.querySelector('#time_mode_switch');
+      if (config && config.battleMode === true) {
+        ev.target.ownerDocument.querySelector('#tb_time1').style = 'position: absolute; top: 1px; left: 34px;';
+        config.battleMode = false;
+        Storage.storeConfig('de', 'time', config);
+        Time.stopTime();
+        switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
+      } else {
+        ev.target.ownerDocument.querySelector('#tb_time1').style = 'position: absolute; top: 1px; left: 20px;';
+        config = {battleMode: true};
+        Storage.storeConfig('de', 'time' ,config);
+        Time.startTime();
+        switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
+      }
+    });
+    tbTime.parentElement.parentElement.insertBefore(switcher, tbTime.parentElement)
+  },
+
+  /**
    * Saves the race of the player.
    * @param {Boolean} mobile is the mobile page or not.
    */
@@ -151,6 +196,11 @@ const deExtension = {
       }
     }
     window.race = race;
+  },
+
+  saveServer : function() {
+    let host = window.document.location.host;
+    window.server = host.split('.')[0];
   },
 
   /**

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.4.10",
+  "version": "0.5.0",
 
   "description": "Erweiterung für das Browsergame Die-Ewigen",
 
@@ -18,7 +18,7 @@
     "*://cde.bgam.es/*"
   ],
 
-  "web_accessible_resources": ["icons/icons8-move-50.png", "css/fields.css", "css/trade.css"],
+  "web_accessible_resources": ["icons/icons8-move-50.png", "icons/tb_timedata.png", "css/fields.css", "css/trade.css","icons/flight.svg"],
 
   "content_scripts": [
     {
@@ -33,6 +33,7 @@
         "js/utils/frame.js",
         "js/utils/fields.js",
         "js/utils/storage.js",
+        "js/utils/time.js",
         "js/pages/sek.js",
         "js/pages/military.js",
         "js/pages/secret.js",
@@ -40,7 +41,7 @@
         "js/pages/trade.js",
         "js/pages/news.js",
         "js/pages/vsys.js"],
-      "css":["css/fields.css", "css/trade.css"],
+      "css":["css/fields.css", "css/trade.css", "css/time.css"],
       "run_at": "document_start",
       "all_frames": true
     }
