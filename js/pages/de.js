@@ -61,7 +61,9 @@ const deExtension = {
    */
   onPageLoad: function (page) {
     let contentDocument = page.target.contentDocument;
-    this.updateExtensions(contentDocument);
+    if(contentDocument) {
+      this.updateExtensions(contentDocument);
+    }
   },
 
   /**

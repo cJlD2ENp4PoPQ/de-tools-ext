@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.5.0",
+  "version": "0.6.0",
 
   "description": "Erweiterung für das Browsergame Die-Ewigen",
 
@@ -34,6 +34,7 @@
         "js/utils/fields.js",
         "js/utils/storage.js",
         "js/utils/time.js",
+        "js/utils/vanilla-context.min.js",
         "js/pages/sek.js",
         "js/pages/military.js",
         "js/pages/secret.js",
@@ -41,7 +42,7 @@
         "js/pages/trade.js",
         "js/pages/news.js",
         "js/pages/vsys.js"],
-      "css":["css/fields.css", "css/trade.css", "css/time.css"],
+      "css":["css/fields.css", "css/trade.css", "css/time.css", "css/vanilla-context.min.css"],
       "run_at": "document_start",
       "all_frames": true
     }
