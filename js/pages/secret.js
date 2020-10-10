@@ -4,10 +4,15 @@
  */
 const SecretExtension = {
 
+  storageKey: 'Secret',
   raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'},
 
   onPageLoad: function(content, deksOpen) {
     this.addDeksIntegration(content, deksOpen);
+    let tableHeader = content.querySelector('body > div > table > tbody > tr > td');
+    if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
+      this.storeProbeResult(tableHeader.parentElement.parentElement);
+    }
   },
 
   /**
@@ -107,5 +112,56 @@ const SecretExtension = {
   cleanup : function (content) {
     let deksRows = content.querySelectorAll('.deks');
     deksRows.forEach(value => value.remove());
+  },
+
+  /**
+   * Stores the probe result from given table content.
+   * @param {Element} contentTable the table which contains the probe result.
+   */
+  storeProbeResult (contentTable) {
+    let rows = contentTable.querySelectorAll('tr');
+    if(rows && rows.length > 13) {
+      let header = rows[0];
+      let headerMatcher = header.innerText.match('.*über\\W(\\S+)\\W.*$');
+      if(headerMatcher) {
+        let name = headerMatcher[1];
+        let points = parseInt(rows[1].lastElementChild.innerText.toString().split('.').join(""));
+        let ships = parseInt(rows[2].lastElementChild.innerText.toString().split('.').join(""));
+        let defs = parseInt(rows[3].lastElementChild.innerText.toString().split('.').join(""));
+        let builds = parseInt(rows[4].lastElementChild.innerText.toString().split('.').join(""));
+        let collectors = parseInt(rows[5].lastElementChild.innerText.toString().split('.').join(""));
+        let race = rows[6].lastElementChild.innerText.toString().trim().substr(0,1);
+        let m = parseInt(rows[8].lastElementChild.innerText.toString().split('.').join(""));
+        let d = parseInt(rows[9].lastElementChild.innerText.toString().split('.').join(""));
+        let i = parseInt(rows[10].lastElementChild.innerText.toString().split('.').join(""));
+        let e = parseInt(rows[11].lastElementChild.innerText.toString().split('.').join(""));
+        let t = parseInt(rows[12].lastElementChild.innerText.toString().split('.').join(""));
+        let result = {c:new Date().toISOString(), p: points, s: ships, def: defs, b: builds, col:collectors,
+          r:race, m:m, d:d, i:i, e:e, t:t};
+        let config = Storage.getConfig(this.storageKey, 'secrets');
+        if(config) {
+          let player = config[name];
+          if(player) {
+           let probes = player.probes;
+           if(probes) {
+             probes.push(result);
+           } else {
+             player.probes = [result];
+           }
+          } else {
+            player = {probes: [result]};
+          }
+          config[name] = player;
+        } else {
+          config = {};
+          config[name] = {probes: [result]};
+        }
+        if(config[name].probes.length > 10) {
+          config[name].probes.shift();
+        }
+        console.log(config[name].probes.length);
+        Storage.storeConfig(this.storageKey, 'secrets', config);
+      }
+    }
   }
 };
