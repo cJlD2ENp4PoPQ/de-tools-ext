@@ -30,7 +30,10 @@ const SekExtension = {
         playerCounter++;
       }
     });
-    let tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(6) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+    let tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(8) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+    if(tableContent.length === 0) {
+      tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(6) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+    }
     if(tableContent.length === 0) {
       tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(4) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
     }
