@@ -127,20 +127,20 @@ const deExtension = {
     let element = document.querySelector('img[src="g/tb_timedata.png"]');
     element.src = chrome.runtime.getURL("icons/tb_timedata.png");
     let tbTime = document.getElementById('tb_time1');
-    document.getElementById('tb_time2').style = 'position: absolute; top: 22px; left: 34px;';
-    document.getElementById('tb_time3').style = 'position: absolute; top: 42px; left: 34px;';
+    document.getElementById('tb_time2').style = 'position: absolute; top: 24px; left: 34px;';
+    document.getElementById('tb_time3').style = 'position: absolute; top: 47px; left: 34px;';
     let switcher = document.createElement('div');
     switcher.id = 'time_mode_switch'
     let switcherIcon = document.createElement('img');
-    switcherIcon.style = 'width:25px; padding-left:2px; padding-top:12px';
+    switcherIcon.style = 'width:25px; padding-left:2px; padding-top:17px';
     switcherIcon.src = chrome.runtime.getURL("icons/flight.svg");
     let config = Storage.getConfig('de', 'time');
     if (config && config.battleMode === true) {
       tbTime.style = 'position: absolute; top: 1px; left: 20px;';
       Time.startTime();
-      switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
+      switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
     } else {
-      switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
+      switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
     }
     switcher.insertBefore(switcherIcon, null);
     switcher.addEventListener('click', ev => {
@@ -151,13 +151,13 @@ const deExtension = {
         config.battleMode = false;
         Storage.storeConfig('de', 'time', config);
         Time.stopTime();
-        switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
+        switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
       } else {
         ev.target.ownerDocument.querySelector('#tb_time1').style = 'position: absolute; top: 1px; left: 20px;';
         config = {battleMode: true};
         Storage.storeConfig('de', 'time' ,config);
         Time.startTime();
-        switcher.style = 'position: absolute; right: 113px; top:0; height:60px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
+        switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
       }
     });
     tbTime.parentElement.parentElement.insertBefore(switcher, tbTime.parentElement)
