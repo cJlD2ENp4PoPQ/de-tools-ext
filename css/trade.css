@@ -1,4 +1,8 @@
-.disabled {
+.disabled-article {
+    display: none;
+}
+
+.disabled-currency {
     display: none;
 }
 
