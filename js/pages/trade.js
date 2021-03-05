@@ -142,11 +142,11 @@ const TradeExtension = {
       this.filterVSEntries(vsFilter, option.innerText, content);
     }
     if (articleArtiFilter) {
-      let option = selectDe.querySelector('#' + deFilter);
+      let option = selectArti.querySelector('#' + articleArtiFilter);
       this.filterArticleArtiEntries(articleArtiFilter, option.innerText, content)
     }
     if (articleOtherFilter) {
-      let option = selectDe.querySelector('#' + deFilter);
+      let option = selectOther.querySelector('#' + articleOtherFilter);
       this.filterArticleArtiEntries(articleOtherFilter, option.innerText, content)
     }
   },
