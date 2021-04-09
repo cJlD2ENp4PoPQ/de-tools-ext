@@ -30,7 +30,7 @@ const SekExtension = {
         playerCounter++;
       }
     });
-    let tableContent = content.querySelectorAll("div[align=center] > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+    let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
     tableContent.forEach((node, i) => {
         if(i <= players.length && i > 0) {
           let kolliStep = 0;
