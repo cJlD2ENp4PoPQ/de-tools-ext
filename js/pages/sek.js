@@ -31,6 +31,9 @@ const SekExtension = {
       }
     });
     let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+
+    let pointColumnIndex = tableContent[0].childElementCount < 8 ? 2 : 5;
+    let pointHeaderColumnIndex = tableContent[0].childElementCount < 8 ? 6 : 12;
     tableContent.forEach((node, i) => {
         if(i <= players.length && i > 0) {
           let kolliStep = 0;
@@ -38,15 +41,20 @@ const SekExtension = {
             kolliStep = Math.floor(players[i-1].kollis / 50) - 1;
           }
           let fp = (players[i-1].points - players[i-1].kollis * SekExtension.kolliPoints[kolliStep > 20 ? 20 : kolliStep]);
+          let pointNode = node.childNodes[pointColumnIndex];
+          let isGreen = false;
+          if(pointNode) {
+            isGreen = pointNode.classList.contains("text3");
+          }
           let fpNode = document.createElement("td");
-          fpNode.classList = ["cell tac text2 fp-node"];
+          fpNode.classList = isGreen ? ["cell tac text3 fp-node"] : ["cell tac text2 fp-node"];
           fpNode.style = "text-align: right;"
           fpNode.textContent = fp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-          node.insertBefore(fpNode, node.childNodes[6]);
+          node.insertBefore(fpNode, node.childNodes[pointColumnIndex+1]);
         } else if (i === 0) {
           let header = document.createElement("td");
           header.textContent = "Flottenpunkte"
-          node.insertBefore(header, node.childNodes[12]);
+          node.insertBefore(header, node.childNodes[pointHeaderColumnIndex]);
         }
       });
   }
