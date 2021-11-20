@@ -13,6 +13,10 @@ const deExtension = {
       this.saveRace(false);
       this.saveServer();
       this.addTimerSwitch();
+      let overviewIframe = appcontent.querySelector('iframe[src="overview.php"]');
+      if(overviewIframe) {
+        OverviewExtension.onPageLoad(overviewIframe.contentDocument);
+      }
       appcontent.addEventListener("load", function (event) {
         deExtension.onPageLoad(event);
       }, true)
@@ -94,6 +98,9 @@ const deExtension = {
     if (contentDocument.querySelector('form[action="sysnews.php"]')) {
       NewsExtension.onPageLoad(contentDocument);
     }
+    if (contentDocument.querySelector('head > title').innerHTML.includes('Übersicht')) {
+      OverviewExtension.onPageLoad(contentDocument);
+    }
     if (contentDocument.querySelector('head title')
       && (contentDocument.querySelector('head title').innerText === 'Vergessene Systeme'
         || contentDocument.querySelector('head title').innerText === 'Systeminformationen')) {
@@ -119,6 +126,8 @@ const deExtension = {
       VSysExtension.onPageLoad(document);
     }  else if (url.includes('map_system.php')) {
       VSysExtension.onPageLoad(document);
+    }  else if (url.includes('overview.php')) {
+      OverviewExtension.onPageLoad(document);
     }
   },
 
