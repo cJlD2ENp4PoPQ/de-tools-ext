@@ -24,8 +24,13 @@ const SekExtension = {
       renderer: 'Anzeigen',
       onClick: ({api, originEvent}) => {
         let parent = originEvent.target.parentElement;
-        if(originEvent.target.textContent !== String.fromCharCode(160)) {
-          originEvent.target.ownerDocument.location = parent.getAttribute('href');
+        if(originEvent.target.firstChild !== String.fromCharCode(160)) {
+          let href = parent.getAttribute('href');
+          if(href) {
+            originEvent.target.ownerDocument.location = href;
+          } else {
+            originEvent.target.ownerDocument.location= "ally_detail.php?allytag="+originEvent.target.firstChild.textContent;
+          }
         }
       },
       disabled: (params) => {
@@ -160,30 +165,32 @@ const SekExtension = {
     }
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
-      let alliance = allianceCell.innerText;
-      let name = row.childNodes[2].innerText;
-      if(name && alliance) {
-        name = name.replace('*', '').trim();
-        let config = Storage.getConfig('ally','tags');
-        if(config) {
-          Object.getOwnPropertyNames(config).forEach(ally => {
-            let allyMembers = config[ally];
-            let index = allyMembers.findIndex(member => member.name === name);
-            if (index >= 0 && allyMembers[index].replaced) {
-              if(allianceCell.childNodes[0].childNodes[0]) {
-                allianceCell.childNodes[0].childNodes[0].innerText = ally;
-              } else {
-                let span = document.createElement('span');
-                span.classList.add('tc4');
-                span.innerText = ally;
-                allianceCell.insertBefore(span, null);
+      if(allianceCell) {
+        let alliance = allianceCell.innerText;
+        let name = row.childNodes[2].innerText;
+        if (name && alliance) {
+          name = name.replace('*', '').trim();
+          let config = Storage.getConfig('ally', 'tags');
+          if (config) {
+            Object.getOwnPropertyNames(config).forEach(ally => {
+              let allyMembers = config[ally];
+              let index = allyMembers.findIndex(member => member.name === name);
+              if (index >= 0 && allyMembers[index].replaced) {
+                if (allianceCell.childNodes[0].childNodes[0]) {
+                  allianceCell.childNodes[0].childNodes[0].innerText = ally;
+                } else {
+                  let span = document.createElement('span');
+                  span.classList.add('tc4');
+                  span.innerText = ally;
+                  allianceCell.insertBefore(span, null);
+                }
               }
-            }
-          });
+            });
+          }
+          new VanillaContext(allianceCell, {nodes: SekExtension.allyContextMenu, autoClose: true});
+          let player = {name: name, replaced: false};
+          SekExtension.saveAlliance(player, alliance);
         }
-        new VanillaContext(allianceCell, {nodes: SekExtension.allyContextMenu, autoClose: true});
-        let player = {name: name, replaced: false};
-        SekExtension.saveAlliance(player, alliance);
       }
     });
   },
