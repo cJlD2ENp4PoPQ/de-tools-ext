@@ -157,6 +157,7 @@ const SekExtension = {
         } else if (i === 0) {
           let header = document.createElement("td");
           header.textContent = "Flottenpunkte"
+          header.setAttribute("class", "cell tac")
           node.insertBefore(header, node.childNodes[pointHeaderColumnIndex]);
         }
       });
