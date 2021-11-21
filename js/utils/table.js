@@ -49,7 +49,7 @@ const Tables = {
 
     let rowContent = document.createElement('tr');
     let spacerContent = document.createElement('td');
-    spacerContent.setAttribute('class','r1');
+    spacerContent.setAttribute('class','rl');
     let content = document.createElement('td');
     let contentDiv = document.createElement('div');
     contentDiv.setAttribute('class','cell');
