@@ -55,9 +55,10 @@ const SekExtension = {
         allyEditInput.addEventListener('change',
           (event) => {
             let row = event.target.closest('tr');
+            let coords = SekExtension.getCoordinates(row);
             let name = row.childNodes[2].innerText;
             name = name.replace('*', '').trim();
-            let player = {name: name, replaced: true};
+            let player = {name: name, x:coords.sector, y:coords.sys, replaced: true};
             SekExtension.saveAlliance(player, event.target.value, true);
             originEvent.target.ownerDocument.location = originEvent.target.ownerDocument.location;
           });
@@ -175,6 +176,7 @@ const SekExtension = {
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
       if(allianceCell) {
+        let coords = this.getCoordinates(row);
         let alliance = allianceCell.innerText;
         let name = row.childNodes[2].innerText;
         if (name && alliance) {
@@ -197,11 +199,28 @@ const SekExtension = {
             });
           }
           new VanillaContext(allianceCell, {nodes: SekExtension.allyContextMenu, autoClose: true});
-          let player = {name: name, replaced: false};
+          let player = {name: name, x:coords.sector, y:coords.sys, replaced: false};
           SekExtension.saveAlliance(player, alliance);
         }
       }
     });
+  },
+
+  getCoordinates(row) {
+    let militaryLinkElement = row.querySelector('a[href*="military.php"]');
+    let sector;
+    let sys;
+    if(militaryLinkElement) {
+      let militaryLink = militaryLinkElement.getAttribute("href");
+      if(militaryLink) {
+        let militaryLinkMatcher = militaryLink.match("military\\.php\\?se=(\\d+)&sy=(\\d+)$");
+        if(militaryLinkMatcher) {
+          sector = militaryLinkMatcher[1];
+          sys = militaryLinkMatcher[2];
+        }
+      }
+    }
+    return {sector:sector, sys:sys};
   },
 
   saveAlliance(player, alliance, override) {

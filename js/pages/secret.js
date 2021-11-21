@@ -122,9 +122,11 @@ const SecretExtension = {
     let rows = contentTable.querySelectorAll('tr');
     if(rows && rows.length > 13) {
       let header = rows[0];
-      let headerMatcher = header.innerText.match('.*über\\W(\\S+)\\W.*$');
+      let headerMatcher = header.innerText.match('.*über\\W(\\S+)\\W\\((\\d+):(\\d+)\\).*$');
       if(headerMatcher) {
         let name = headerMatcher[1];
+        let sector = headerMatcher[2];
+        let sys = headerMatcher[3];
         let points = parseInt(rows[1].lastElementChild.innerText.toString().split('.').join(""));
         let ships = parseInt(rows[2].lastElementChild.innerText.toString().split('.').join(""));
         let defs = parseInt(rows[3].lastElementChild.innerText.toString().split('.').join(""));
@@ -137,7 +139,7 @@ const SecretExtension = {
         let e = parseInt(rows[11].lastElementChild.innerText.toString().split('.').join(""));
         let t = parseInt(rows[12].lastElementChild.innerText.toString().split('.').join(""));
         let result = {c:new Date().toISOString(), p: points, s: ships, def: defs, b: builds, col:collectors,
-          r:race, m:m, d:d, i:i, e:e, t:t};
+          r:race, m:m, d:d, i:i, e:e, t:t, x:sector, y:sys};
         let config = Storage.getConfig(this.storageKey, 'secrets');
         if(config) {
           let player = config[name];
