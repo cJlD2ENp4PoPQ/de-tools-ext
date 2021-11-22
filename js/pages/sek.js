@@ -152,7 +152,7 @@ const SekExtension = {
           }
           let fpNode = document.createElement("td");
           fpNode.classList = isGreen ? ["cell tac text3 fp-node"] : ["cell tac text2 fp-node"];
-          fpNode.style = "text-align: right;"
+          fpNode.style = "text-align: right; padding-left: 8px";
           fpNode.textContent = fp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
           node.insertBefore(fpNode, node.childNodes[pointColumnIndex+1]);
         } else if (i === 0) {
