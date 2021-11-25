@@ -113,31 +113,42 @@ const SekExtension = {
   onPageLoad: function(content) {
     let fpNodes = content.querySelectorAll('td.fp-node');
     if(fpNodes.length === 0) {
-      this.addFleetpoints(content);
-      this.readAlliance(content);
+      let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+      let isAlienSector = tableContent[0].childElementCount < 8;
+      this.addFleetpoints(tableContent, isAlienSector);
+      if(!isAlienSector) {
+        this.readAlliance(tableContent);
+      }
     }
   },
 
   /**
-   * Adds fleet point column to given document.
-   * @param {Document} content the content which contains the player table.
+   * Adds fleet point column to given table row array.
+   * @param {Array.<HTMLTableRowElement>} tableContent the content which contains the player table.
+   * @param {boolean} alienSector the current sector is a bot sector.
    */
-  addFleetpoints : function (content) {
+  addFleetpoints : function (tableContent, alienSector) {
     let players = [];
     let playerCounter = 0;
-    content.querySelectorAll("td.text2,td.text3").forEach((node, i) => {
-      if(i%2 === 0) {
-        let player = {points:node.innerText.split('.').join('')};
-        players.push(player);
-      } else {
-        players[playerCounter].kollis = node.innerText.split('.').join('');
-        playerCounter++;
-      }
-    });
-    let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
+    tableContent.forEach((node,i) => {
+      if(i>0) {
+        //skip the table header
+        let pointOrCollectorNodes = node.querySelectorAll("td.text2,td.text3");
+        pointOrCollectorNodes.forEach((pointOrCollectorNode,j) => {
+          if (j % 2 === 0) {
+            let player = {points: pointOrCollectorNode.innerText.split('.').join('')};
+            players.push(player);
+          } else {
+            players[playerCounter].kollis = pointOrCollectorNode.innerText.split('.').join('');
+            playerCounter++;
+          }
+        })
 
-    let pointColumnIndex = tableContent[0].childElementCount < 8 ? 2 : 5;
-    let pointHeaderColumnIndex = tableContent[0].childElementCount < 8 ? 6 : 12;
+      }
+    })
+
+    let pointColumnIndex = alienSector ? 2 : 5;
+    let pointHeaderColumnIndex = alienSector ? 6 : 12;
     tableContent.forEach((node, i) => {
         if(i <= players.length && i > 0) {
           let kolliStep = 0;
@@ -166,13 +177,9 @@ const SekExtension = {
 
   /**
    * Saves alliances from sector page.
-   * @param {Document} content the content which contains the player table.
+   * @param {Array.<HTMLTableRowElement>} tableContent the content which contains the player table.
    */
-  readAlliance : function (content) {
-    let tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(6) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
-    if(tableContent.length === 0) {
-      tableContent = content.querySelectorAll("body > div:nth-child(1) > div:nth-child(4) > table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
-    }
+  readAlliance : function (tableContent) {
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
       if(allianceCell) {
