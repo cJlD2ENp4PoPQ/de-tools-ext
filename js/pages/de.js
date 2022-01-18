@@ -9,6 +9,12 @@ const deExtension = {
 
   init: function () {
     let appcontent = document.getElementById("iframe_main_container"); // content
+    let timecss = document.createElement('link');
+    timecss.classList = ['ext-css'];
+    timecss.href = chrome.runtime.getURL('css/time.css');
+    timecss.type = 'text/css';
+    timecss.rel = 'stylesheet';
+    document.getElementsByTagName("head")[0].appendChild(timecss);
     if (appcontent) {
       this.saveRace(false);
       this.saveServer();
@@ -97,6 +103,10 @@ const deExtension = {
     }
     if (contentDocument.querySelector('form[action="sysnews.php"]')) {
       NewsExtension.onPageLoad(contentDocument);
+    }
+    let allianceTitle = contentDocument.querySelector('div.cellu');
+    if (allianceTitle ? allianceTitle.innerHTML.includes('Allianzinformationen') : false) {
+      AllyExtension.onPageLoad(contentDocument);
     }
     if (contentDocument.querySelector('head > title').innerHTML.includes('Übersicht')) {
       OverviewExtension.onPageLoad(contentDocument);

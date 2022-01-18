@@ -47,6 +47,9 @@ const SekExtension = {
       onClick: ({api, originEvent}) => {
         let row = originEvent.target.closest('tr');
         let allianceCell = row.childNodes[4];
+        if(allianceCell.querySelector('input')) {
+          return;
+        }
         let alliance = allianceCell.childNodes[0].textContent.replace(String.fromCharCode(160),'');
         allianceCell.removeChild(allianceCell.childNodes[0]);
         let allyEditInput = document.createElement('input');
@@ -111,6 +114,13 @@ const SekExtension = {
   ],
 
   onPageLoad: function(content) {
+    let contextMenuCss = content.createElement('link');
+    contextMenuCss.classList = ['ext-css'];
+    contextMenuCss.href = chrome.runtime.getURL('css/vanilla-context.min.css');
+    contextMenuCss.type = 'text/css';
+    contextMenuCss.rel = 'stylesheet';
+    content.getElementsByTagName("head")[0].appendChild(contextMenuCss);
+
     let fpNodes = content.querySelectorAll('td.fp-node');
     if(fpNodes.length === 0) {
       let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");

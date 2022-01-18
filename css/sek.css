@@ -1,0 +1,15 @@
+span.color-tag {
+    width: 15px;
+    margin-right: 2px;
+}
+
+span.color-tag.friend {
+    background-color: #00ff00;
+}
+span.color-tag.neutral {
+    background-color: #FDFB59;
+}
+
+span.color-tag.enemy {
+    background-color: #ff0000;
+}

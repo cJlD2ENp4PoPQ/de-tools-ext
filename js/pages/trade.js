@@ -72,16 +72,17 @@ const TradeExtension = {
   storageKey: 'Trade',
 
   onPageLoad: function (content) {
-    if (!content.querySelector('link.ext-css')) {
+    if (!content.querySelector('#trade-css')) {
       let fieldsCss = content.createElement('link');
-      fieldsCss.href = chrome.extension.getURL('css/fields.css');
+      fieldsCss.href = chrome.runtime.getURL('css/fields.css');
       fieldsCss.type = 'text/css';
+      fieldsCss.id = 'trade-css';
       fieldsCss.classList = ['ext-css'];
       fieldsCss.rel = 'stylesheet';
       content.getElementsByTagName("head")[0].appendChild(fieldsCss);
       let tradeCss = content.createElement('link');
       tradeCss.classList = ['ext-css'];
-      tradeCss.href = chrome.extension.getURL('css/trade.css');
+      tradeCss.href = chrome.runtime.getURL('css/trade.css');
       tradeCss.type = 'text/css';
       tradeCss.rel = 'stylesheet';
       content.getElementsByTagName("head")[0].appendChild(tradeCss);
