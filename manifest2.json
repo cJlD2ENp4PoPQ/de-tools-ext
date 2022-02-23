@@ -36,7 +36,7 @@
         "js/utils/table.js",
         "js/utils/storage.js",
         "js/utils/time.js",
-        "js/utils/vanilla-context.min.js",
+		"js/utils/ContextMenu.js",
         "js/pages/sek.js",
         "js/pages/military.js",
         "js/pages/secret.js",
@@ -46,7 +46,7 @@
         "js/pages/overview.js",
         "js/pages/ally.js",
         "js/pages/vsys.js"],
-      "css":["css/fields.css", "css/trade.css", "css/time.css", "css/vanilla-context.min.css"],
+      "css":["css/fields.css", "css/trade.css", "css/time.css"],
       "run_at": "document_start",
       "all_frames": true
     }
