@@ -4,9 +4,9 @@ const ContextMenu = (function(){
 		return typeof(prop)==="function"?prop({originEvent:evt}):prop;
 	};
 	
-	let _cm = function(config) {
+	let _cm = function(config, ownerDocument) {
 
-		this._menu = document.createElement("div");
+		this._menu = ownerDocument.createElement("div");
 		this._menu.style.display = "none";
 		this._menu.style.position = "absolute";
 		this._menu.innerHTML="<table/>";
@@ -17,7 +17,7 @@ const ContextMenu = (function(){
 		this._menu.style.padding="2px";
 		this._config=config;
 
-		document.getElementsByTagName("body")[0].appendChild(this._menu);
+		ownerDocument.getElementsByTagName("body")[0].appendChild(this._menu);
 		
 		this.attach = function(target) {
 			target.addEventListener('contextmenu', this.show.bind(this));
@@ -32,7 +32,7 @@ const ContextMenu = (function(){
 				let _title = _evaluateDynamic(item.renderer, evt);
 				let _disabled = _evaluateDynamic(item.disabled, evt);
 				let _style = _evaluateDynamic(item.style, evt);
-				let tr = document.createElement("tr");
+				let tr = ownerDocument.createElement("tr");
 				tr.innerHTML = "<td>" + _title + "</td>";
 				Object.keys(_style).forEach(function(key) {
 					tr.firstChild.style[key]=_style[key];
@@ -44,8 +44,8 @@ const ContextMenu = (function(){
 				}
 				this._menu.firstChild.appendChild(tr);
 			}.bind(this));
-			this._menu.style.left=evt.clientX+"px";
-			this._menu.style.top=evt.clientY+"px";
+			this._menu.style.left=evt.pageX+"px";
+			this._menu.style.top=evt.pageY+"px";
 			this._menu.style.display="block";
 		};
 		

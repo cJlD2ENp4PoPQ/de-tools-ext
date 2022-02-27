@@ -2,8 +2,10 @@
  * Extends the sector page of Die-Ewigen /sector.php
  * @type {{onPageLoad: SekExtension.onPageLoad, addFleetpoints: SekExtension.addFleetpoints}}
  */
- 
+
 const SekExtension = {
+    
+  defaultColor: "#ffffff",
 
   kolliPoints : {0:10000,1:10500,2:11000,3:11500,4:12000,5:12500,6:13000,7:13500,8:14000,9:14500,10:15000,11:15500
     ,12:16000,13:16500,14:17000,15:17500,16:18000,17:18500,18:19000,19:19500,20:20000},
@@ -15,11 +17,12 @@ const SekExtension = {
         return '<b>' + td.textContent + '</b>';
       },
       disabled: true,
-      style: {
+      style: () => ({
         backgroundColor: 'black',
         borderBottom: 'solid',
-        borderColor: 'white'
-      }
+        borderColor: 'white',
+        color: SekExtension.defaultColor
+      })
     },
     {
       renderer: 'Anzeigen',
@@ -37,11 +40,12 @@ const SekExtension = {
       disabled: (params) => {
         return params.originEvent.target.closest('td').textContent === String.fromCharCode(160);
       },
-      style: {
+      style: () => ({
         backgroundColor: 'black',
         borderBottom: 'solid',
-        borderColor: 'white'
-      }
+        borderColor: 'white',
+        color: SekExtension.defaultColor
+      })
     },
     {
       renderer: 'Ändern',
@@ -70,11 +74,12 @@ const SekExtension = {
         api.close();
       },
       disabled: false,
-      style: {
+      style: () => ({
         backgroundColor: 'black',
         borderBottom: 'solid',
-        borderColor: 'white'
-      }
+        borderColor: 'white',
+        color: SekExtension.defaultColor
+      })
     },
     {
       renderer: 'Zurücksetzen',
@@ -96,11 +101,12 @@ const SekExtension = {
         originEvent.target.ownerDocument.location = originEvent.target.ownerDocument.location;
       },
       disabled: false,
-      style: {
+      style: () => ({
         backgroundColor: 'black',
         borderBottom: 'solid',
-        borderColor: 'white'
-      }
+        borderColor: 'white',
+        color: SekExtension.defaultColor
+      })
     },
     {
       renderer: 'Abbrechen',
@@ -108,14 +114,17 @@ const SekExtension = {
         api.close();
       },
       disabled: false,
-      style: {
-        backgroundColor: 'black'
-      }
+      style: () => ({
+        backgroundColor: 'black',
+        color: SekExtension.defaultColor
+      })
     }
   ],
 
   onPageLoad: function(content) {
-    this.allyContextMenu = new ContextMenu(this.allyContextMenuCfg);
+    let fontElement = content.getElementsByTagName("font")[0];
+    this.defaultColor = getComputedStyle(fontElement).color;
+    this.allyContextMenu = new ContextMenu(this.allyContextMenuCfg, fontElement.ownerDocument);
 
     let fpNodes = content.querySelectorAll('td.fp-node');
     if(fpNodes.length === 0) {
@@ -127,7 +136,6 @@ const SekExtension = {
         this.readAlliance(tableContent);
       }
     }
-	
   },
 
   /**
