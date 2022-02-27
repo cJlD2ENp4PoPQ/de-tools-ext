@@ -15,6 +15,7 @@ const ContextMenu = (function(){
 		this._menu.style.borderStyle = "solid";
 		this._menu.style.backgroundColor = "black";
 		this._menu.style.padding="2px";
+		this._menu.style.cursor="pointer";
 		this._config=config;
 
 		ownerDocument.getElementsByTagName("body")[0].appendChild(this._menu);
