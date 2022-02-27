@@ -15,5 +15,32 @@ const OverviewExtension = {
                 infoBoxes[0].parentElement.insertBefore(infoTable, infoBoxes[1]);
             });
     }
+    if (this.isNewRound(content)) {
+      this.cleanupStorage();
+    }
   },
-};
+  
+  getRPs: function(content) {
+    let tdElements = content.getElementsByTagName("td");
+    for (let i = 0; i<=tdElements.length;i++) {
+      if (tdElements[i].innerText==="Rundenpunkte" && tdElements[i+1]) {
+        return parseInt(tdElements[i+1].innerText);
+      }
+    }
+    return null;
+  },
+  
+  isNewRound: function(content) {
+    let previousRPs = Storage.getConfig("overview","previousRPs");
+    let currentRPs = this.getRPs(content);
+    if (currentRPs != null && currentRPs != previousRPs) {
+      Storage.storeConfig("overview","previousRPs",currentRPs)
+      return previousRPs != undefined;
+    }
+    return false;
+  },
+  
+  cleanupStorage: function() {
+    Storage.storeConfig("ally","tags",{});
+  }
+};  

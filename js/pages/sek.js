@@ -2,12 +2,13 @@
  * Extends the sector page of Die-Ewigen /sector.php
  * @type {{onPageLoad: SekExtension.onPageLoad, addFleetpoints: SekExtension.addFleetpoints}}
  */
-const SekExtension = {
 
+const SekExtension = {
+    
   kolliPoints : {0:10000,1:10500,2:11000,3:11500,4:12000,5:12500,6:13000,7:13500,8:14000,9:14500,10:15000,11:15500
     ,12:16000,13:16500,14:17000,15:17500,16:18000,17:18500,18:19000,19:19500,20:20000},
 
-  allyContextMenu : [
+  allyContextMenuCfg : [
     {
       renderer: (params) => {
         const td = params.originEvent.target.closest('td');
@@ -114,15 +115,11 @@ const SekExtension = {
   ],
 
   onPageLoad: function(content) {
-    let contextMenuCss = content.createElement('link');
-    contextMenuCss.classList = ['ext-css'];
-    contextMenuCss.href = chrome.runtime.getURL('css/vanilla-context.min.css');
-    contextMenuCss.type = 'text/css';
-    contextMenuCss.rel = 'stylesheet';
-    content.getElementsByTagName("head")[0].appendChild(contextMenuCss);
+    this.allyContextMenu = new ContextMenu(this.allyContextMenuCfg, content);
 
     let fpNodes = content.querySelectorAll('td.fp-node');
     if(fpNodes.length === 0) {
+
       let tableContent = content.querySelectorAll("form[name='secform'] ~ table > tbody > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody > tr");
       let isAlienSector = tableContent[0].childElementCount < 8;
       this.addFleetpoints(tableContent, isAlienSector);
@@ -190,6 +187,7 @@ const SekExtension = {
    * @param {Array.<HTMLTableRowElement>} tableContent the content which contains the player table.
    */
   readAlliance : function (tableContent) {
+    let config = Storage.getConfig('ally', 'tags');
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
       if(allianceCell) {
@@ -198,7 +196,6 @@ const SekExtension = {
         let name = row.childNodes[2].innerText;
         if (name && alliance) {
           name = name.replace('*', '').trim();
-          let config = Storage.getConfig('ally', 'tags');
           if (config) {
             Object.getOwnPropertyNames(config).forEach(ally => {
               let allyMembers = config[ally];
@@ -215,9 +212,9 @@ const SekExtension = {
               }
             });
           }
-          new VanillaContext(allianceCell, {nodes: SekExtension.allyContextMenu, autoClose: true});
           let player = {name: name, x:coords.sector, y:coords.sys, replaced: false};
           SekExtension.saveAlliance(player, alliance);
+		  SekExtension.allyContextMenu.attach(allianceCell);
         }
       }
     });
