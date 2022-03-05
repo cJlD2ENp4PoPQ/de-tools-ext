@@ -97,8 +97,8 @@ const deExtension = {
     if (contentDocument.querySelector('form[action="production.php"]')) {
       ProductionExtension.onPageLoad(contentDocument);
     }
-    if (contentDocument.querySelector('head title')
-      && contentDocument.querySelector('head title').innerText === 'Auktion') {
+    let title = contentDocument.querySelector('head title');
+    if (title && title.innerText === 'Auktion') {
       TradeExtension.onPageLoad(contentDocument);
     }
     if (contentDocument.querySelector('form[action="sysnews.php"]')) {
@@ -108,12 +108,10 @@ const deExtension = {
     if (allianceTitle ? allianceTitle.innerHTML.includes('Allianzinformationen') : false) {
       AllyExtension.onPageLoad(contentDocument);
     }
-    if (contentDocument.querySelector('head > title').innerHTML.includes('Übersicht')) {
+    if (title && title.innerHTML.includes('Übersicht')) {
       OverviewExtension.onPageLoad(contentDocument);
     }
-    if (contentDocument.querySelector('head title')
-      && (contentDocument.querySelector('head title').innerText === 'Vergessene Systeme'
-        || contentDocument.querySelector('head title').innerText === 'Systeminformationen')) {
+    if (title && (title.innerText === 'Vergessene Systeme' || title.innerText === 'Systeminformationen')) {
       VSysExtension.onPageLoad(contentDocument);
     }
   },
