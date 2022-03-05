@@ -63,7 +63,7 @@ const SekExtension = {
             let name = row.childNodes[2].innerText;
             name = name.replace('*', '').trim();
             let player = {name: name, x:coords.sector, y:coords.sys, replaced: true};
-            SekExtension.saveAlliance(player, event.target.value, true);
+            SekExtension.overrideAlliance(player, event.target.value);
             originEvent.target.ownerDocument.location = originEvent.target.ownerDocument.location;
           });
         allianceCell.insertBefore(allyEditInput, null);
@@ -124,7 +124,8 @@ const SekExtension = {
       let isAlienSector = tableContent[0].childElementCount < 8;
       this.addFleetpoints(tableContent, isAlienSector);
       if(!isAlienSector) {
-        this.readAlliance(tableContent);
+        let sectorAllies = this.readAlliance(tableContent);
+        this.saveSectorAlliances(sectorAllies);
       }
     }
   },
@@ -185,9 +186,11 @@ const SekExtension = {
   /**
    * Saves alliances from sector page.
    * @param {Array.<HTMLTableRowElement>} tableContent the content which contains the player table.
+   * @return {Map<String, Object>} player alliances
    */
   readAlliance : function (tableContent) {
     let config = Storage.getConfig('ally', 'tags');
+    let allianceMap = new Map();
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
       if(allianceCell) {
@@ -213,13 +216,22 @@ const SekExtension = {
             });
           }
           let player = {name: name, x:coords.sector, y:coords.sys, replaced: false};
-          SekExtension.saveAlliance(player, alliance);
 		  SekExtension.allyContextMenu.attach(allianceCell);
+          let playerList = allianceMap.get(alliance);
+          playerList = playerList ? playerList : [];
+          playerList.push(player);
+          allianceMap.set(alliance, playerList);
         }
       }
     });
+    return allianceMap;
   },
 
+  /**
+   * Get player coordinates from HTML table row.
+   * @param {HTMLTableRowElement} row the sector player row.
+   * @return {{sys, sector}} the coordinates of player.
+   */
   getCoordinates(row) {
     let militaryLinkElement = row.querySelector('a[href*="military.php"]');
     let sector;
@@ -237,52 +249,82 @@ const SekExtension = {
     return {sector:sector, sys:sys};
   },
 
-  saveAlliance(player, alliance, override) {
+  /**
+   * Save all alliances from sector.
+   * @param {Map<String, Object>} alliancePlayers alliances alliancePlayers
+   */
+  saveSectorAlliances(alliancePlayers) {
+    let allyTags = Storage.getConfig('ally','tags');
+    if(!allyTags) {
+      allyTags = {};
+    }
+    alliancePlayers.forEach((playerList, alliance) => {
+      if (alliance !== String.fromCharCode(160)) {
+        playerList.forEach(player => {
+          this.mergeWithLocalStorage(allyTags, alliance, player, false);
+        })
+      }
+    });
+    Storage.storeConfig('ally', 'tags', allyTags);
+  },
+
+  /**
+   * Overrides a alliance of a player.
+   * @param player the player
+   * @param alliance the alliance value
+   */
+  overrideAlliance(player, alliance) {
     let allyTags = Storage.getConfig('ally','tags');
     if(!allyTags) {
       allyTags = {};
     }
     if (alliance !== String.fromCharCode(160)) {
-      let members = allyTags[alliance];
-      if (!members) {
+      this.mergeWithLocalStorage(allyTags, alliance, player, true);
+    }
+    Storage.storeConfig('ally', 'tags', allyTags);
+  },
+
+  /**
+   * Merge a player with alliance in existing ally tags object.
+   * @param allyTags the merge result/source
+   * @param alliance the alliance of the player
+   * @param player the player
+   * @param override override existing alliance of player in allyTags
+   */
+  mergeWithLocalStorage(allyTags, alliance, player, override) {
+    let members = allyTags[alliance];
+    if (!members) {
+      Object.getOwnPropertyNames(allyTags).forEach(ally => {
+        let allyMembers = allyTags[ally];
+        let index = allyMembers.findIndex(member => member.name === player.name);
+        if (index >= 0) {
+          allyMembers.splice(index, 1);
+          allyTags[ally] = allyMembers;
+        }
+      });
+      members = [];
+      members.push(player);
+      allyTags[alliance] = members;
+    } else {
+      let matchIndex = members.findIndex(member => member.name === player.name);
+      if (matchIndex < 0) {
+        let existingAlly;
         Object.getOwnPropertyNames(allyTags).forEach(ally => {
           let allyMembers = allyTags[ally];
           let index = allyMembers.findIndex(member => member.name === player.name);
           if (index >= 0) {
-            allyMembers.splice(index, 1);
-            allyTags[ally] = allyMembers;
+            existingAlly = ally;
+            if(override || !allyMembers[index].replaced) {
+              allyMembers.splice(index, 1);
+              allyTags[ally] = allyMembers;
+            }
           }
         });
-        members = [];
-        members.push(player);
-        allyTags[alliance] = members;
-      } else {
-        let matchIndex = members.findIndex(member => member.name === player.name);
-        if (matchIndex < 0) {
-          let existingAlly;
-          Object.getOwnPropertyNames(allyTags).forEach(ally => {
-            let allyMembers = allyTags[ally];
-            let index = allyMembers.findIndex(member => member.name === player.name);
-            if (index >= 0) {
-              existingAlly = ally;
-              if(override || !allyMembers[index].replaced) {
-                allyMembers.splice(index, 1);
-                allyTags[ally] = allyMembers;
-              }
-            }
-          });
-          if(override || !existingAlly) {
-            members.push(player);
-            allyTags[alliance] = members;
-          }
-        } else {
-          let player = members[matchIndex];
-          if(override) {
-
-          }
+        if(override || !existingAlly) {
+          members.push(player);
+          allyTags[alliance] = members;
         }
       }
     }
-    Storage.storeConfig('ally', 'tags', allyTags);
   }
 };
