@@ -75,7 +75,6 @@ const Time = {
       '45': ten_steps, '46': ten_steps, '47': ten_steps, '48': ten_steps, '49': ten_steps,
       '50': ten_steps, '51': ten_steps, '52': ten_steps, '53': ten_steps, '54': ten_steps,
       '55': ten_steps, '56': ten_steps, '57': ten_steps, '58': ten_steps, '59': ten_steps,
-
     }
   },
 
@@ -127,12 +126,19 @@ const Time = {
       '20': twelve_steps, '21': twelve_steps, '22': twelve_steps, '23': twelve_steps
     },
     'bde': {
-      minutes: true,
-      '00': single_steps, '01': single_steps, '02': single_steps, '03': single_steps, '04': single_steps,
-      '05': single_steps, '06': single_steps, '07': single_steps, '08': single_steps, '09': single_steps,
-      '10': single_steps, '11': single_steps, '12': single_steps, '13': single_steps, '14': single_steps,
-      '15': single_steps, '16': single_steps, '17': single_steps, '18': single_steps, '19': single_steps,
-      '20': single_steps, '21': single_steps, '22': single_steps, '23': single_steps
+      minutes: false,
+      '00': one_step, '01': one_step, '02': one_step, '03': one_step, '04': one_step,
+      '05': one_step, '06': one_step, '07': one_step, '08': one_step, '09': one_step,
+      '10': one_step, '11': one_step, '12': one_step, '13': one_step, '14': one_step,
+      '15': one_step, '16': one_step, '17': one_step, '18': one_step, '19': one_step,
+      '20': one_step, '21': one_step, '22': one_step, '23': one_step, '24': one_step,
+      '25': one_step, '26': one_step, '27': one_step, '28': one_step, '29': one_step,
+      '30': one_step, '31': one_step, '32': one_step, '33': one_step, '34': one_step,
+      '35': one_step, '36': one_step, '37': one_step, '38': one_step, '39': one_step,
+      '40': one_step, '41': one_step, '42': one_step, '43': one_step, '44': one_step,
+      '45': one_step, '46': one_step, '47': one_step, '48': one_step, '49': one_step,
+      '50': one_step, '51': one_step, '52': one_step, '53': one_step, '54': one_step,
+      '55': one_step, '56': one_step, '57': one_step, '58': one_step, '59': one_step,
     }
   },
 
@@ -173,7 +179,7 @@ const Time = {
         let nextKt = Time.findNextTickInSeconds(serverKtTicks, m, s);
         let ktTimer = document.getElementById('tb_time3');
         ktTimer.innerHTML = 'T - ' + nextKt;
-        if (nextKt === 1) {
+        if (nextKt <= 10) {
           ktTimer.classList.add('highlight')
         } else {
           ktTimer.classList.remove('highlight')

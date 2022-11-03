@@ -1,13 +1,15 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.6.7",
+  "version": "0.6.8",
+
   "description": "Erweiterung für das Browsergame Die-Ewigen",
+
   "icons": {
     "48": "icons/border-48.png"
   },
-  "permissions": ["scripting"],
-  "host_permissions": [
+
+  "permissions": [
     "*://sde.bgam.es/*",
     "*://rde.bgam.es/*",
     "*://xde.bgam.es/*",
@@ -16,35 +18,20 @@
     "*://cde.bgam.es/*",
     "*://bde.bgam.es/*"
   ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "css/fields.css",
-        "icons/icons8-move-50.png",
-        "icons/tb_timedata.png",
-        "css/time.css",
-        "icons/flight.svg",
-        "css/trade.css",
-        "css/vanilla-context.min.css",
-        "content/info.html"
-      ],
-      "matches": ["*://*.bgam.es/*"]
-    }
-  ],
+
+  "web_accessible_resources": ["icons/icons8-move-50.png", "icons/tb_timedata.png", "css/fields.css", "css/trade.css","icons/flight.svg", "content/info.html"],
+
   "content_scripts": [
     {
-      "matches": [
-        "*://*.bgam.es/dm.php",
+      "matches": ["*://*.bgam.es/dm.php",
         "*://*.bgam.es/sector.php*",
         "*://*.bgam.es/production.php*",
         "*://*.bgam.es/auction.php*",
         "*://*.bgam.es/overview.php*",
         "*://*.bgam.es/sysnews.php*",
         "*://*.bgam.es/map_system.php*",
-        "*://*.bgam.es/map_mobile.php*"
-      ],
-      "js": [
-        "js/pages/de.js",
+        "*://*.bgam.es/map_mobile.php*"],
+      "js": ["js/pages/de.js",
         "js/utils/frame.js",
         "js/utils/fields.js",
         "js/utils/table.js",
@@ -57,15 +44,10 @@
         "js/pages/production.js",
         "js/pages/trade.js",
         "js/pages/news.js",
-        "js/pages/ally.js",
         "js/pages/overview.js",
-        "js/pages/vsys.js"
-      ],
-      "css": [
-        "css/fields.css",
-        "css/trade.css",
-        "css/time.css"
-      ],
+        "js/pages/ally.js",
+        "js/pages/vsys.js"],
+      "css":["css/fields.css", "css/trade.css", "css/time.css"],
       "run_at": "document_start",
       "all_frames": true
     }
