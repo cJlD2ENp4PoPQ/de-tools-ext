@@ -26,18 +26,21 @@ const Storage = {
    * Get configuration for given page and key from LocalStorage.
    * @param {String} page the page extension key.
    * @param {String} key the configuration key.
+   * @param {Object} defaultValue the configuration key.
    * @return {Object} the stored object or undefined.
    */
-  getConfig: function (page, key) {
+  getConfig: function (page, key, defaultValue) {
     let item = localStorage.getItem(page);
     if (item) {
       let obj = JSON.parse(atob(this.de(item)));
       if(!obj) {
         obj = JSON.parse(atob(item));
       }
-      return obj[key];
+      if(obj[key]) {
+        return obj[key];
+      }
     }
-    return undefined;
+    return defaultValue;
   },
 
   removeConfig: function (page, key) {

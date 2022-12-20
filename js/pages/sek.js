@@ -190,6 +190,7 @@ const SekExtension = {
    */
   readAlliance : function (tableContent) {
     let config = Storage.getConfig('ally', 'tags');
+    let allyInfos = Storage.getConfig('ally', 'info');
     let allianceMap = new Map();
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
@@ -215,12 +216,29 @@ const SekExtension = {
               }
             });
           }
-          let player = {name: name, x:coords.sector, y:coords.sys, replaced: false};
-		  SekExtension.allyContextMenu.attach(allianceCell);
+          let player = {name: name, x: coords.sector, y: coords.sys, replaced: false};
+          SekExtension.allyContextMenu.attach(allianceCell);
           let playerList = allianceMap.get(alliance);
           playerList = playerList ? playerList : [];
           playerList.push(player);
           allianceMap.set(alliance, playerList);
+          if (allyInfos) {
+            let allyInfo = allyInfos[alliance];
+            if (allyInfo) {
+              let span = allianceCell.querySelector('span');
+              switch (allyInfo.relation) {
+                case 'enemy':
+                  span.classList = ['tc2'];
+                  break;
+                case 'friend':
+                  span.classList = ['tc3'];
+                  break;
+                case 'own':
+                  span.classList = ['tc1'];
+                  break;
+              }
+            }
+          }
         }
       }
     });

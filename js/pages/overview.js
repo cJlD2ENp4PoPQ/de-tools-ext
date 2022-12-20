@@ -42,5 +42,7 @@ const OverviewExtension = {
   
   cleanupStorage: function() {
     Storage.storeConfig("ally","tags",{});
+    Storage.storeConfig("ally","info",{});
+    Storage.storeConfig("Secret","secrets",{});
   }
 };  
