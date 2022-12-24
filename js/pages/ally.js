@@ -19,6 +19,7 @@ const AllyExtension = {
                 }
             })
             this.addAllianceStatus(allyInfosRows, allyInfo)
+            this.addallianceMembers(allyInfosRows, allyInfo)
         }
     },
 
@@ -40,7 +41,6 @@ const AllyExtension = {
         let statusLabel = document.createElement('td');
         let statusValue = document.createElement('td');
         statusLabel.setAttribute('class', 'cl');
-        console.log('test');
         statusLabel.setAttribute('height', '21');
         statusLabel.innerText = 'Beziehungsstatus';
         statusValue.setAttribute('class', 'cl');
@@ -59,5 +59,50 @@ const AllyExtension = {
         let config = Storage.getConfig('ally','info');
         config[allyTag].relation = selectedOption.id;
         Storage.storeConfig('ally', 'info', config);
+    },
+
+    /**
+     * Add known alliance members.
+     * @param allyInfosRows
+     * @param allyInfo
+     */
+    addallianceMembers: function (allyInfosRows, allyInfo) {
+        let allyTags = Storage.getConfig('ally','tags', {});
+        let headerRow = document.createElement('tr');
+        let headerCell = document.createElement('td');
+        headerCell.setAttribute('height',21);
+        headerCell.setAttribute('colspan',2);
+        headerCell.classList = ['cellu'];
+        let headerText = document.createElement('h3');
+        headerText.innerText = 'Bekannte Allianzmitglieder:';
+        headerCell.insertBefore(headerText, null);
+        headerRow.insertBefore(headerCell, null);
+        let lastRow = allyInfosRows[allyInfosRows.length -1];
+        let parent = lastRow.parentElement;
+        parent.insertBefore(headerRow, lastRow.nextSibling);
+        let allyTagMembers = allyTags[allyInfo.tag];
+        if(allyTagMembers) {
+            allyTagMembers.sort((a,b) => {
+                //reversed sorted
+                let x = b.x - a.x;
+                if(x === 0) {
+                    return b.y - a.y;
+                }
+                return x;
+            }).forEach((entry, i) => {
+                let memberRow = document.createElement('tr');
+                let memberName = document.createElement('td');
+                let memberCoords = document.createElement('td');
+                memberName.setAttribute('class', 'cl');
+                memberName.setAttribute('height', '21');
+                memberName.innerText = entry.name;
+                memberCoords.setAttribute('class', 'cl');
+                memberCoords.setAttribute('height', '21');
+                memberCoords.innerText = entry.x + ':' + entry.y;
+                memberRow.insertBefore(memberCoords, null)
+                memberRow.insertBefore(memberName, memberCoords)
+                parent.insertBefore(memberRow, lastRow.nextSibling.nextSibling);
+            });
+        }
     }
 }

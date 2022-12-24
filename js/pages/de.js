@@ -132,10 +132,17 @@ const deExtension = {
       NewsExtension.onPageLoad(document);
     } else if (url.includes('map_mobile.php')) {
       VSysExtension.onPageLoad(document);
-    }  else if (url.includes('map_system.php')) {
+    } else if (url.includes('map_system.php')) {
       VSysExtension.onPageLoad(document);
-    }  else if (url.includes('overview.php')) {
+    } else if (url.includes('overview.php')) {
       OverviewExtension.onPageLoad(document);
+    } else if (url.includes('secret.php')) {
+      SecretExtension.onPageLoad(document, false, true);
+    } else if (url.includes('ally_detail.php')) {
+      let allianceTitle = document.querySelector('div.cellu');
+      if(allianceTitle ? allianceTitle.innerHTML.includes('Allianzinformationen') : false) {
+        AllyExtension.onPageLoad(document);
+      }
     }
   },
 

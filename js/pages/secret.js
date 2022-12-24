@@ -7,8 +7,10 @@ const SecretExtension = {
   storageKey: 'Secret',
   raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'},
 
-  onPageLoad: function(content, deksOpen) {
-    this.addDeksIntegration(content, deksOpen);
+  onPageLoad: function(content, deksOpen, mobile) {
+    if(!mobile) {
+      this.addDeksIntegration(content, deksOpen);
+    }
     let tableHeader = content.querySelector('body > div > table > tbody > tr > td');
     if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
       this.storeProbeResult(tableHeader.parentElement.parentElement);
@@ -146,6 +148,7 @@ const SecretExtension = {
           if(player) {
            let probes = player.probes;
            if(probes) {
+             this.displayDiffs(rows, probes, result)
              probes.push(result);
            } else {
              player.probes = [result];
@@ -165,5 +168,34 @@ const SecretExtension = {
         Storage.storeConfig(this.storageKey, 'secrets', config);
       }
     }
+  },
+
+  displayDiffs (rows, probes, currentProbe) {
+    if(probes.length > 0) {
+      let lastProbe = probes[probes.length -1];
+      let formatter = new Intl.NumberFormat(undefined, {
+        signDisplay: 'exceptZero'
+      });
+      rows[0].querySelector('td[colspan="2"][class="tc"]').setAttribute('width','60%')
+      rows[0].parentElement.parentElement.setAttribute('width','600px');
+      rows[0].insertBefore(this.createProbeTd('Seit: ' + new Date(lastProbe.c).toLocaleString()), null);
+      rows[1].insertBefore(this.createProbeTd(formatter.format(currentProbe.p - lastProbe.p)), null);
+      rows[2].insertBefore(this.createProbeTd(formatter.format(currentProbe.s - lastProbe.s)), null);
+      rows[3].insertBefore(this.createProbeTd(formatter.format(currentProbe.def - lastProbe.def)), null);
+      rows[4].insertBefore(this.createProbeTd(formatter.format(currentProbe.b - lastProbe.b)), null);
+      rows[5].insertBefore(this.createProbeTd(formatter.format(currentProbe.col - lastProbe.col)), null);
+      rows[8].insertBefore(this.createProbeTd(formatter.format(currentProbe.m - lastProbe.m)), null);
+      rows[9].insertBefore(this.createProbeTd(formatter.format(currentProbe.d - lastProbe.d)), null);
+      rows[10].insertBefore(this.createProbeTd(formatter.format(currentProbe.i - lastProbe.i)), null);
+      rows[11].insertBefore(this.createProbeTd(formatter.format(currentProbe.e - lastProbe.e)), null);
+      rows[12].insertBefore(this.createProbeTd(formatter.format(currentProbe.t - lastProbe.t)), null);
+    }
+  },
+
+  createProbeTd (text) {
+    let cell = document.createElement('td');
+    cell.classList = ['cc'];
+    cell.innerText = text;
+    return cell;
   }
 };

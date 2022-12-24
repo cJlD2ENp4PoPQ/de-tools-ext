@@ -9,16 +9,16 @@ const Storage = {
   storeConfig: function (page, key, value) {
     let entry = localStorage.getItem(page);
     if (entry) {
-      let obj = JSON.parse(atob(this.de(entry)));
+      let obj = JSON.parse(decodeURIComponent(atob(this.de(entry))));
       if(!obj) {
-        obj = JSON.parse(atob(entry));
+        obj = JSON.parse(decodeURIComponent(atob(entry)));
       }
       obj[key] = value;
-      localStorage.setItem(page, this.en(btoa(JSON.stringify(obj))))
+      localStorage.setItem(page, this.en(btoa(encodeURIComponent(JSON.stringify(obj)))))
     } else {
       let obj = {};
       obj[key] = value;
-      localStorage.setItem(page, this.en(btoa(JSON.stringify(obj))))
+      localStorage.setItem(page, this.en(btoa(encodeURIComponent(JSON.stringify(obj)))))
     }
   },
 
@@ -32,9 +32,9 @@ const Storage = {
   getConfig: function (page, key, defaultValue) {
     let item = localStorage.getItem(page);
     if (item) {
-      let obj = JSON.parse(atob(this.de(item)));
+      let obj = JSON.parse(decodeURIComponent(atob(this.de(item))));
       if(!obj) {
-        obj = JSON.parse(atob(item));
+        obj = JSON.parse(decodeURIComponent(atob(item)));
       }
       if(obj[key]) {
         return obj[key];
@@ -46,12 +46,12 @@ const Storage = {
   removeConfig: function (page, key) {
     let item = localStorage.getItem(page);
     if (item) {
-      let obj = JSON.parse(atob(this.de(item)));
+      let obj = JSON.parse(decodeURIComponent(atob(this.de(item))));
       if(!obj) {
-        obj = JSON.parse(atob(item));
+        obj = JSON.parse(decodeURIComponent(atob(item)));
       }
       delete obj[key];
-      localStorage.setItem(page, this.en(btoa(JSON.stringify(obj))));
+      localStorage.setItem(page, this.en(btoa(encodeURIComponent(JSON.stringify(obj)))));
     }
     return undefined;
   },
