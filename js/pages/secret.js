@@ -13,7 +13,52 @@ const SecretExtension = {
     }
     let tableHeader = content.querySelector('body > div > table > tbody > tr > td');
     if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
-      this.storeProbeResult(tableHeader.parentElement.parentElement);
+      let storedProbes = this.storeProbeResult(tableHeader.parentElement.parentElement);
+      if(storedProbes.length > 1) {
+        let lastProbe = storedProbes[storedProbes.length - 1];
+        let previousProbe = storedProbes[storedProbes.length - 2];
+        let ticks = Time.getWTAmountBetween(window.server, new Date(previousProbe.c), new Date(lastProbe.c));
+        if(ticks < 10 && ticks > 0) {
+          let mDiff = lastProbe.m - previousProbe.m;
+          let dDiff = lastProbe.d - previousProbe.d;
+          let iDiff = lastProbe.i - previousProbe.i;
+          let eDiff = lastProbe.e - previousProbe.e;
+          if (mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
+            let pointsPerTick = (mDiff / ticks + 2 * dDiff / ticks + 3 * iDiff /  ticks+ 4 * eDiff / ticks) / 10
+            let amountOfTicks = Time.getAmountOfTicks(window.server);
+            amountOfTicks = amountOfTicks ? amountOfTicks / 2 : 15000 / 2;
+            let stepSize;
+            if (amountOfTicks < 10000) {
+              stepSize = 1000;
+            } else if (amountOfTicks < 20000) {
+              stepSize = 2000;
+            } else {
+              stepSize = 5000;
+            }
+            let lastRow = content.querySelector('tr[class="cell"][align="center"]').previousSibling;
+            let parent = lastRow.parentElement;
+            let headRow = document.createElement('tr');
+            let headline = document.createElement('td');
+            headline.setAttribute('colspan',2);
+            headline.setAttribute('width','100%');
+            headline.classList = ['tc']
+            headline.innerHTML = 'Punktehochrechnung (' + ticks + ' WT)'
+            headRow.insertBefore(headline, null);
+            parent.insertBefore(headRow, lastRow.nextSibling);
+            let currentPoints = lastProbe.p + (lastProbe.m + 2 * lastProbe.d + 3 * lastProbe.i + 4 * lastProbe.e) / 10
+            let formatter = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
+            for (let i = amountOfTicks; i >= 0; i = i - stepSize) {
+              let tick = Math.ceil(i / 1000) * 1000;
+              let row = document.createElement('tr');
+              let label = this.createProbeTd('nach ' + tick + ' Ticks');
+              let value = this.createProbeTd(formatter.format(tick * Math.round(pointsPerTick) + currentPoints))
+              row.insertBefore(label, null);
+              row.insertBefore(value, null);
+              parent.insertBefore(row, lastRow.nextSibling.nextSibling);
+            }
+          }
+        }
+      }
     }
   },
 
@@ -119,6 +164,7 @@ const SecretExtension = {
   /**
    * Stores the probe result from given table content.
    * @param {Element} contentTable the table which contains the probe result.
+   * @return {Object} stored probe result from target.
    */
   storeProbeResult (contentTable) {
     let rows = contentTable.querySelectorAll('tr');
@@ -164,8 +210,8 @@ const SecretExtension = {
         if(config[name].probes.length > 10) {
           config[name].probes.shift();
         }
-        console.log(config[name].probes.length);
         Storage.storeConfig(this.storageKey, 'secrets', config);
+        return config[name].probes;
       }
     }
   },
@@ -184,10 +230,21 @@ const SecretExtension = {
       rows[3].insertBefore(this.createProbeTd(formatter.format(currentProbe.def - lastProbe.def)), null);
       rows[4].insertBefore(this.createProbeTd(formatter.format(currentProbe.b - lastProbe.b)), null);
       rows[5].insertBefore(this.createProbeTd(formatter.format(currentProbe.col - lastProbe.col)), null);
-      rows[8].insertBefore(this.createProbeTd(formatter.format(currentProbe.m - lastProbe.m)), null);
-      rows[9].insertBefore(this.createProbeTd(formatter.format(currentProbe.d - lastProbe.d)), null);
-      rows[10].insertBefore(this.createProbeTd(formatter.format(currentProbe.i - lastProbe.i)), null);
-      rows[11].insertBefore(this.createProbeTd(formatter.format(currentProbe.e - lastProbe.e)), null);
+      let mDiff = currentProbe.m - lastProbe.m;
+      let dDiff = currentProbe.d - lastProbe.d;
+      let iDiff = currentProbe.i - lastProbe.i;
+      let eDiff = currentProbe.e - lastProbe.e;
+      if(mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
+        let wtAmountBetween = Time.getWTAmountBetween(window.server, new Date(lastProbe.c), new Date(currentProbe.c));
+        if(wtAmountBetween < 10 && wtAmountBetween > 0) {
+          let sum = mDiff / wtAmountBetween + dDiff * 2 / wtAmountBetween + iDiff * 3 / wtAmountBetween + eDiff * 4 / wtAmountBetween;
+          rows[7].insertBefore(this.createProbeTd('Out: ' + formatter.format(sum)), null);
+        }
+      }
+      rows[8].insertBefore(this.createProbeTd(formatter.format(mDiff)), null);
+      rows[9].insertBefore(this.createProbeTd(formatter.format(dDiff)), null);
+      rows[10].insertBefore(this.createProbeTd(formatter.format(iDiff)), null);
+      rows[11].insertBefore(this.createProbeTd(formatter.format(eDiff)), null);
       rows[12].insertBefore(this.createProbeTd(formatter.format(currentProbe.t - lastProbe.t)), null);
     }
   },

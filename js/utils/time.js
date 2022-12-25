@@ -20,7 +20,9 @@ const Time = {
       '05': ten_steps, '06': ten_steps, '07': ten_steps, '08': ten_steps, '09': ten_steps,
       '10': ten_steps, '11': ten_steps, '12': ten_steps, '13': ten_steps, '14': ten_steps,
       '15': ten_steps, '16': ten_steps, '17': ten_steps, '18': ten_steps, '19': ten_steps,
-      '20': ten_steps, '21': ten_steps, '22': ten_steps, '23': ten_steps
+      '20': ten_steps, '21': ten_steps, '22': ten_steps, '23': ten_steps,
+      rate: 10,
+      amount: 16666
     },
     'sde': {
       minutes: true,
@@ -28,14 +30,18 @@ const Time = {
       '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
-      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps
+      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
+      rate: 3,
+      amount: 33333
     },
     'rde': {
       minutes: true,
       '00': single_steps, '01': single_steps, '02': single_steps, '03': single_steps, '04': single_steps, '05': single_steps, '06': single_steps,
       '07': single_steps, '08': single_steps, '09': single_steps, '10': single_steps, '11': single_steps, '12': single_steps, '13': single_steps,
       '14': single_steps, '15': single_steps, '16': single_steps, '17': single_steps, '18': single_steps, '19': single_steps, '20': single_steps,
-      '21': single_steps, '22': single_steps, '23': single_steps
+      '21': single_steps, '22': single_steps, '23': single_steps,
+      rate: 1,
+      amount: 66666
     },
     'cde': {
       minutes: true,
@@ -43,7 +49,9 @@ const Time = {
       '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
-      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps
+      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
+      rate: 3,
+      amount: 50000
     },
     'dde': {
       minutes: true,
@@ -51,7 +59,9 @@ const Time = {
       '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
-      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps
+      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
+      rate: 3,
+      amount: undefined
     },
     'ede': {
       minutes: true,
@@ -59,22 +69,26 @@ const Time = {
       '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
-      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps
+      '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
+      rate: 3,
+      amount: undefined
     },
     'bde': {
       minutes: false,
-      '00': one_step, '01': one_step, '02': one_step, '03': one_step, '04': one_step,
-      '05': one_step, '06': one_step, '07': one_step, '08': one_step, '09': one_step,
-      '10': one_step, '11': one_step, '12': one_step, '13': one_step, '14': one_step,
-      '15': one_step, '16': one_step, '17': one_step, '18': one_step, '19': one_step,
-      '20': one_step, '21': one_step, '22': one_step, '23': one_step, '24': one_step,
-      '25': one_step, '26': one_step, '27': one_step, '28': one_step, '29': one_step,
-      '30': one_step, '31': one_step, '32': one_step, '33': one_step, '34': one_step,
-      '35': one_step, '36': one_step, '37': one_step, '38': one_step, '39': one_step,
-      '40': one_step, '41': one_step, '42': one_step, '43': one_step, '44': one_step,
-      '45': one_step, '46': one_step, '47': one_step, '48': one_step, '49': one_step,
-      '50': one_step, '51': one_step, '52': one_step, '53': one_step, '54': one_step,
-      '55': one_step, '56': one_step, '57': one_step, '58': one_step, '59': one_step,
+      '00': ten_steps, '01': ten_steps, '02': ten_steps, '03': ten_steps, '04': ten_steps,
+      '05': ten_steps, '06': ten_steps, '07': ten_steps, '08': ten_steps, '09': ten_steps,
+      '10': ten_steps, '11': ten_steps, '12': ten_steps, '13': ten_steps, '14': ten_steps,
+      '15': ten_steps, '16': ten_steps, '17': ten_steps, '18': ten_steps, '19': ten_steps,
+      '20': ten_steps, '21': ten_steps, '22': ten_steps, '23': ten_steps, '24': ten_steps,
+      '25': ten_steps, '26': ten_steps, '27': ten_steps, '28': ten_steps, '29': ten_steps,
+      '30': ten_steps, '31': ten_steps, '32': ten_steps, '33': ten_steps, '34': ten_steps,
+      '35': ten_steps, '36': ten_steps, '37': ten_steps, '38': ten_steps, '39': ten_steps,
+      '40': ten_steps, '41': ten_steps, '42': ten_steps, '43': ten_steps, '44': ten_steps,
+      '45': ten_steps, '46': ten_steps, '47': ten_steps, '48': ten_steps, '49': ten_steps,
+      '50': ten_steps, '51': ten_steps, '52': ten_steps, '53': ten_steps, '54': ten_steps,
+      '55': ten_steps, '56': ten_steps, '57': ten_steps, '58': ten_steps, '59': ten_steps,
+      rate: 10,
+      amount: undefined
     }
   },
 
@@ -343,5 +357,45 @@ const Time = {
       return currentMinuteTicks[nextTickIndex] - parseInt(s);
     }
     return nextTick;
+  },
+
+  /**
+   * Get amount of WT between two dates.
+   * @param server the server identifier
+   * @param {Date} from from date
+   * @param {Date} to to date
+   * @return {number} amount of ticks between both values (max. 100 then -2) or -1 if to > from
+   */
+  getWTAmountBetween(server, from, to) {
+    if(to < from) {
+      return -1;
+    }
+    let ticks = 0;
+    if(this.wt_ticks[server].minutes) {
+      //remove seconds from timestamp
+      from = new Date(from.getTime() - from.getSeconds() * 1000)
+      to = new Date(to.getTime() - to.getSeconds() * 1000)
+    }
+    let tempDate = from;
+    while (tempDate <= to) {
+      let number = this.wt_ticks[server].minutes ? this.findNextTick(this.wt_ticks[server], from.getHours(), from.getMinutes())
+          : this.findNextTickInSeconds(this.wt_ticks[server], from.getHours(), from.getMinutes(), from.getSeconds())
+      tempDate = this.wt_ticks[server].minutes ? new Date(tempDate.getTime() + number * 60000) : new Date(tempDate.getTime() + number * 1000);
+      ticks++;
+      //can be very expensive
+      if(ticks > 100) {
+        return -2;
+      }
+    }
+    return ticks - 1;
+  },
+
+  /**
+   * Get the amount of ticks.
+   * @param {string} server the server ident
+   * @return {number | undefined} the tick rate of the server or undefined if infinite round.
+   */
+  getAmountOfTicks(server) {
+    return this.wt_ticks[server].amount;
   }
 };
