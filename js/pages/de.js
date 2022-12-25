@@ -29,6 +29,7 @@ const deExtension = {
       this.addMenuEntries(document);
     } else if (!!window.parent && !window.parent.document.URL.includes('dm.php')) {
       this.saveRace(true);
+      this.saveServer();
       this.onMobilePageLoad(document)
     }
   },
