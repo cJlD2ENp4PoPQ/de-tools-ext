@@ -15,10 +15,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 20
-      - name: Build
-        run: |
-          npm ci
-          npm run build
+      - run: mkdir dist
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r dist/de-tools.zip _locales content css icons js manifest.json
       - name: Upload & release
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
