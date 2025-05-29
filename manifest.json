@@ -1,20 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Die-Ewigen Extension",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Erweiterung für das Browsergame Die-Ewigen",
   "icons": {
     "48": "icons/border-48.png"
   },
+  "default_locale": "de",
   "permissions": ["scripting"],
   "host_permissions": [
     "*://sde.bgam.es/*",
     "*://rde.bgam.es/*",
-    "*://xde.bgam.es/*",
-    "*://dde.bgam.es/*",
-    "*://ede.bgam.es/*",
-    "*://cde.bgam.es/*",
-    "*://bde.bgam.es/*"
+    "*://xde.bgam.es/*"
   ],
   "web_accessible_resources": [
     {
@@ -25,7 +22,6 @@
         "css/time.css",
         "icons/flight.svg",
         "css/trade.css",
-        "css/vanilla-context.min.css",
         "content/info.html"
       ],
       "matches": ["*://*.bgam.es/*"]
