@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Die-Ewigen Extension",
-  "version": "0.7.1",
+  "version": "0.7.2",
 
   "description": "Erweiterung für das Browsergame Die-Ewigen",
 
@@ -16,14 +16,18 @@
     "*://dde.bgam.es/*",
     "*://ede.bgam.es/*",
     "*://cde.bgam.es/*",
-    "*://bde.bgam.es/*"
+    "*://bde.bgam.es/*",
+    "*://xde.die-ewigen.com/*",
+    "*://sde.die-ewigen.com/*",
+    "*://rde.die-ewigen.com/*"
   ],
 
   "web_accessible_resources": ["icons/icons8-move-50.png", "icons/tb_timedata.png", "css/fields.css", "css/trade.css","icons/flight.svg", "content/info.html"],
 
   "content_scripts": [
     {
-      "matches": ["*://*.bgam.es/dm.php",
+      "matches": [
+        "*://*.bgam.es/dm.php",
         "*://*.bgam.es/sector.php*",
         "*://*.bgam.es/production.php*",
         "*://*.bgam.es/auction.php*",
@@ -32,7 +36,18 @@
         "*://*.bgam.es/map_system.php*",
         "*://*.bgam.es/ally_detail.php*",
         "*://*.bgam.es/secret.php*",
-        "*://*.bgam.es/map_mobile.php*"],
+        "*://*.bgam.es/map_mobile.php*",
+        "*://*.die-ewigen.com/dm.php",
+        "*://*.die-ewigen.com/sector.php*",
+        "*://*.die-ewigen.com/production.php*",
+        "*://*.die-ewigen.com/auction.php*",
+        "*://*.die-ewigen.com/overview.php*",
+        "*://*.die-ewigen.com/sysnews.php*",
+        "*://*.die-ewigen.com/map_system.php*",
+        "*://*.die-ewigen.com/ally_detail.php*",
+        "*://*.die-ewigen.com/secret.php*",
+        "*://*.die-ewigen.com/map_mobile.php*"
+      ],
       "js": ["js/pages/de.js",
         "js/utils/frame.js",
         "js/utils/fields.js",
