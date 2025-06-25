@@ -6,6 +6,11 @@
   "icons": {
     "48": "icons/border-48.png"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{ba53e3af-87aa-4d99-80e5-dec896775c0c}"
+    }
+  },
   "default_locale": "de",
   "permissions": ["scripting"],
   "host_permissions": [
