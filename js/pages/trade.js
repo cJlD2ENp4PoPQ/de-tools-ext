@@ -11,7 +11,7 @@ const TradeExtension = {
     {id: 'art-arta', value: 'Artascendus'},
     {id: 'art-auctacon', value: 'Auctacon'},
     {id: 'art-bloroka', value: 'Bloroka'},
-    {id: 'art-credit', value: 'Creditrüssel'},
+    {id: 'art-tronicator', value: 'Troniccelerator'},
     {id: 'art-empala', value: 'Empala'},
     {id: 'art-empd', value: 'Empdestro'},
     {id: 'art-feuroka', value: 'Feuroka'},
@@ -66,7 +66,7 @@ const TradeExtension = {
   ],
   deRes: ['Multiplex', 'Dyharra', 'Iradium', 'Eternium', 'Credits'],
   vsRes: ['Eisen', 'Titan', 'Mexit', 'Dulexit', 'Tekranit', 'Ylesenium', 'Serodium', 'Rowalganium', 'Sextagit', 'Octagium'],
-  artArtis: ['Agsora', 'Geabwus', 'Auctagon', 'Artascendus', 'Sekkollus','Pesara','Geangrus','Creditrüssel','Pekasch','Vakara','Empdestro','Recarion','Empala','Turla','Pekek','Tronicar','Feuroka','Bloroka','Recadesto','Turak','Waringa','Kollimania'],
+  artArtis: ['Agsora', 'Geabwus', 'Auctacon', 'Artascendus', 'Sekkollus','Pesara','Geangrus','Troniccelerator','Pekasch','Vakara','Empdestro','Recarion','Empala','Turla','Pekek','Tronicar','Feuroka','Bloroka','Recadesto','Turak','Waringa','Kollimania'],
   artOthers: ['2 Titanen-Energiekern', '500 Palenium', '25 Tronic'],
 
   storageKey: 'Trade',
@@ -137,19 +137,27 @@ const TradeExtension = {
     target.insertBefore(fieldsetRess, before);
     if (deFilter) {
       let option = selectDe.querySelector('#' + deFilter);
-      this.filterDEEntries(deFilter, option.innerText, content);
+      if (option) {
+        this.filterDEEntries(deFilter, option.innerText, content);
+      }
     }
     if (vsFilter) {
       let option = selectVs.querySelector('#' + vsFilter);
-      this.filterVSEntries(vsFilter, option.innerText, content);
+      if (option) {
+        this.filterVSEntries(vsFilter, option.innerText, content);
+      }
     }
     if (articleArtiFilter) {
       let option = selectArti.querySelector('#' + articleArtiFilter);
-      this.filterArticleArtiEntries(articleArtiFilter, option.innerText, content)
+      if (option) {
+        this.filterArticleArtiEntries(articleArtiFilter, option.innerText, content)
+      }
     }
     if (articleOtherFilter) {
       let option = selectOther.querySelector('#' + articleOtherFilter);
-      this.filterArticleArtiEntries(articleOtherFilter, option.innerText, content)
+      if (option) {
+        this.filterArticleArtiEntries(articleOtherFilter, option.innerText, content)
+      }
     }
   },
 

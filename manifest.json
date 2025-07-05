@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Die-Ewigen Extension",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Erweiterung für das Browsergame Die-Ewigen",
   "icons": {
     "48": "icons/border-48.png"
@@ -14,9 +14,6 @@
   "default_locale": "de",
   "permissions": ["scripting"],
   "host_permissions": [
-    "*://sde.bgam.es/*",
-    "*://rde.bgam.es/*",
-    "*://xde.bgam.es/*",
     "*://xde.die-ewigen.com/*",
     "*://sde.die-ewigen.com/*",
     "*://rde.die-ewigen.com/*"
@@ -38,16 +35,6 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.bgam.es/dm.php",
-        "*://*.bgam.es/sector.php*",
-        "*://*.bgam.es/production.php*",
-        "*://*.bgam.es/auction.php*",
-        "*://*.bgam.es/overview.php*",
-        "*://*.bgam.es/sysnews.php*",
-        "*://*.bgam.es/map_system.php*",
-        "*://*.bgam.es/ally_detail.php*",
-        "*://*.bgam.es/secret.php*",
-        "*://*.bgam.es/map_mobile.php*",
         "*://*.die-ewigen.com/dm.php",
         "*://*.die-ewigen.com/sector.php*",
         "*://*.die-ewigen.com/production.php*",
