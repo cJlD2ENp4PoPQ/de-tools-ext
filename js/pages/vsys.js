@@ -11,7 +11,7 @@ const VSysExtension = {
    * @param {Document} content
    */
   onPageLoad: function (content) {
-    let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px; display: table-row;"]');
+    let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
     if(sysElements && sysElements.length > 0) {
       this.addFilterEventListener(content);
       this.storeShownSystems(sysElements);
