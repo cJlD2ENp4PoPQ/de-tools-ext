@@ -36,7 +36,7 @@ const Storage = {
       if(!obj) {
         obj = JSON.parse(decodeURIComponent(atob(item)));
       }
-      if(obj[key]) {
+      if(obj[key] !== undefined) {
         return obj[key];
       }
     }
