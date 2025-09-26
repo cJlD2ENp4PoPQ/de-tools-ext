@@ -5,7 +5,7 @@
 const SecretExtension = {
 
   storageKey: 'Secret',
-  raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z'},
+  raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z', 'Xinth-Xc':'D'},
 
   onPageLoad: function(content, deksOpen, mobile) {
     if(!mobile) {

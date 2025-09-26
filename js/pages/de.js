@@ -213,15 +213,15 @@ const deExtension = {
         }
       }
     } else {
-      race = document.querySelector("img[src='g/derassenlogo1.png']") ? 'E' : undefined;
+      race = document.querySelector("img[src='gp/g/derassenlogo1.png']") ? 'E' : undefined;
       if(!race) {
-        race = document.querySelector("img[src='g/derassenlogo2.png']") ? 'I' : undefined;
+        race = document.querySelector("img[src='gp/g/derassenlogo2.png']") ? 'I' : undefined;
       }
       if(!race) {
-        race = document.querySelector("img[src='g/derassenlogo3.png']") ? 'K' : undefined;
+        race = document.querySelector("img[src='gp/g/derassenlogo3.png']") ? 'K' : undefined;
       }
       if(!race) {
-        race = document.querySelector("img[src='g/derassenlogo4.png']") ? 'Z' : undefined;
+        race = document.querySelector("img[src='gp/g/derassenlogo4.png']") ? 'Z' : undefined;
       }
     }
     window.race = race;

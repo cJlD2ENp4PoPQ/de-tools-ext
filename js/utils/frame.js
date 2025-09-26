@@ -49,7 +49,7 @@ const frame = {
       "border-bottom: 1px solid rgba(22,22,22, 0.8); border-right: 1px solid #222222; cursor: pointer; z-index: 101; background-color: #000";
     container.addEventListener("click", this.closeIframe, true)
     let closeImg = document.createElement("img");
-    closeImg.src = "g/close_icon.png";
+    closeImg.src = "gp/g/close_icon.png";
     closeImg.style = "height: 26px; width: auto; margin-left: 4px; margin-top: 4px;"
     container.insertBefore(closeImg, null);
     return container;
