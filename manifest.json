@@ -44,7 +44,8 @@
         "*://*.die-ewigen.com/map_system.php*",
         "*://*.die-ewigen.com/ally_detail.php*",
         "*://*.die-ewigen.com/secret.php*",
-        "*://*.die-ewigen.com/map_mobile.php*"
+        "*://*.die-ewigen.com/map_mobile.php*",
+        "*://*.die-ewigen.com/map.php*"
       ],
       "js": [
         "js/pages/de.js",
@@ -62,7 +63,8 @@
         "js/pages/news.js",
         "js/pages/ally.js",
         "js/pages/overview.js",
-        "js/pages/vsys.js"
+        "js/pages/vsys.js",
+        "js/pages/map.js"
       ],
       "css": [
         "css/fields.css",

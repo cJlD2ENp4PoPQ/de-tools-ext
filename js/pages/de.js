@@ -15,6 +15,9 @@ const deExtension = {
     timecss.type = 'text/css';
     timecss.rel = 'stylesheet';
     document.getElementsByTagName("head")[0].appendChild(timecss);
+    if (document.title === 'Karte') {
+      MapExtension.onPageLoad(document);
+    }
     if (appcontent) {
       this.saveRace(false);
       this.saveServer();
