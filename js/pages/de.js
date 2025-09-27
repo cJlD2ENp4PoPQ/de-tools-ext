@@ -154,7 +154,7 @@ const deExtension = {
    * adds a battle mode switch to the tick area.
    */
   addTimerSwitch: function () {
-    let element = document.querySelector('img[src="g/tb_timedata.png"]');
+    let element = document.querySelector('img[src="gp/g/tb_timedata.png"]');
     if(element) {
       element.src = chrome.runtime.getURL("icons/tb_timedata.png");
       let tbTime = document.getElementById('tb_time1');
