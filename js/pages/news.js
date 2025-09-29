@@ -25,7 +25,7 @@ const NewsExtension = {
    * @param {HTMLElement} newsEntry the news list entry of scan operation.
    */
   addUsedAgentsText(newsEntry) {
-    let lostAgents = newsEntry.innerText.match(/.*entdeckt\Wund\W([0-9]+)\WAgenten.*/)[1];
+    let lostAgents = newsEntry.innerText.match(/.*entdeckt\Wund\W([0-9]+)\WAgent.*/)[1];
     let agentEntryDiv = document.createElement('div');
     agentEntryDiv.classList.add('used_agent_hint');
     let minAgents = Math.round(lostAgents / this.agent_config.scan_max);
