@@ -142,12 +142,12 @@ const ProductionExtension = {
       let cellClasses = []
       const supportGivingAmountNode = supportGivingShipTypeRow.childNodes[supportGivingShipTypeRow.childElementCount - 2];
       const supportGivingShips = parseInt(supportGivingAmountNode.innerText.replace(/\./g, ''));
+      cellClasses = supportGivingAmountNode.classList
       Object.entries(supportReq).forEach(([type, amount]) => {
         const intType = parseInt(type);
         const shipTypeNeedingSupportRow = shipTypeRows[intType];
         let shipAmountNode = shipTypeNeedingSupportRow.childNodes[shipTypeNeedingSupportRow.childElementCount - 2];
         const shipsNeedingSupport = parseInt(shipAmountNode.innerText.replace(/\./g, ''));
-        cellClasses = shipAmountNode.classList
         shipsNeeded += shipsNeedingSupport * amount
       })
       let cellStyle = undefined;
@@ -156,7 +156,9 @@ const ProductionExtension = {
       } else {
         cellStyle = 'color: #ff0000'
       }
-      this.addSupportRow(resultTable, supportGivingShipTypeRow.nextElementSibling, cellClasses, shipsNeeded, cellStyle);
+      if (shipsNeeded > 0) {
+        this.addSupportRow(resultTable, supportGivingShipTypeRow.nextElementSibling, cellClasses, shipsNeeded, cellStyle);
+      }
     })
   },
 
@@ -186,7 +188,10 @@ const ProductionExtension = {
     tdValue.innerText = "" + neededSupport;
     tdValue.style = cellStyle;
     tr.insertBefore(tdValue, null);
-
+    let emptyNode = document.createElement('td');
+    emptyNode.classList.add(cellClass);
+    emptyNode.style = cellStyle;
+    tr.insertBefore(emptyNode, null);
     content.insertBefore(tr, beforeNode);
   },
 
