@@ -82,7 +82,7 @@ const SekExtension = {
         let allyTags = Storage.getConfig('ally','tags');
         let row = originEvent.target.closest('tr');
         let name = row.childNodes[2].innerText;
-        name = name.replace('*', '').trim();
+        name = name.replace(' *', '').trim();
         Object.getOwnPropertyNames(allyTags).forEach(ally => {
           let allyMembers = allyTags[ally];
           let index = allyMembers.findIndex(member => member.name === name);
@@ -199,7 +199,7 @@ const SekExtension = {
         let alliance = allianceCell.innerText;
         let name = row.childNodes[2].innerText;
         if (name && alliance) {
-          name = name.replace('*', '').trim();
+          name = name.replace(' *', '').trim();
           if (config) {
             Object.getOwnPropertyNames(config).forEach(ally => {
               let allyMembers = config[ally];
