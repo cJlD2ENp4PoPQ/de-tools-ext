@@ -14,6 +14,14 @@ const VSysExtension = {
     let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
     if(sysElements && sysElements.length > 0) {
       this.addFilterEventListener(content);
+      content.querySelectorAll('a[href*="?id="]').forEach(a => {
+          a.addEventListener('click', (event) => {
+            event.stopImmediatePropagation();
+            let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
+            this.storeShownSystems(sysElements);
+            return true;
+          });
+        });
       this.storeShownSystems(sysElements);
     } else {
       let higher = content.getElementById('link_higher');
