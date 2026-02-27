@@ -78,8 +78,8 @@ const SekExtension = {
     },
     {
       renderer: 'Zurücksetzen',
-      onClick: ({api, originEvent}) => {
-        let allyTags = Storage.getConfig('ally','tags');
+      onClick: async ({api, originEvent}) => {
+        let allyTags = await Storage.getConfig('ally','tags');
         let row = originEvent.target.closest('tr');
         let name = row.childNodes[2].innerText;
         name = name.replace(' *', '').trim();
@@ -89,9 +89,9 @@ const SekExtension = {
           if (index >= 0) {
             allyMembers.splice(index, 1);
             allyTags[ally] = allyMembers;
-            Storage.storeConfig('ally', 'tags', allyTags);
           }
         });
+        await Storage.storeConfig('ally', 'tags', allyTags);
         api.close();
         originEvent.target.ownerDocument.location = originEvent.target.ownerDocument.location;
       },
@@ -114,7 +114,7 @@ const SekExtension = {
     }
   ],
 
-  onPageLoad: function(content) {
+  onPageLoad: async function(content) {
     this.allyContextMenu = new ContextMenu(this.allyContextMenuCfg, content);
 
     let fpNodes = content.querySelectorAll('td.fp-node');
@@ -124,8 +124,8 @@ const SekExtension = {
       let isAlienSector = tableContent[0].childElementCount < 8;
       this.addFleetpoints(tableContent, isAlienSector);
       if(!isAlienSector) {
-        let sectorAllies = this.readAlliance(tableContent);
-        this.saveSectorAlliances(sectorAllies);
+        let sectorAllies = await this.readAlliance(tableContent);
+        await this.saveSectorAlliances(sectorAllies);
       }
     }
   },
@@ -188,9 +188,9 @@ const SekExtension = {
    * @param {Array.<HTMLTableRowElement>} tableContent the content which contains the player table.
    * @return {Map<String, Object>} player alliances
    */
-  readAlliance : function (tableContent) {
-    let config = Storage.getConfig('ally', 'tags');
-    let allyInfos = Storage.getConfig('ally', 'info');
+  readAlliance : async function (tableContent) {
+    let config = await Storage.getConfig('ally', 'tags');
+    let allyInfos = await Storage.getConfig('ally', 'info');
     let allianceMap = new Map();
     tableContent.forEach((row, i) => {
       let allianceCell = row.childNodes[4];
@@ -271,8 +271,8 @@ const SekExtension = {
    * Save all alliances from sector.
    * @param {Map<String, Object>} alliancePlayers alliances alliancePlayers
    */
-  saveSectorAlliances(alliancePlayers) {
-    let allyTags = Storage.getConfig('ally','tags');
+  async saveSectorAlliances(alliancePlayers) {
+    let allyTags = await Storage.getConfig('ally','tags');
     if(!allyTags) {
       allyTags = {};
     }
@@ -283,7 +283,7 @@ const SekExtension = {
         })
       }
     });
-    Storage.storeConfig('ally', 'tags', allyTags);
+    await Storage.storeConfig('ally', 'tags', allyTags);
   },
 
   /**
@@ -291,15 +291,15 @@ const SekExtension = {
    * @param player the player
    * @param alliance the alliance value
    */
-  overrideAlliance(player, alliance) {
-    let allyTags = Storage.getConfig('ally','tags');
+  async overrideAlliance(player, alliance) {
+    let allyTags = await Storage.getConfig('ally','tags');
     if(!allyTags) {
       allyTags = {};
     }
     if (alliance !== String.fromCharCode(160)) {
       this.mergeWithLocalStorage(allyTags, alliance, player, true);
     }
-    Storage.storeConfig('ally', 'tags', allyTags);
+    await Storage.storeConfig('ally', 'tags', allyTags);
   },
 
   /**

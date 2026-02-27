@@ -153,7 +153,7 @@ const deExtension = {
   /**
    * adds a battle mode switch to the tick area.
    */
-  addTimerSwitch: function () {
+  addTimerSwitch: async function () {
     let element = document.querySelector('img[src="gp/g/tb_timedata.png"]');
     if(element) {
       element.src = chrome.runtime.getURL("icons/tb_timedata.png");
@@ -165,7 +165,7 @@ const deExtension = {
       let switcherIcon = document.createElement('img');
       switcherIcon.style = 'width:25px; padding-left:2px; padding-top:17px';
       switcherIcon.src = chrome.runtime.getURL("icons/flight.svg");
-      let config = Storage.getConfig('de', 'time');
+      let config = await Storage.getConfig('de', 'time');
       if (config && config.battleMode === true) {
         tbTime.style = 'position: absolute; top: 1px; left: 20px;';
         Time.startTime();
@@ -174,19 +174,19 @@ const deExtension = {
         switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
       }
       switcher.insertBefore(switcherIcon, null);
-      switcher.addEventListener('click', ev => {
-        let config = Storage.getConfig('de', 'time');
+      switcher.addEventListener('click', async ev => {
+        let config = await Storage.getConfig('de', 'time');
         let switcher = ev.target.ownerDocument.querySelector('#time_mode_switch');
         if (config && config.battleMode === true) {
           ev.target.ownerDocument.querySelector('#tb_time1').style = 'position: absolute; top: 1px; left: 34px;';
           config.battleMode = false;
-          Storage.storeConfig('de', 'time', config);
+          await Storage.storeConfig('de', 'time', config);
           Time.stopTime();
           switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #454545';
         } else {
           ev.target.ownerDocument.querySelector('#tb_time1').style = 'position: absolute; top: 1px; left: 20px;';
           config = {battleMode: true};
-          Storage.storeConfig('de', 'time', config);
+          await Storage.storeConfig('de', 'time', config);
           Time.startTime();
           switcher.style = 'position: absolute; right: 113px; top:0; height:66px; width: 30px; cursor: pointer; z-index:3000; background-color: #ff872c';
         }

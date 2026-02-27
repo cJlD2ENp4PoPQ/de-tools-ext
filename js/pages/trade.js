@@ -71,7 +71,7 @@ const TradeExtension = {
 
   storageKey: 'Trade',
 
-  onPageLoad: function (content) {
+  onPageLoad: async function (content) {
     if (!content.querySelector('#trade-css')) {
       let fieldsCss = content.createElement('link');
       fieldsCss.href = chrome.runtime.getURL('css/fields.css');
@@ -87,7 +87,7 @@ const TradeExtension = {
       tradeCss.rel = 'stylesheet';
       content.getElementsByTagName("head")[0].appendChild(tradeCss);
       this.replaceSpacer(content);
-      this.addFilter(content);
+      await this.addFilter(content);
     }
   },
 
@@ -109,11 +109,11 @@ const TradeExtension = {
    * Add filter fields to given document
    * @param {Document} content the document which contains the auction table.
    */
-  addFilter: function (content) {
-    let deFilter = Storage.getConfig(this.storageKey, 'de-filter');
-    let vsFilter = Storage.getConfig(this.storageKey, 'vs-filter');
-    let articleArtiFilter = Storage.getConfig(this.storageKey, 'article-arti-filter');
-    let articleOtherFilter = Storage.getConfig(this.storageKey, 'article-other-filter');
+  addFilter: async function (content) {
+    let deFilter = await Storage.getConfig(this.storageKey, 'de-filter');
+    let vsFilter = await Storage.getConfig(this.storageKey, 'vs-filter');
+    let articleArtiFilter = await Storage.getConfig(this.storageKey, 'article-arti-filter');
+    let articleOtherFilter = await Storage.getConfig(this.storageKey, 'article-other-filter');
     let selectDe = fields.createSelectField('de-filter', this.optionsDE, this.onChange, deFilter);
     let selectVs = fields.createSelectField('vs-filter', this.optionsVS, this.onChange, vsFilter);
     let selectArti = fields.createSelectField('article-arti-filter', this.optionsArticleArti, this.onChange, articleArtiFilter);
@@ -161,22 +161,22 @@ const TradeExtension = {
     }
   },
 
-  onChange: function (event) {
+  onChange: async function (event) {
     let filterId = event.target.id;
     let ownerDocument = event.target.ownerDocument;
     let selectedOption = event.target.selectedOptions[0];
     if (filterId === 'de-filter') {
       ownerDocument.querySelectorAll('tr.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
-      TradeExtension.filterDEEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
+      await TradeExtension.filterDEEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if (filterId === 'vs-filter') {
       ownerDocument.querySelectorAll('tr.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
-      TradeExtension.filterVSEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
+      await TradeExtension.filterVSEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if(filterId === 'article-arti-filter') {
       ownerDocument.querySelectorAll('tr.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
-      TradeExtension.filterArticleArtiEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
+      await TradeExtension.filterArticleArtiEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if(filterId === 'article-other-filter') {
       ownerDocument.querySelectorAll('tr.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
-      TradeExtension.filterArticleOtherEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
+      await TradeExtension.filterArticleOtherEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     }
 
   },
@@ -187,9 +187,9 @@ const TradeExtension = {
    * @param {String} filterText
    * @param {Document} document
    */
-  filterVSEntries: function (filterEntryID, filterText, document) {
-    Storage.storeConfig(TradeExtension.storageKey, 'vs-filter', filterEntryID);
-    Storage.removeConfig(TradeExtension.storageKey, 'de-filter');
+  filterVSEntries: async function (filterEntryID, filterText, document) {
+    await Storage.storeConfig(TradeExtension.storageKey, 'vs-filter', filterEntryID);
+    await Storage.removeConfig(TradeExtension.storageKey, 'de-filter');
     let deFilter = document.getElementById('de-filter');
     deFilter.value = 'de-disabled';
     let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
@@ -212,9 +212,9 @@ const TradeExtension = {
    * @param {String} filterText
    * @param {Document} document
    */
-  filterDEEntries: function (filterEntryID, filterText, document) {
-    Storage.storeConfig(TradeExtension.storageKey, 'de-filter', filterEntryID);
-    Storage.removeConfig(TradeExtension.storageKey, 'vs-filter');
+  filterDEEntries: async function (filterEntryID, filterText, document) {
+    await Storage.storeConfig(TradeExtension.storageKey, 'de-filter', filterEntryID);
+    await Storage.removeConfig(TradeExtension.storageKey, 'vs-filter');
     let vsFilter = document.getElementById('vs-filter');
     vsFilter.value = 'vs-disabled';
     let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
@@ -237,9 +237,9 @@ const TradeExtension = {
    * @param {String} filterText
    * @param {Document} document
    */
-  filterArticleArtiEntries: function (filterEntryID, filterText, document) {
-    Storage.storeConfig(TradeExtension.storageKey, 'article-arti-filter', filterEntryID);
-    Storage.removeConfig(TradeExtension.storageKey, 'article-other-filter');
+  filterArticleArtiEntries: async function (filterEntryID, filterText, document) {
+    await Storage.storeConfig(TradeExtension.storageKey, 'article-arti-filter', filterEntryID);
+    await Storage.removeConfig(TradeExtension.storageKey, 'article-other-filter');
     let otherFilter = document.getElementById('article-other-filter');
     otherFilter.value = 'art-oth-disabled';
     let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
@@ -262,9 +262,9 @@ const TradeExtension = {
    * @param {String} filterText
    * @param {Document} document
    */
-  filterArticleOtherEntries: function (filterEntryID, filterText, document) {
-    Storage.storeConfig(TradeExtension.storageKey, 'article-other-filter', filterEntryID);
-    Storage.removeConfig(TradeExtension.storageKey, 'article-arti-filter');
+  filterArticleOtherEntries: async function (filterEntryID, filterText, document) {
+    await Storage.storeConfig(TradeExtension.storageKey, 'article-other-filter', filterEntryID);
+    await Storage.removeConfig(TradeExtension.storageKey, 'article-arti-filter');
     let artiFilter = document.getElementById('article-arti-filter');
     artiFilter.value = 'art-arti-disabled';
     let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Die-Ewigen Extension – Einstellungen</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1>Die-Ewigen Extension</h1>
+      <span class="version" id="version"></span>
+    </header>
+
+    <main>
+      <section class="section">
+        <h2>Speicher zurücksetzen</h2>
+        <p class="description">
+          Hier kannst du die gespeicherten Erweiterungsdaten manuell zurücksetzen.
+          Das Zurücksetzen kann nicht rückgängig gemacht werden.
+        </p>
+
+        <div class="reset-all-card">
+          <div class="card-info">
+            <strong>Alle Daten zurücksetzen</strong>
+            <span class="sublabel">Setzt sämtliche Erweiterungsdaten auf den Ausgangszustand zurück.</span>
+          </div>
+          <button class="btn btn-danger" id="btn-reset-all">Alles zurücksetzen</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Einzelne Kategorien zurücksetzen</h2>
+
+        <div class="category-grid">
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>Allianz-Daten</strong>
+              <span class="sublabel">Gespeicherte Allianztags und Beziehungsstatus.</span>
+              <span class="storage-size" id="size-ally"></span>
+            </div>
+            <button class="btn btn-warning" data-key="ally">Zurücksetzen</button>
+          </div>
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>Sonden-Daten</strong>
+              <span class="sublabel">Gespeicherte Sondenberichte und Verlaufsdaten.</span>
+              <span class="storage-size" id="size-Secret"></span>
+            </div>
+            <button class="btn btn-warning" data-key="Secret">Zurücksetzen</button>
+          </div>
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>Handelsfilter</strong>
+              <span class="sublabel">Gespeicherte Filtereinstellungen der Auktionsseite.</span>
+              <span class="storage-size" id="size-Trade"></span>
+            </div>
+            <button class="btn btn-warning" data-key="Trade">Zurücksetzen</button>
+          </div>
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>VS-Systeme</strong>
+              <span class="sublabel">Gespeicherte Liste der vergessenen Systeme.</span>
+              <span class="storage-size" id="size-Vsys"></span>
+            </div>
+            <button class="btn btn-warning" data-key="Vsys">Zurücksetzen</button>
+          </div>
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>Timer-Einstellungen</strong>
+              <span class="sublabel">Kampfmodus-Schalterstellung.</span>
+              <span class="storage-size" id="size-de"></span>
+            </div>
+            <button class="btn btn-warning" data-key="de">Zurücksetzen</button>
+          </div>
+
+          <div class="category-card">
+            <div class="card-info">
+              <strong>Übersicht</strong>
+              <span class="sublabel">Gespeicherte Rundenpunkte für Rundenerkennnung.</span>
+              <span class="storage-size" id="size-overview"></span>
+            </div>
+            <button class="btn btn-warning" data-key="overview">Zurücksetzen</button>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <div class="status-bar" id="status-bar" aria-live="polite"></div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

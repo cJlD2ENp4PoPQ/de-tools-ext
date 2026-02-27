@@ -1,0 +1,187 @@
+/* ------------------------------------------------------------------ */
+/* Die-Ewigen Extension – Settings Page Stylesheet                     */
+/* Dark theme matching the game's visual identity                      */
+/* ------------------------------------------------------------------ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #1a1a1a;
+  color: #d4c89a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ---- Page layout ---- */
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ---- Header ---- */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 2px solid #4a3c1e;
+  padding-bottom: 16px;
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  font-size: 22px;
+  color: #e8d88a;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.version {
+  font-size: 13px;
+  color: #7a7060;
+}
+
+/* ---- Sections ---- */
+.section {
+  margin-bottom: 36px;
+}
+
+.section h2 {
+  font-size: 16px;
+  color: #c8b86a;
+  margin-bottom: 10px;
+  border-left: 3px solid #ff872c;
+  padding-left: 10px;
+}
+
+.description {
+  color: #9a9080;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* ---- Reset-all card ---- */
+.reset-all-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2a1a1a;
+  border: 1px solid #6a2020;
+  border-radius: 4px;
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+/* ---- Category grid ---- */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.category-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #222222;
+  border: 1px solid #383828;
+  border-radius: 4px;
+  padding: 14px 16px;
+  gap: 12px;
+}
+
+/* ---- Card info ---- */
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-info strong {
+  color: #e0d090;
+  font-size: 14px;
+}
+
+.sublabel {
+  color: #6a6050;
+  font-size: 12px;
+}
+
+.storage-size {
+  font-size: 11px;
+  color: #7a9060;
+  margin-top: 2px;
+}
+
+.storage-size.empty {
+  color: #505050;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s;
+}
+
+.btn:hover {
+  filter: brightness(1.15);
+}
+
+.btn:active {
+  filter: brightness(0.9);
+}
+
+.btn-danger {
+  background-color: #c0301a;
+  color: #ffffff;
+}
+
+.btn-warning {
+  background-color: #8a5010;
+  color: #e8c880;
+}
+
+/* ---- Status bar ---- */
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 24px;
+  font-size: 13px;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  z-index: 100;
+}
+
+.status-bar.visible {
+  transform: translateY(0);
+}
+
+.status-bar.success {
+  background-color: #1a3a1a;
+  border-top: 1px solid #3a7030;
+  color: #70c060;
+}
+
+.status-bar.error {
+  background-color: #3a1a1a;
+  border-top: 1px solid #7a3020;
+  color: #e07060;
+}

@@ -7,7 +7,7 @@ const AllyExtension = {
         {id: 'friend', value: 'Freund'},
     ],
 
-    onPageLoad: function (content) {
+    onPageLoad: async function (content) {
         let allyInfosRows = content.querySelectorAll('tr.cl');
         let allyInfo = {};
         if(allyInfosRows && allyInfosRows.length > 0) {
@@ -18,8 +18,8 @@ const AllyExtension = {
                     allyInfo.tag = rowCells[1].innerText;
                 }
             })
-            this.addAllianceStatus(allyInfosRows, allyInfo)
-            this.addallianceMembers(allyInfosRows, allyInfo)
+            await this.addAllianceStatus(allyInfosRows, allyInfo)
+            await this.addallianceMembers(allyInfosRows, allyInfo)
         }
     },
 
@@ -28,12 +28,12 @@ const AllyExtension = {
      * @param allyInfosRows
      * @param allyInfo
      */
-    addAllianceStatus: function (allyInfosRows, allyInfo) {
+    addAllianceStatus: async function (allyInfosRows, allyInfo) {
 
-        let config = Storage.getConfig('ally','info', {}, {});
+        let config = await Storage.getConfig('ally','info', {});
         if(!config[allyInfo.tag]) {
             config[allyInfo.tag] = { relation: 'neutral'};
-            Storage.storeConfig('ally', 'info', config);
+            await Storage.storeConfig('ally', 'info', config);
         }
         let lastRow = allyInfosRows[allyInfosRows.length -1];
         let parent = lastRow.parentElement;
@@ -53,12 +53,12 @@ const AllyExtension = {
         parent.insertBefore(statusRow, lastRow);
     },
 
-    changeAllyStatus: function (event) {
+    changeAllyStatus: async function (event) {
         let selectedOption = event.target.selectedOptions[0];
         let allyTag = event.target.getAttribute('tag');
-        let config = Storage.getConfig('ally','info');
+        let config = await Storage.getConfig('ally','info');
         config[allyTag].relation = selectedOption.id;
-        Storage.storeConfig('ally', 'info', config);
+        await Storage.storeConfig('ally', 'info', config);
     },
 
     /**
@@ -66,8 +66,8 @@ const AllyExtension = {
      * @param allyInfosRows
      * @param allyInfo
      */
-    addallianceMembers: function (allyInfosRows, allyInfo) {
-        let allyTags = Storage.getConfig('ally','tags', {});
+    addallianceMembers: async function (allyInfosRows, allyInfo) {
+        let allyTags = await Storage.getConfig('ally','tags', {});
         let headerRow = document.createElement('tr');
         let headerCell = document.createElement('td');
         headerCell.setAttribute('height',21);

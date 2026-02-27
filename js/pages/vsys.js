@@ -10,7 +10,7 @@ const VSysExtension = {
    * Add V-System extensions.
    * @param {Document} content
    */
-  onPageLoad: function (content) {
+  onPageLoad: async function (content) {
     let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
     if(sysElements && sysElements.length > 0) {
       this.addFilterEventListener(content);
@@ -22,10 +22,10 @@ const VSysExtension = {
             return true;
           });
         });
-      this.storeShownSystems(sysElements);
+      await this.storeShownSystems(sysElements);
     } else {
       let higher = content.getElementById('link_higher');
-      let systems = Storage.getConfig(this.storageKey,'syslist');
+      let systems = await Storage.getConfig(this.storageKey,'syslist');
       if(systems && systems.length > 0 && higher) {
         let current = content.getElementById('input_system_id').value;
         Array.from(content.getElementsByTagName('a'))
@@ -86,7 +86,7 @@ const VSysExtension = {
    * Stores all shown V-Systems.
    * @param {[HTMLElement]} sysElements
    */
-  storeShownSystems: function (sysElements) {
+  storeShownSystems: async function (sysElements) {
     systems = [];
     sysElements.forEach(node => {
       let cols = node.getElementsByTagName('td');
@@ -96,6 +96,6 @@ const VSysExtension = {
         systems.push(sysId);
       }
     })
-    Storage.storeConfig(this.storageKey, 'syslist', systems);
+    await Storage.storeConfig(this.storageKey, 'syslist', systems);
   }
 };

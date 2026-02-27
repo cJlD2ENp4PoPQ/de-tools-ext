@@ -2,7 +2,7 @@
  * Extends the overview page of Die-Ewigen /overview.php
  */
 const OverviewExtension = {
-  onPageLoad: function(content) {
+  onPageLoad: async function(content) {
     let infoBoxes = content.querySelectorAll('table[width="586"]');
     if(infoBoxes.length >= 2) {
         let infoContentLink = chrome.runtime.getURL("content/info.html");
@@ -15,8 +15,8 @@ const OverviewExtension = {
                 infoBoxes[0].parentElement.insertBefore(infoTable, infoBoxes[1]);
             });
     }
-    if (this.isNewRound(content)) {
-      this.cleanupStorage();
+    if (await this.isNewRound(content)) {
+      await this.cleanupStorage();
     }
   },
   
@@ -30,19 +30,19 @@ const OverviewExtension = {
     return null;
   },
   
-  isNewRound: function(content) {
-    let previousRPs = Storage.getConfig("overview","previousRPs");
+  isNewRound: async function(content) {
+    let previousRPs = await Storage.getConfig("overview","previousRPs");
     let currentRPs = this.getRPs(content);
     if (currentRPs != null && currentRPs != previousRPs) {
-      Storage.storeConfig("overview","previousRPs",currentRPs)
+      await Storage.storeConfig("overview","previousRPs",currentRPs)
       return previousRPs != undefined;
     }
     return false;
   },
   
-  cleanupStorage: function() {
-    Storage.storeConfig("ally","tags",{});
-    Storage.storeConfig("ally","info",{});
-    Storage.storeConfig("Secret","secrets",{});
+  cleanupStorage: async function() {
+    await Storage.storeConfig("ally","tags",{});
+    await Storage.storeConfig("ally","info",{});
+    await Storage.storeConfig("Secret","secrets",{});
   }
 };  

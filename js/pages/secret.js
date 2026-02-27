@@ -7,13 +7,13 @@ const SecretExtension = {
   storageKey: 'Secret',
   raceMapping : {'Hornisse':'E','Spider':'K','Caesar':'I','Wespe':'Z', 'Xinth-Xc':'D'},
 
-  onPageLoad: function(content, deksOpen, mobile) {
+  onPageLoad: async function(content, deksOpen, mobile) {
     if(!mobile) {
       this.addDeksIntegration(content, deksOpen);
     }
     let tableHeader = content.querySelector('body > div > table > tbody > tr > td');
     if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
-      let storedProbes = this.storeProbeResult(tableHeader.parentElement.parentElement);
+      let storedProbes = await this.storeProbeResult(tableHeader.parentElement.parentElement);
       if(storedProbes.length > 1) {
         let lastProbe = storedProbes[storedProbes.length - 1];
         let previousProbe = storedProbes[storedProbes.length - 2];
@@ -164,9 +164,9 @@ const SecretExtension = {
   /**
    * Stores the probe result from given table content.
    * @param {Element} contentTable the table which contains the probe result.
-   * @return {Object} stored probe result from target.
+   * @return {Promise<Object>} stored probe result from target.
    */
-  storeProbeResult (contentTable) {
+  async storeProbeResult (contentTable) {
     let rows = contentTable.querySelectorAll('tr');
     if(rows && rows.length > 13) {
       let header = rows[0];
@@ -188,7 +188,7 @@ const SecretExtension = {
         let t = parseInt(rows[12].lastElementChild.innerText.toString().split('.').join(""));
         let result = {c:new Date().toISOString(), p: points, s: ships, def: defs, b: builds, col:collectors,
           r:race, m:m, d:d, i:i, e:e, t:t, x:sector, y:sys};
-        let config = Storage.getConfig(this.storageKey, 'secrets');
+        let config = await Storage.getConfig(this.storageKey, 'secrets');
         if(config) {
           let player = config[name];
           if(player) {
@@ -210,7 +210,7 @@ const SecretExtension = {
         if(config[name].probes.length > 10) {
           config[name].probes.shift();
         }
-        Storage.storeConfig(this.storageKey, 'secrets', config);
+        await Storage.storeConfig(this.storageKey, 'secrets', config);
         return config[name].probes;
       }
     }
