@@ -13,7 +13,7 @@
   },
   "default_locale": "de",
   "background": {
-    "service_worker": "js/background.js"
+    "scripts": ["js/background.js"]
   },
   "permissions": ["scripting", "storage"],
   "options_ui": {

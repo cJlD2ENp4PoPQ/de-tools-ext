@@ -128,11 +128,18 @@ The extension registers a background script in `manifest.json` under the `"backg
 
 ```json
 "background": {
-  "scripts": ["js/background.js"]
+  "service_worker": "js/background.js"
 }
 ```
 
-**Cross-browser note**: Chrome's MV3 documentation recommends `"service_worker"` (a single string), but Firefox does not yet support that field and requires `"scripts"` (an array). Using `"scripts"` works in both Chrome and Firefox, so this project uses `"scripts"` for cross-browser compatibility.
+**Cross-browser compatibility — two-manifest strategy**: Chrome, Edge, and the Microsoft Store require `"service_worker"` (MV3); Firefox does not support `"service_worker"` and requires `"scripts"` (an array). Neither browser accepts the other's syntax without error. This project therefore maintains two manifest files:
+
+| File | Target | `"background"` field |
+|---|---|---|
+| `manifest.json` | Chrome, Edge, MS Store, Chrome Web Store | `"service_worker": "js/background.js"` |
+| `manifest.firefox.json` | Firefox / AMO | `"scripts": ["js/background.js"]` |
+
+All other manifest content (including `browser_specific_settings.gecko`) is identical between the two files. When packaging for Firefox, `manifest.firefox.json` must be renamed/copied to `manifest.json` before zipping. This is a manual step — no build tooling exists in this project.
 
 **Purpose**: The background script handles tasks that content scripts cannot perform directly — Chrome explicitly excludes certain `chrome.runtime` APIs from the content script context. It listens for messages from content scripts via `chrome.runtime.onMessage` and acts on them.
 
@@ -545,7 +552,8 @@ Add the new bucket name to `STORAGE_KEYS`, `CATEGORY_LABELS`, and `CATEGORY_DESC
 - `.github/workflows/deploy_chrome_pipeline.yaml` triggers on any git tag push.
 - The workflow zips the following paths: `_locales content css icons js manifest.json options`.
 - The zip is uploaded to the Chrome Web Store via the `mnao305/chrome-extension-upload@v5.0.0` action.
-- No Firefox release automation exists.
+- No Firefox release automation exists. To package for Firefox/AMO, copy `manifest.firefox.json` to `manifest.json` and zip manually.
+- `manifest.firefox.json` is intentionally **not** included in the Chrome Web Store zip — it is the Firefox-specific manifest only.
 
 **To release a new version**:
 
