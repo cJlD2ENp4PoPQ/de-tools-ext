@@ -36,6 +36,7 @@ DE-Tools/
 ├── docs/             — developer documentation
 ├── icons/            — extension icons and SVG assets
 ├── js/
+│   ├── background.js     — background page / service worker: delegates tasks unavailable in content scripts
 │   ├── pages/
 │   │   ├── de.js         — BOOTSTRAP: init, routing, race detection, timer switch, menu entries
 │   │   ├── sek.js        — sector.php: fleet points, alliance tagging, right-click context menu
@@ -77,6 +78,7 @@ All JS files are injected as a single flat bundle via the `content_scripts` arra
 - `all_frames: true` — scripts run in **both** the outer frame (`dm.php`) and any inner content frames (e.g. `sector.php`, `auction.php`).
 - There is no lazy loading and no conditional injection. Every script runs on every matched page load.
 - Scripts are evaluated at `document_start`, but the `window.load` listener in `de.js` defers all DOM work until the page is fully ready.
+- Some Chrome extension APIs (e.g. `chrome.runtime.openOptionsPage()`) are not available in content scripts. These must be delegated to the background script via `chrome.runtime.sendMessage()`.
 
 ### 3.2 Three Runtime Contexts
 
@@ -120,6 +122,36 @@ The fleet array contains 9 integers (ship counts). The Transmitter slot is skipp
 
 ---
 
+### 3.6 Background Script (`js/background.js`)
+
+The extension registers a background script in `manifest.json` under the `"background"` key:
+
+```json
+"background": {
+  "scripts": ["js/background.js"]
+}
+```
+
+**Cross-browser note**: Chrome's MV3 documentation recommends `"service_worker"` (a single string), but Firefox does not yet support that field and requires `"scripts"` (an array). Using `"scripts"` works in both Chrome and Firefox, so this project uses `"scripts"` for cross-browser compatibility.
+
+**Purpose**: The background script handles tasks that content scripts cannot perform directly — Chrome explicitly excludes certain `chrome.runtime` APIs from the content script context. It listens for messages from content scripts via `chrome.runtime.onMessage` and acts on them.
+
+**Current message handlers**:
+
+| Message type | Action |
+|---|---|
+| `open-options-page` | Calls `chrome.runtime.openOptionsPage()` to open the settings page in a new tab |
+
+**Pattern for sending from a content script**:
+
+```js
+chrome.runtime.sendMessage({ type: 'open-options-page' });
+```
+
+**When to add a new handler**: If a content script needs to call an API that is not available in the content script context, add a new `message.type` branch to the `onMessage` listener in `js/background.js` and send the corresponding message from the content script.
+
+---
+
 ## 4. Script Load Order
 
 All 18 scripts are declared in `manifest.json`'s `content_scripts.js` array. **Order is significant**: utility modules must appear before the page scripts that depend on them.
@@ -128,6 +160,7 @@ All 18 scripts are declared in `manifest.json`'s `content_scripts.js` array. **O
 - `de.js` is second and registers the `window.load` listener. By the time that listener fires, all other scripts in the array are already evaluated and their globals are available.
 - When adding a new utility, insert it **before** the page scripts in the array (but after `server.js`).
 - When adding a new page script, **append it to the end** of the array.
+- `js/background.js` is **not** part of the `content_scripts` array. It is registered separately under `"background": { "scripts": [...] }` and runs in the background page context, not in the content script context.
 
 | # | File | Role |
 |---|---|---|
@@ -502,6 +535,8 @@ Add the new bucket name to `STORAGE_KEYS`, `CATEGORY_LABELS`, and `CATEGORY_DESC
 12. **`getWTAmountBetween` sentinel values**: Returns `-1` if the date range is inverted, `-2` if more than 100 ticks would be counted. Callers must explicitly handle both sentinel values.
 
 13. **Race-colored fieldset borders**: `fields.createFieldset()` reads `window.race` and adds it as a CSS class (e.g., `fieldset-fields Z`). If `window.race` is `undefined` (e.g., on a mobile standalone page before race detection), the fieldset renders without a race-specific border — this is safe but produces a neutral appearance.
+
+14. **`chrome.runtime.openOptionsPage()` is not available in content scripts**: Chrome does not expose this method in the content script context. To open the options page from a content script, send a message to the background script instead: `chrome.runtime.sendMessage({ type: 'open-options-page' })`. The background script's `onMessage` listener calls `chrome.runtime.openOptionsPage()` on behalf of the content script. This pattern applies generally to any `chrome.runtime` API not available in content scripts.
 
 ---
 

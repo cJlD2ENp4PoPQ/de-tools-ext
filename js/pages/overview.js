@@ -13,6 +13,13 @@ const OverviewExtension = {
                 let rows = Tables.createRow('Die Ewigen Extension ' + chrome.runtime.getManifest().version, text);
                 let infoTable = Tables.createContentTable(rows);
                 infoBoxes[0].parentElement.insertBefore(infoTable, infoBoxes[1]);
+                const settingsLink = infoTable.querySelector('#de-settings-link');
+                if (settingsLink) {
+                  settingsLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    chrome.runtime.sendMessage({ type: 'open-options-page' });
+                  });
+                }
             });
     }
     if (await this.isNewRound(content)) {
