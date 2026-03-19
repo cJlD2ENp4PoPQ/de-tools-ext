@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Die-Ewigen Extension",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Erweiterung für das Browsergame Die-Ewigen",
   "icons": {
     "48": "icons/border-48.png"
@@ -52,6 +52,7 @@
         "*://*.die-ewigen.com/map.php*"
       ],
       "js": [
+        "js/utils/server.js",
         "js/pages/de.js",
         "js/utils/frame.js",
         "js/utils/fields.js",

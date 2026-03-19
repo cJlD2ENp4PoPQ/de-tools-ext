@@ -156,6 +156,41 @@ body {
   color: #e8c880;
 }
 
+/* ---- Server sections (dynamically rendered) ---- */
+.server-section {
+  border: 1px solid #2e2e1e;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 24px;
+  background-color: #1e1e14;
+}
+
+.server-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.server-heading h2 {
+  border-left: 3px solid #ff872c;
+  padding-left: 10px;
+  font-size: 16px;
+  color: #c8b86a;
+  margin-bottom: 0;
+}
+
+.btn-server-reset {
+  font-size: 12px;
+  padding: 5px 12px;
+}
+
+.empty-state {
+  padding: 24px 0;
+  text-align: center;
+}
+
 /* ---- Status bar ---- */
 .status-bar {
   position: fixed;

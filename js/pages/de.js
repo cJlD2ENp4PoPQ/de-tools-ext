@@ -20,7 +20,6 @@ const deExtension = {
     }
     if (appcontent) {
       this.saveRace(false);
-      this.saveServer();
       this.addTimerSwitch();
       let overviewIframe = appcontent.querySelector('iframe[src="overview.php"]');
       if(overviewIframe) {
@@ -32,7 +31,6 @@ const deExtension = {
       this.addMenuEntries(document);
     } else if (!!window.parent && !window.parent.document.URL.includes('dm.php')) {
       this.saveRace(true);
-      this.saveServer();
       this.onMobilePageLoad(document)
     }
   },
@@ -228,11 +226,6 @@ const deExtension = {
       }
     }
     window.race = race;
-  },
-
-  saveServer : function() {
-    let host = window.document.location.host;
-    window.server = host.split('.')[0];
   },
 
   /**

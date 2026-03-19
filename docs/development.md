@@ -37,7 +37,7 @@ DE-Tools/
 ├── icons/            — extension icons and SVG assets
 ├── js/
 │   ├── pages/
-│   │   ├── de.js         — BOOTSTRAP: init, routing, race/server detection, timer switch, menu entries
+│   │   ├── de.js         — BOOTSTRAP: init, routing, race detection, timer switch, menu entries
 │   │   ├── sek.js        — sector.php: fleet points, alliance tagging, right-click context menu
 │   │   ├── military.js   — military.php: DEKS iframe integration (attacker/defender buttons)
 │   │   ├── secret.js     — secret.php: DEKS integration, probe history, point projection
@@ -49,7 +49,8 @@ DE-Tools/
 │   │   ├── vsys.js       — map_mobile.php / map_system.php: VS system list persistence, navigation
 │   │   └── map.js        — map.php: fleet points on player entries in the full map
 │   └── utils/
-│       ├── storage.js      — chrome.storage.local wrapper (storeConfig, getConfig, removeConfig)
+│       ├── server.js       — MUST BE FIRST: sets window.server from window.location.host at document_start
+│       ├── storage.js      — chrome.storage.local wrapper; all keys are server-namespaced as "<server>:<page>"
 │       ├── frame.js        — draggable iframe overlay factory (DEKS simulator)
 │       ├── fields.js       — UI builder: fieldset, rows, field divs, select elements
 │       ├── table.js        — UI builder: game-styled content tables
@@ -57,8 +58,8 @@ DE-Tools/
 │       └── ContextMenu.js  — right-click context menu constructor
 ├── lib/              — empty, reserved for future third-party libraries
 ├── options/
-│   ├── settings.html — extension options page UI (reset storage)
-│   ├── settings.js   — options page logic
+│   ├── settings.html — extension options page UI (dynamically rendered per-server storage management)
+│   ├── settings.js   — options page logic: reads all storage keys, groups by server, renders sections
 │   └── settings.css  — options page dark-theme styles
 ├── manifest.json     — MV3 extension manifest
 └── README.md         — user-facing install/usage guide (German)
@@ -98,10 +99,10 @@ A content script can find itself in one of three distinct contexts:
 
 ### 3.4 Global Window Variables
 
-Two values are set on `window` by `de.js` during initialization and read by multiple modules:
+Two values are set on `window` and read by multiple modules:
 
-- `window.race` — the player's race: `'E'` (Eternians), `'I'` (Iridonians), `'K'` (Karthanians), `'Z'` (Zentorianians), or `undefined` if not detected.
-- `window.server` — the server subdomain: `'xde'`, `'sde'`, `'rde'`, etc.
+- `window.race` — the player's race: `'E'` (Eternians), `'I'` (Iridonians), `'K'` (Karthanians), `'Z'` (Zentorianians), or `undefined` if not detected. Set by `deExtension.saveRace()` in `de.js` during initialization.
+- `window.server` — the server subdomain: `'xde'`, `'sde'`, `'rde'`, etc. Set by **`js/utils/server.js`** at `document_start`, before any other script runs. This replaces the former `deExtension.saveServer()` method in `de.js`. The `Storage` utility reads `window.server` internally to namespace all `chrome.storage.local` keys as `"<server>:<page>"`.
 - `deksOpen` — declared as a bare assignment in `de.js` (no `let`/`const`/`var`), making it an implicit property on `window`. It is vestigial; the actual open-state check is performed at dispatch time by querying `document.getElementById("ext-iframe")`.
 
 ### 3.5 DEKS iframe Communication
@@ -121,31 +122,33 @@ The fleet array contains 9 integers (ship counts). The Transmitter slot is skipp
 
 ## 4. Script Load Order
 
-All 17 scripts are declared in `manifest.json`'s `content_scripts.js` array. **Order is significant**: utility modules must appear before the page scripts that depend on them.
+All 18 scripts are declared in `manifest.json`'s `content_scripts.js` array. **Order is significant**: utility modules must appear before the page scripts that depend on them.
 
-- `de.js` is first and registers the `window.load` listener. By the time that listener fires, all other scripts in the array are already evaluated and their globals are available.
-- When adding a new utility, insert it **before** the page scripts in the array.
+- `server.js` is first and sets `window.server` before any other script runs.
+- `de.js` is second and registers the `window.load` listener. By the time that listener fires, all other scripts in the array are already evaluated and their globals are available.
+- When adding a new utility, insert it **before** the page scripts in the array (but after `server.js`).
 - When adding a new page script, **append it to the end** of the array.
 
 | # | File | Role |
 |---|---|---|
-| 1 | `js/pages/de.js` | Bootstrap; registers `window.load` listener |
-| 2 | `js/utils/frame.js` | Declares `frame` (used by `de.js`, `military.js`) |
-| 3 | `js/utils/fields.js` | Declares `fields` (used by `trade.js`, `ally.js`) |
-| 4 | `js/utils/table.js` | Declares `Tables` (used by `overview.js`) |
-| 5 | `js/utils/storage.js` | Declares `Storage` (used by all page modules) |
-| 6 | `js/utils/time.js` | Declares `Time` (used by `de.js`, `secret.js`) |
-| 7 | `js/utils/ContextMenu.js` | Declares `ContextMenu` (used by `sek.js`) |
-| 8 | `js/pages/sek.js` | sector.php module |
-| 9 | `js/pages/military.js` | military.php module |
-| 10 | `js/pages/secret.js` | secret.php module |
-| 11 | `js/pages/production.js` | production.php module |
-| 12 | `js/pages/trade.js` | auction.php module |
-| 13 | `js/pages/news.js` | sysnews.php module |
-| 14 | `js/pages/ally.js` | ally_detail.php module |
-| 15 | `js/pages/overview.js` | overview.php module |
-| 16 | `js/pages/vsys.js` | map_mobile.php / map_system.php module |
-| 17 | `js/pages/map.js` | map.php module |
+| 1 | `js/utils/server.js` | Sets `window.server`; **must remain first** |
+| 2 | `js/pages/de.js` | Bootstrap; registers `window.load` listener |
+| 3 | `js/utils/frame.js` | Declares `frame` (used by `de.js`, `military.js`) |
+| 4 | `js/utils/fields.js` | Declares `fields` (used by `trade.js`, `ally.js`) |
+| 5 | `js/utils/table.js` | Declares `Tables` (used by `overview.js`) |
+| 6 | `js/utils/storage.js` | Declares `Storage` (used by all page modules) |
+| 7 | `js/utils/time.js` | Declares `Time` (used by `de.js`, `secret.js`) |
+| 8 | `js/utils/ContextMenu.js` | Declares `ContextMenu` (used by `sek.js`) |
+| 9 | `js/pages/sek.js` | sector.php module |
+| 10 | `js/pages/military.js` | military.php module |
+| 11 | `js/pages/secret.js` | secret.php module |
+| 12 | `js/pages/production.js` | production.php module |
+| 13 | `js/pages/trade.js` | auction.php module |
+| 14 | `js/pages/news.js` | sysnews.php module |
+| 15 | `js/pages/ally.js` | ally_detail.php module |
+| 16 | `js/pages/overview.js` | overview.php module |
+| 17 | `js/pages/vsys.js` | map_mobile.php / map_system.php module |
+| 18 | `js/pages/map.js` | map.php module |
 
 ---
 
@@ -209,26 +212,32 @@ await Storage.removeConfig(page, key)             // delete key
 
 **Critical rule**: Every `Storage` call must be `await`ed. Every function that calls `Storage` must be declared `async`. Forgetting `await` causes the next line to receive a `Promise` object instead of the resolved value.
 
+**Server namespacing**: Callers always pass the plain page-bucket name (e.g. `'ally'`, `'Secret'`). Internally, `Storage` prepends `window.server + ':'` to form the actual `chrome.storage.local` key (e.g. `'xde:ally'`, `'sde:Secret'`). This means data for different servers is stored under separate top-level keys and never collides. The `window.server` value is set by `js/utils/server.js` at `document_start` before any other script runs.
+
 ### 6.2 Data Schema
 
-Data is organized in a two-level namespace: a top-level `page` bucket with named `key`s inside:
+Data is organized in a two-level namespace: a top-level `<server>:<page>` bucket with named `key`s inside. Each server stores its data independently under its own prefixed keys:
 
 ```
 chrome.storage.local = {
-  "ally":     { tags: { [allianceTag]: [{name, x, y, replaced}] },
-                info: { [allianceTag]: { relation: 'own'|'friend'|'neutral'|'enemy' } } },
-  "Secret":   { secrets: { [playerName]: { probes: [{c, p, s, def, b, col, r, m, d, i, e, t, x, y}] } } },
-  "Trade":    { "de-filter": string, "vs-filter": string,
-                "article-arti-filter": string, "article-other-filter": string },
-  "Vsys":     { syslist: string[] },
-  "de":       { time: { battleMode: boolean } },
-  "overview": { previousRPs: number }
+  "xde:ally":     { tags: { [allianceTag]: [{name, x, y, replaced}] },
+                    info: { [allianceTag]: { relation: 'own'|'friend'|'neutral'|'enemy' } } },
+  "xde:Secret":   { secrets: { [playerName]: { probes: [{c, p, s, def, b, col, r, m, d, i, e, t, x, y}] } } },
+  "xde:Trade":    { "de-filter": string, "vs-filter": string,
+                    "article-arti-filter": string, "article-other-filter": string },
+  "xde:Vsys":     { syslist: string[] },
+  "xde:de":       { time: { battleMode: boolean } },
+  "xde:overview": { previousRPs: number },
+
+  "sde:ally":     { ... },  // same structure, separate data for the sde server
+  "sde:Secret":   { ... },
+  // … and so on for each server the user has visited
 }
 ```
 
-Full reference table:
+Full reference table (page-bucket names and sub-keys are server-independent; the server prefix is applied automatically by `Storage`):
 
-| Page key | Sub-key | Type | Written by | Read by | Purpose |
+| Page bucket | Sub-key | Type | Written by | Read by | Purpose |
 |---|---|---|---|---|---|
 | `ally` | `tags` | `Object<string, [{name,x,y,replaced}]>` | sek.js | sek.js, ally.js, overview.js | Alliance tag → member list |
 | `ally` | `info` | `Object<string, {relation: string}>` | ally.js, overview.js | sek.js, ally.js | Alliance tag → relation status |
@@ -245,10 +254,12 @@ Full reference table:
 
 When adding a new storage key:
 
-1. Choose an existing page bucket if the data belongs there, or define a new top-level key.
+1. Choose an existing page bucket if the data belongs there, or define a new top-level bucket name.
 2. Update the table above in `docs/development.md`.
-3. Add the key to `STORAGE_KEYS` in `options/settings.js` so the settings page can display and reset it.
-4. If it is a new top-level key, add a corresponding `.category-card` block to `options/settings.html`.
+3. Add the bucket name to `STORAGE_KEYS` in `options/settings.js` (drives the settings page category order).
+4. Add a matching entry to `CATEGORY_LABELS` and `CATEGORY_DESCRIPTIONS` in `options/settings.js` (provides the human-readable label and description shown in the settings UI).
+
+**No HTML changes are needed** — the settings page is fully dynamic and automatically renders a card for every key it finds in `chrome.storage.local`.
 
 ---
 
@@ -282,15 +293,30 @@ Any file accessed via `chrome.runtime.getURL()` from a content script must be li
 
 ## 8. Utility Module Reference
 
+### `server` — `js/utils/server.js`
+
+Sets `window.server` to the server subdomain by parsing `window.location.host`:
+
+```js
+window.server = window.location.host.split('.')[0];
+// e.g. "xde", "sde", "rde"
+```
+
+This script **must remain the first entry** in `manifest.json`'s `js` array. It runs at `document_start` so that `window.server` is available before any other script (including `Storage`) is evaluated. It has no dependencies.
+
+---
+
 ### `Storage` — `js/utils/storage.js`
 
-`chrome.storage.local` wrapper. All methods are async and Promise-based.
+`chrome.storage.local` wrapper. All methods are async and Promise-based. Callers pass the plain page-bucket name (e.g. `'ally'`); the utility automatically prepends `window.server + ':'` to form the actual storage key (e.g. `'xde:ally'`). This ensures data for different servers is stored independently with no key collisions.
 
 | Method | Signature | Description |
 |---|---|---|
-| `storeConfig` | `async (page, key, value)` | Write a value to `storage[page][key]` |
-| `getConfig` | `async (page, key, defaultValue)` | Read `storage[page][key]`; returns `defaultValue` if absent |
-| `removeConfig` | `async (page, key)` | Delete `storage[page][key]` |
+| `storeConfig` | `async (page, key, value)` | Write a value to `storage["<server>:<page>"][key]` |
+| `getConfig` | `async (page, key, defaultValue)` | Read `storage["<server>:<page>"][key]`; returns `defaultValue` if absent |
+| `removeConfig` | `async (page, key)` | Delete `storage["<server>:<page>"][key]` |
+
+The internal `_key(page)` helper that builds the prefixed key is not part of the public API and should not be called directly.
 
 ---
 
@@ -407,7 +433,7 @@ if (contentDocument.querySelector('form[action="yourpage.php"]')) {
 }
 ```
 
-**Step 6**: If your module stores data, add the storage key to the `STORAGE_KEYS` array in `options/settings.js` and add a corresponding `.category-card` block to `options/settings.html`.
+**Step 6**: If your module stores data, add a new page-bucket name to `STORAGE_KEYS` in `options/settings.js` (controls category ordering in the settings UI) and add matching entries to `CATEGORY_LABELS` and `CATEGORY_DESCRIPTIONS` in the same file. **No HTML changes are required** — the settings page renders all storage keys dynamically.
 
 **Step 7**: If your module needs a CSS file, add it to `css/`, list it in `manifest.json`'s `content_scripts.css` array, and add it to `web_accessible_resources` if you will inject it via `chrome.runtime.getURL()`.
 
@@ -418,12 +444,34 @@ if (contentDocument.querySelector('form[action="yourpage.php"]')) {
 - Located in `options/settings.html`, `options/settings.js`, and `options/settings.css`.
 - Registered in `manifest.json` as `options_ui.page` with `open_in_tab: true`.
 - Accessible via right-click on the extension icon → "Einstellungen", or through the browser's extension management page.
-- The `STORAGE_KEYS` array in `settings.js` drives both the per-category size display and the category-level reset buttons.
-- Reset per category: `chrome.storage.local.remove(key)`.
-- Reset all: `chrome.storage.local.remove(STORAGE_KEYS)`.
-- Size display: `chrome.storage.local.getBytesInUse(key, callback)`.
 
-**When adding new storage**: update `STORAGE_KEYS` in `settings.js` AND add a new `.category-card` block to `settings.html`.
+### Dynamic, server-grouped rendering
+
+On load, `settings.js` calls `chrome.storage.local.get(null)` to read every stored key. It parses keys that match the `"<server>:<page>"` scheme, groups them by server, and renders one `<section>` per server into the `#server-sections` container in `settings.html`. Servers that have no stored data are not shown. If no data exists at all, an empty-state message is displayed.
+
+Each server section contains:
+- A heading with the server name (e.g. `xde`) and a per-server "reset all" button.
+- A category grid with one card per stored page bucket, showing the human-readable label, a description, the current storage size, and a "Zurücksetzen" button.
+
+### Control constants in `settings.js`
+
+| Constant | Purpose |
+|---|---|
+| `STORAGE_KEYS` | Ordered list of known page-bucket names; controls the display order of category cards within each server section. Unknown buckets are appended alphabetically after known ones. |
+| `CATEGORY_LABELS` | Maps page-bucket name → human-readable German label (e.g. `ally` → `'Allianz-Daten'`). |
+| `CATEGORY_DESCRIPTIONS` | Maps page-bucket name → one-line description shown as sublabel in each card. |
+
+### Reset operations
+
+| Operation | Implementation |
+|---|---|
+| Reset one category for one server | `chrome.storage.local.remove("<server>:<page>")`, then re-renders the page |
+| Reset all categories for one server | `chrome.storage.local.remove(["<server>:ally", "<server>:Secret", ...])`, then re-renders |
+| Reset all data (all servers) | Reads all keys, filters to those matching `"<server>:<page>"`, removes them all, then re-renders |
+
+### When adding new storage buckets
+
+Add the new bucket name to `STORAGE_KEYS`, `CATEGORY_LABELS`, and `CATEGORY_DESCRIPTIONS` in `settings.js`. No changes to `settings.html` are needed.
 
 ---
 
