@@ -1,4 +1,4 @@
-const single_steps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59];
+﻿const single_steps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59];
 const three_steps = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57];
 const four_steps = [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56];
 const twelve_steps = [0, 12, 24, 36, 48];
@@ -16,8 +16,8 @@ const Time = {
   wt_ticks: {
     'xde': {
       minutes: true,
-      '00': ten_steps, '01': ten_steps, '02': ten_steps, '03': ten_steps, '04': ten_steps,
-      '05': ten_steps, '06': ten_steps, '07': ten_steps, '08': ten_steps, '09': ten_steps,
+      '0': ten_steps, '1': ten_steps, '2': ten_steps, '3': ten_steps, '4': ten_steps,
+      '5': ten_steps, '6': ten_steps, '7': ten_steps, '8': ten_steps, '9': ten_steps,
       '10': ten_steps, '11': ten_steps, '12': ten_steps, '13': ten_steps, '14': ten_steps,
       '15': ten_steps, '16': ten_steps, '17': ten_steps, '18': ten_steps, '19': ten_steps,
       '20': ten_steps, '21': ten_steps, '22': ten_steps, '23': ten_steps,
@@ -26,8 +26,8 @@ const Time = {
     },
     'sde': {
       minutes: true,
-      '00': three_steps, '01': three_steps, '02': three_steps, '03': three_steps, '04': three_steps,
-      '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
+      '0': three_steps, '1': three_steps, '2': three_steps, '3': three_steps, '4': three_steps,
+      '5': three_steps, '6': three_steps, '7': three_steps, '8': three_steps, '9': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
       '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
@@ -36,8 +36,8 @@ const Time = {
     },
     'rde': {
       minutes: true,
-      '00': single_steps, '01': single_steps, '02': single_steps, '03': single_steps, '04': single_steps, '05': single_steps, '06': single_steps,
-      '07': single_steps, '08': single_steps, '09': single_steps, '10': single_steps, '11': single_steps, '12': single_steps, '13': single_steps,
+      '0': single_steps, '1': single_steps, '2': single_steps, '3': single_steps, '4': single_steps, '5': single_steps, '6': single_steps,
+      '7': single_steps, '8': single_steps, '9': single_steps, '10': single_steps, '11': single_steps, '12': single_steps, '13': single_steps,
       '14': single_steps, '15': single_steps, '16': single_steps, '17': single_steps, '18': single_steps, '19': single_steps, '20': single_steps,
       '21': single_steps, '22': single_steps, '23': single_steps,
       rate: 1,
@@ -45,8 +45,8 @@ const Time = {
     },
     'cde': {
       minutes: true,
-      '00': [three_steps], '01': three_steps, '02': three_steps, '03': three_steps, '04': three_steps,
-      '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
+      '0': [three_steps], '1': three_steps, '2': three_steps, '3': three_steps, '4': three_steps,
+      '5': three_steps, '6': three_steps, '7': three_steps, '8': three_steps, '9': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
       '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
@@ -55,8 +55,8 @@ const Time = {
     },
     'dde': {
       minutes: true,
-      '00': three_steps, '01': three_steps, '02': three_steps, '03': three_steps, '04': three_steps,
-      '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
+      '0': three_steps, '1': three_steps, '2': three_steps, '3': three_steps, '4': three_steps,
+      '5': three_steps, '6': three_steps, '7': three_steps, '8': three_steps, '9': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
       '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
@@ -65,8 +65,8 @@ const Time = {
     },
     'ede': {
       minutes: true,
-      '00': three_steps, '01': three_steps, '02': three_steps, '03': three_steps, '04': three_steps,
-      '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
+      '0': three_steps, '1': three_steps, '2': three_steps, '3': three_steps, '4': three_steps,
+      '5': three_steps, '6': three_steps, '7': three_steps, '8': three_steps, '9': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
       '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps,
@@ -75,8 +75,8 @@ const Time = {
     },
     'bde': {
       minutes: false,
-      '00': ten_steps, '01': ten_steps, '02': ten_steps, '03': ten_steps, '04': ten_steps,
-      '05': ten_steps, '06': ten_steps, '07': ten_steps, '08': ten_steps, '09': ten_steps,
+      '0': ten_steps, '1': ten_steps, '2': ten_steps, '3': ten_steps, '4': ten_steps,
+      '5': ten_steps, '6': ten_steps, '7': ten_steps, '8': ten_steps, '9': ten_steps,
       '10': ten_steps, '11': ten_steps, '12': ten_steps, '13': ten_steps, '14': ten_steps,
       '15': ten_steps, '16': ten_steps, '17': ten_steps, '18': ten_steps, '19': ten_steps,
       '20': ten_steps, '21': ten_steps, '22': ten_steps, '23': ten_steps, '24': ten_steps,
@@ -95,54 +95,54 @@ const Time = {
   kt_ticks: {
     'xde': {
       minutes: true,
-      '00': one_step, '01': one_step, '02': one_step, '03': one_step, '04': one_step, '05': one_step, '06': one_step, '07': one_step,
-      '08': one_step, '09': one_step, '10': one_step, '11': one_step, '12': one_step, '13': one_step, '14': one_step, '15': one_step,
+      '0': one_step, '1': one_step, '2': one_step, '3': one_step, '4': one_step, '5': one_step, '6': one_step, '7': one_step,
+      '8': one_step, '9': one_step, '10': one_step, '11': one_step, '12': one_step, '13': one_step, '14': one_step, '15': one_step,
       '16': one_step, '17': one_step, '18': one_step, '19': one_step, '20': one_step, '21': one_step, '22': one_step, '23': one_step
     },
     'sde': {
       minutes: true,
-      '00': twelve_steps, '01': twelve_steps, '02': twelve_steps, '03': twelve_steps, '04': twelve_steps,
-      '05': twelve_steps, '06': twelve_steps, '07': twelve_steps, '08': twelve_steps, '09': twelve_steps,
+      '0': twelve_steps, '1': twelve_steps, '2': twelve_steps, '3': twelve_steps, '4': twelve_steps,
+      '5': twelve_steps, '6': twelve_steps, '7': twelve_steps, '8': twelve_steps, '9': twelve_steps,
       '10': twelve_steps, '11': twelve_steps, '12': twelve_steps, '13': twelve_steps, '14': twelve_steps,
       '15': twelve_steps, '16': twelve_steps, '17': twelve_steps, '18': twelve_steps, '19': twelve_steps,
       '20': twelve_steps, '21': twelve_steps, '22': twelve_steps, '23': twelve_steps
     },
     'rde': {
       minutes: true,
-      '00': four_steps, '01': four_steps, '02': four_steps, '03': four_steps, '04': four_steps,
-      '05': four_steps, '06': four_steps, '07': four_steps, '08': four_steps, '09': four_steps,
+      '0': four_steps, '1': four_steps, '2': four_steps, '3': four_steps, '4': four_steps,
+      '5': four_steps, '6': four_steps, '7': four_steps, '8': four_steps, '9': four_steps,
       '10': four_steps, '11': four_steps, '12': four_steps, '13': four_steps, '14': four_steps,
       '15': four_steps, '16': four_steps, '17': four_steps, '18': four_steps, '19': four_steps,
       '20': four_steps, '21': four_steps, '22': four_steps, '23': four_steps
     },
     'cde': {
       minutes: true,
-      '00': three_steps, '01': three_steps, '02': three_steps, '03': three_steps, '04': three_steps,
-      '05': three_steps, '06': three_steps, '07': three_steps, '08': three_steps, '09': three_steps,
+      '0': three_steps, '1': three_steps, '2': three_steps, '3': three_steps, '4': three_steps,
+      '5': three_steps, '6': three_steps, '7': three_steps, '8': three_steps, '9': three_steps,
       '10': three_steps, '11': three_steps, '12': three_steps, '13': three_steps, '14': three_steps,
       '15': three_steps, '16': three_steps, '17': three_steps, '18': three_steps, '19': three_steps,
       '20': three_steps, '21': three_steps, '22': three_steps, '23': three_steps
     },
     'dde': {
       minutes: true,
-      '00': no_tick, '01': one_step, '02': no_tick, '03': one_step, '04': no_tick,
-      '05': one_step, '06': no_tick, '07': one_step, '08': twenty_steps, '09': twenty_steps,
+      '0': no_tick, '1': one_step, '2': no_tick, '3': one_step, '4': no_tick,
+      '5': one_step, '6': no_tick, '7': one_step, '8': twenty_steps, '9': twenty_steps,
       '10': twenty_steps, '11': twenty_steps, '12': twenty_steps, '13': twenty_steps, '14': twenty_steps,
       '15': twenty_steps, '16': twenty_steps, '17': twenty_steps, '18': twenty_steps, '19': twenty_steps,
       '20': twenty_steps, '21': twenty_steps, '22': twenty_steps, '23': one_step
     },
     'ede': {
       minutes: true,
-      '00': twelve_steps, '01': twelve_steps, '02': twelve_steps, '03': twelve_steps, '04': twelve_steps,
-      '05': twelve_steps, '06': twelve_steps, '07': twelve_steps, '08': twelve_steps, '09': twelve_steps,
+      '0': twelve_steps, '1': twelve_steps, '2': twelve_steps, '3': twelve_steps, '4': twelve_steps,
+      '5': twelve_steps, '6': twelve_steps, '7': twelve_steps, '8': twelve_steps, '9': twelve_steps,
       '10': twelve_steps, '11': twelve_steps, '12': twelve_steps, '13': twelve_steps, '14': twelve_steps,
       '15': twelve_steps, '16': twelve_steps, '17': twelve_steps, '18': twelve_steps, '19': twelve_steps,
       '20': twelve_steps, '21': twelve_steps, '22': twelve_steps, '23': twelve_steps
     },
     'bde': {
       minutes: false,
-      '00': one_step, '01': one_step, '02': one_step, '03': one_step, '04': one_step,
-      '05': one_step, '06': one_step, '07': one_step, '08': one_step, '09': one_step,
+      '0': one_step, '1': one_step, '2': one_step, '3': one_step, '4': one_step,
+      '5': one_step, '6': one_step, '7': one_step, '8': one_step, '9': one_step,
       '10': one_step, '11': one_step, '12': one_step, '13': one_step, '14': one_step,
       '15': one_step, '16': one_step, '17': one_step, '18': one_step, '19': one_step,
       '20': one_step, '21': one_step, '22': one_step, '23': one_step, '24': one_step,
@@ -249,34 +249,36 @@ const Time = {
    * @return {number|*} the remaining minutes until tick.
    */
   findNextTick (serverTicks, h, m) {
-    let currentHourTicks = serverTicks[h];
-    let nextTickIndex = currentHourTicks.findIndex(element => element > parseInt(m));
+    let hour = parseInt(h);
+    let minute = parseInt(m);
+    let currentHourTicks = serverTicks[hour];
+    let nextTickIndex = currentHourTicks.findIndex(element => element > minute);
     let nextTick = 0;
     if (nextTickIndex === -1) {
-      if (h === '23') {
+      if (hour === 23) {
         for (let i = 0; i <= 23; i++) {
-          let hourTicks = serverTicks[Time.checkTime(i)];
+          let hourTicks = serverTicks[i];
           if (hourTicks.length === 0) {
             nextTick += 60;
             continue;
           }
-          nextTick += 60 - parseInt(m) + hourTicks[0];
+          nextTick += 60 - minute + hourTicks[0];
           i = 25;
         }
       } else {
-        for (let i = parseInt(h); i <= 23; i++) {
-          let hourTicks = serverTicks[Time.checkTime(i)];
+        for (let i = hour; i <= 23; i++) {
+          let hourTicks = serverTicks[i];
           if (hourTicks.length === 0) {
-            if(i === parseInt(h)) {
-              nextTick += 60 - parseInt(m);
+            if(i === hour) {
+              nextTick += 60 - minute;
             } else {
               nextTick += 60;
             }
             continue;
           }
           let firstTick = hourTicks[0];
-          if(i === parseInt(h) && parseInt(m) >= firstTick) {
-            nextTick += 60 - parseInt(m) + firstTick;
+          if(i === hour && minute >= firstTick) {
+            nextTick += 60 - minute + firstTick;
             i = 25;
           } else {
             nextTick += firstTick;
@@ -284,18 +286,18 @@ const Time = {
           }
         }
         if (nextTick === 0) {
-          for (let i = 0; i < parseInt(h); i++) {
-            let hourTicks = serverTicks[Time.checkTime(i)];
+          for (let i = 0; i < hour; i++) {
+            let hourTicks = serverTicks[i];
             if (hourTicks.length === 0) {
               nextTick += 60;
               continue;
             }
-            nextTick += 60 - parseInt(m) + hourTicks[0];
+            nextTick += 60 - minute + hourTicks[0];
           }
         }
       }
     } else {
-      return currentHourTicks[nextTickIndex] - parseInt(m);
+      return currentHourTicks[nextTickIndex] - minute;
     }
     return nextTick;
   },
@@ -308,34 +310,36 @@ const Time = {
    * @return {number|*} the remaining minutes until tick.
    */
   findNextTickInSeconds (serverTicks, m, s) {
-    let currentMinuteTicks = serverTicks[m];
-    let nextTickIndex = currentMinuteTicks.findIndex(element => element > parseInt(s));
+    let minute = parseInt(m);
+    let second = parseInt(s);
+    let currentMinuteTicks = serverTicks[minute];
+    let nextTickIndex = currentMinuteTicks.findIndex(element => element > second);
     let nextTick = 0;
     if (nextTickIndex === -1) {
-      if (m === '59') {
+      if (minute === 59) {
         for (let i = 0; i <= 59; i++) {
-          let minuteTicks = serverTicks[Time.checkTime(i)];
+          let minuteTicks = serverTicks[i];
           if (minuteTicks.length === 0) {
             nextTick += 60;
             continue;
           }
-          nextTick += 60 - parseInt(s) + minuteTicks[0];
+          nextTick += 60 - second + minuteTicks[0];
           i = 61;
         }
       } else {
-        for (let i = parseInt(m); i <= 59; i++) {
-          let minuteTicks = serverTicks[Time.checkTime(i)];
+        for (let i = minute; i <= 59; i++) {
+          let minuteTicks = serverTicks[i];
           if (minuteTicks.length === 0) {
-            if(i === parseInt(m)) {
-              nextTick += 60 - parseInt(s);
+            if(i === minute) {
+              nextTick += 60 - second;
             } else {
               nextTick += 60;
             }
             continue;
           }
           let firstTick = minuteTicks[0];
-          if(i === parseInt(m) && parseInt(s) >= firstTick) {
-            nextTick += 60 - parseInt(s) + firstTick;
+          if(i === minute && second >= firstTick) {
+            nextTick += 60 - second + firstTick;
             i = 61;
           } else {
             nextTick += firstTick;
@@ -343,18 +347,18 @@ const Time = {
           }
         }
         if (nextTick === 0) {
-          for (let i = 0; i < parseInt(m); i++) {
-            let minuteTicks = serverTicks[Time.checkTime(i)];
+          for (let i = 0; i < minute; i++) {
+            let minuteTicks = serverTicks[i];
             if (minuteTicks.length === 0) {
               nextTick += 60;
               continue;
             }
-            nextTick += 60 - parseInt(s) + minuteTicks[0];
+            nextTick += 60 - second + minuteTicks[0];
           }
         }
       }
     } else {
-      return currentMinuteTicks[nextTickIndex] - parseInt(s);
+      return currentMinuteTicks[nextTickIndex] - second;
     }
     return nextTick;
   },
@@ -378,8 +382,11 @@ const Time = {
     }
     let tempDate = from;
     while (tempDate <= to) {
-      let number = this.wt_ticks[server].minutes ? this.findNextTick(this.wt_ticks[server], from.getHours(), from.getMinutes())
-          : this.findNextTickInSeconds(this.wt_ticks[server], from.getHours(), from.getMinutes(), from.getSeconds())
+      let h_str = Time.checkTime(from.getHours());
+      let m_str = Time.checkTime(from.getMinutes());
+      let s_str = Time.checkTime(from.getSeconds());
+      let number = this.wt_ticks[server].minutes ? this.findNextTick(this.wt_ticks[server], h_str, m_str)
+          : this.findNextTickInSeconds(this.wt_ticks[server], m_str, s_str)
       tempDate = this.wt_ticks[server].minutes ? new Date(tempDate.getTime() + number * 60000) : new Date(tempDate.getTime() + number * 1000);
       ticks++;
       //can be very expensive
@@ -399,3 +406,4 @@ const Time = {
     return this.wt_ticks[server].amount;
   }
 };
+
