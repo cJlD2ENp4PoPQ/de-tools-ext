@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Die-Ewigen Extension",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Erweiterung für das Browsergame Die-Ewigen",
   "icons": {
     "48": "icons/border-48.png"
@@ -52,7 +52,8 @@
         "*://*.die-ewigen.com/ally_detail.php*",
         "*://*.die-ewigen.com/secret.php*",
         "*://*.die-ewigen.com/map_mobile.php*",
-        "*://*.die-ewigen.com/map.php*"
+        "*://*.die-ewigen.com/map.php*",
+        "*://*.die-ewigen.com/artefacts.php*"
       ],
       "js": [
         "js/utils/server.js",
@@ -72,7 +73,8 @@
         "js/pages/ally.js",
         "js/pages/overview.js",
         "js/pages/vsys.js",
-        "js/pages/map.js"
+        "js/pages/map.js",
+        "js/pages/artefacts.js"
       ],
       "css": [
         "css/fields.css",

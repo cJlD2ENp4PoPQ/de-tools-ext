@@ -116,6 +116,9 @@ const deExtension = {
     if (title && (title.innerText === 'Vergessene Systeme' || title.innerText === 'Systeminformationen')) {
       VSysExtension.onPageLoad(contentDocument);
     }
+    if (title && title.innerText === 'Artefakte') {
+      ArtefactsExtension.onPageLoad(contentDocument);
+    }
   },
 
   /**
@@ -145,6 +148,8 @@ const deExtension = {
       if(allianceTitle ? allianceTitle.innerHTML.includes('Allianzinformationen') : false) {
         AllyExtension.onPageLoad(document);
       }
+    } else if (url.includes('artefacts.php')) {
+      ArtefactsExtension.onPageLoad(document);
     }
   },
 

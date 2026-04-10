@@ -8,26 +8,36 @@
  */
 
 /** All known page bucket names (used for labels). */
-const STORAGE_KEYS = ['ally', 'Secret', 'Trade', 'Vsys', 'de', 'overview'];
+const STORAGE_KEYS = ['ally', 'Secret', 'Trade', 'Vsys', 'de', 'overview', 'artefacts'];
+
+/** All artifact names, kept in sync with ArtefactsExtension.artifacts. */
+const ARTEFACT_NAMES = [
+  'Agsora', 'Artascendus', 'Auctacon', 'Bloroka', 'Troniccelerator',
+  'Empala', 'Empdestro', 'Feuroka', 'Geabwus', 'Geangrus', 'Kollimania',
+  'Pekasch', 'Pekek', 'Pesara', 'Recadesto', 'Recarion',
+  'Sekkollus', 'Tronicar', 'Turak', 'Turla', 'Vakara', 'Waringa'
+];
 
 /** Human-readable labels for each page bucket. */
 const CATEGORY_LABELS = {
-  ally:     'Allianz-Daten',
-  Secret:   'Sonden-Daten',
-  Trade:    'Handelsfilter',
-  Vsys:     'VS-Systeme',
-  de:       'Timer-Einstellungen',
-  overview: 'Übersicht',
+  ally:      'Allianz-Daten',
+  Secret:    'Sonden-Daten',
+  Trade:     'Handelsfilter',
+  Vsys:      'VS-Systeme',
+  de:        'Timer-Einstellungen',
+  overview:  'Übersicht',
+  artefacts: 'Artefakt-Schutz',
 };
 
 /** Short descriptions for each page bucket. */
 const CATEGORY_DESCRIPTIONS = {
-  ally:     'Gespeicherte Allianztags und Beziehungsstatus.',
-  Secret:   'Gespeicherte Sondenberichte und Verlaufsdaten.',
-  Trade:    'Gespeicherte Filtereinstellungen der Auktionsseite.',
-  Vsys:     'Gespeicherte Liste der vergessenen Systeme.',
-  de:       'Kampfmodus-Schalterstellung.',
-  overview: 'Gespeicherte Rundenpunkte für Rundenerkennnung.',
+  ally:      'Gespeicherte Allianztags und Beziehungsstatus.',
+  Secret:    'Gespeicherte Sondenberichte und Verlaufsdaten.',
+  Trade:     'Gespeicherte Filtereinstellungen der Auktionsseite.',
+  Vsys:      'Gespeicherte Liste der vergessenen Systeme.',
+  de:        'Kampfmodus-Schalterstellung.',
+  overview:  'Gespeicherte Rundenpunkte für Rundenerkennnung.',
+  artefacts: 'Geschützte Artefakte (Verschmelzungsschutz).',
 };
 
 /**
@@ -290,6 +300,115 @@ function renderServerSections(serverMap) {
 }
 
 /**
+ * Read all chrome.storage.local keys, find every "server:artefacts" bucket,
+ * and render one checkbox block per server into #artefacts-protection-section.
+ * Checkboxes auto-save on toggle.
+ */
+function renderArtefactsProtection() {
+  const container = document.getElementById('artefacts-protection-section');
+  if (!container) return;
+  container.innerHTML = '';
+
+  chrome.storage.local.get(null, (result) => {
+    if (chrome.runtime.lastError) {
+      showStatus('Fehler beim Laden der Artefakt-Daten: ' + chrome.runtime.lastError.message, 'error');
+      return;
+    }
+
+    // Collect all servers that have (or could have) an artefacts bucket.
+    // We render a block for every server found anywhere in storage so the
+    // user can pre-configure protection before visiting artefacts.php.
+    const servers = [];
+    for (const key of Object.keys(result)) {
+      const colonIdx = key.indexOf(':');
+      if (colonIdx === -1) continue;
+      const server = key.substring(0, colonIdx);
+      if (!servers.includes(server)) servers.push(server);
+    }
+    servers.sort();
+
+    if (servers.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'description empty-state';
+      empty.textContent = 'Keine Serverdaten vorhanden. Bitte zuerst das Spiel aufrufen.';
+      container.insertBefore(empty, null);
+      return;
+    }
+
+    for (const server of servers) {
+      const fullKey = server + ':artefacts';
+      const bucket = result[fullKey] || {};
+      const protectedList = Array.isArray(bucket.protected) ? bucket.protected : [];
+
+      const block = document.createElement('div');
+      block.className = 'artefacts-server-block';
+
+      const heading = document.createElement('h3');
+      heading.className = 'artefacts-server-heading';
+      heading.textContent = server;
+      block.insertBefore(heading, null);
+
+      const grid = document.createElement('div');
+      grid.className = 'artefacts-checkbox-grid';
+
+      for (const name of ARTEFACT_NAMES) {
+        const label = document.createElement('label');
+        label.className = 'artefacts-checkbox-label';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = name;
+        checkbox.checked = protectedList.includes(name);
+        checkbox.dataset.server = server;
+        checkbox.addEventListener('change', onArtefactCheckboxChange);
+
+        const span = document.createElement('span');
+        span.textContent = name;
+
+        label.insertBefore(checkbox, null);
+        label.insertBefore(span, null);
+        grid.insertBefore(label, null);
+      }
+
+      block.insertBefore(grid, null);
+      container.insertBefore(block, null);
+    }
+  });
+}
+
+/**
+ * Auto-save handler for artifact protection checkboxes.
+ * Reads all checkboxes for the same server and persists the result.
+ * @param {Event} event
+ */
+function onArtefactCheckboxChange(event) {
+  const server = event.target.dataset.server;
+  const allCheckboxes = document.querySelectorAll(
+    '.artefacts-checkbox-label input[type="checkbox"][data-server="' + server + '"]'
+  );
+  const selected = Array.from(allCheckboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  const fullKey = server + ':artefacts';
+  chrome.storage.local.get(fullKey, (result) => {
+    if (chrome.runtime.lastError) {
+      showStatus('Fehler beim Speichern: ' + chrome.runtime.lastError.message, 'error');
+      return;
+    }
+    const bucket = result[fullKey] || {};
+    bucket.protected = selected;
+    chrome.storage.local.set({ [fullKey]: bucket }, () => {
+      if (chrome.runtime.lastError) {
+        showStatus('Fehler beim Speichern: ' + chrome.runtime.lastError.message, 'error');
+        return;
+      }
+      showStatus('Artefakt-Schutz für "' + server + '" gespeichert.', 'success');
+    });
+  });
+}
+
+/**
  * Load storage state and (re-)render the full settings page body.
  */
 function renderPage() {
@@ -312,4 +431,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initVersion();
   initButtons();
   renderPage();
+  renderArtefactsProtection();
 });

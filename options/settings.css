@@ -220,3 +220,42 @@ body {
   border-top: 1px solid #7a3020;
   color: #e07060;
 }
+
+/* ---- Artefact protection section ---- */
+.artefacts-server-block {
+  margin-bottom: 24px;
+}
+
+.artefacts-server-heading {
+  font-size: 14px;
+  color: #c8b86a;
+  border-left: 3px solid #ff872c;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+.artefacts-checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.artefacts-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #d4c89a;
+  font-size: 13px;
+  /* Minimum tap target for mobile */
+  min-height: 36px;
+  padding: 4px 0;
+}
+
+.artefacts-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #ff872c;
+}
