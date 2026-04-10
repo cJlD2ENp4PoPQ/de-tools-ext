@@ -13,6 +13,7 @@ const VSysExtension = {
   onPageLoad: async function (content) {
     let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
     if(sysElements && sysElements.length > 0) {
+      //system overview page
       this.addFilterEventListener(content);
       content.querySelectorAll('a[href*="?id="]').forEach(a => {
           a.addEventListener('click', (event) => {
@@ -24,6 +25,7 @@ const VSysExtension = {
         });
       await this.storeShownSystems(sysElements);
     } else {
+      //system details page
       let higher = content.getElementById('link_higher');
       let systems = await Storage.getConfig(this.storageKey,'syslist');
       if(systems && systems.length > 0 && higher) {
@@ -51,6 +53,27 @@ const VSysExtension = {
             a.href = '?id=' + systems[systems.length - 1];
           }
         })
+      }
+      const findingHeadline = Array.from(content.querySelectorAll('div'))
+          .filter(div => div.textContent.includes('Fundstücke:')).pop()
+      const arrayOfFindings = []
+      if (findingHeadline) {
+        let finding = findingHeadline.nextSibling;
+        while (finding) {
+          let tokens = finding.textContent.split(' ');
+          if (tokens.length > 2 && tokens[0] === 'Feld') {
+            arrayOfFindings.push({buildingId: tokens[1].replace(':', '')});
+          }
+          finding = finding.nextSibling;
+        }
+      }
+      for (let i = 0; i < arrayOfFindings.length; i++) {
+        let upgradeElement = content
+            .querySelector(`input[name="fieldid"][value="${arrayOfFindings[i].buildingId}"]`)
+            ?.parentElement?.parentElement;
+        if (upgradeElement) {
+          upgradeElement.style.backgroundColor = 'rgba(255,0,0,0.23)';
+        }
       }
     }
   },
