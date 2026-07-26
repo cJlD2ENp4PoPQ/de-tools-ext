@@ -14,7 +14,7 @@ URL zum Spiel: https://www.die-ewigen.com/
 - [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/dieewigen-extension/kebkdomcgapmiedeakiideklcldinncd)
 
 
-**Aktuelle veröffentlichte Version:** 0.8.0
+**Aktuelle veröffentlichte Version:** 0.12.1
 
 ## Installation für Android
 

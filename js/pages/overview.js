@@ -15,10 +15,14 @@ const OverviewExtension = {
                 infoBoxes[0].parentElement.insertBefore(infoTable, infoBoxes[1]);
                 const settingsLink = infoTable.querySelector('#de-settings-link');
                 if (settingsLink) {
-                  settingsLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    chrome.runtime.sendMessage({ type: 'open-options-page' });
-                  });
+                    settingsLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        chrome.runtime.sendMessage({ type: 'open-options-page' }, (response) => {
+                            if (response && response.status && !response.status.startsWith('success')) {
+                                alert('Fehler beim öffnen der Einstellungen: ' + response.status + '\n' + (response.error || ''));
+                            }
+                        });
+                    });
                 }
             });
     }

@@ -11,14 +11,14 @@ const VSysExtension = {
    * @param {Document} content
    */
   onPageLoad: async function (content) {
-    let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
+    let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
     if(sysElements && sysElements.length > 0) {
       //system overview page
       this.addFilterEventListener(content);
       content.querySelectorAll('a[href*="?id="]').forEach(a => {
           a.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            let sysElements = content.querySelectorAll('tr.f_system+tr[style*="height: 30px;"]:not([style*="display: none"])');
+            let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
             this.storeShownSystems(sysElements);
             return true;
           });

@@ -42,7 +42,11 @@ const ArtefactsExtension = {
     link.innerText = 'Einstellungen öffnen';
     link.addEventListener('click', function (e) {
       e.preventDefault();
-      chrome.runtime.sendMessage({ type: 'open-options-page' });
+      chrome.runtime.sendMessage({ type: 'open-options-page' }, (response) => {
+        if (response && response.status && !response.status.startsWith('success')) {
+          alert('Fehler beim öffnen der Einstellungen: ' + response.status + '\n' + (response.error || ''));
+        }
+      });
     });
 
     hint.insertBefore(text, null);
