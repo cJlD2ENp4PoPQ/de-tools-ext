@@ -70,6 +70,7 @@ const TradeExtension = {
   artOthers: ['2 Titanen-Energiekern', '500 Palenium', '25 Tronic'],
 
   storageKey: 'Trade',
+  isRedesign: false,
 
   onPageLoad: async function (content) {
     if (!content.querySelector('#trade-css')) {
@@ -86,6 +87,7 @@ const TradeExtension = {
       tradeCss.type = 'text/css';
       tradeCss.rel = 'stylesheet';
       content.getElementsByTagName("head")[0].appendChild(tradeCss);
+      this.isRedesign = content.querySelector('div.auk') != null;
       this.replaceSpacer(content);
       await this.addFilter(content);
     }
@@ -166,16 +168,16 @@ const TradeExtension = {
     let ownerDocument = event.target.ownerDocument;
     let selectedOption = event.target.selectedOptions[0];
     if (filterId === 'de-filter') {
-      ownerDocument.querySelectorAll('tr.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
+      ownerDocument.querySelectorAll('.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
       await TradeExtension.filterDEEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if (filterId === 'vs-filter') {
-      ownerDocument.querySelectorAll('tr.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
+      ownerDocument.querySelectorAll('.disabled-currency').forEach(tr => {tr.classList.remove('disabled-currency')});
       await TradeExtension.filterVSEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if(filterId === 'article-arti-filter') {
-      ownerDocument.querySelectorAll('tr.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
+      ownerDocument.querySelectorAll('.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
       await TradeExtension.filterArticleArtiEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     } else if(filterId === 'article-other-filter') {
-      ownerDocument.querySelectorAll('tr.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
+      ownerDocument.querySelectorAll('.disabled-article').forEach(tr => {tr.classList.remove('disabled-article')});
       await TradeExtension.filterArticleOtherEntries(selectedOption.id, selectedOption.innerText, ownerDocument);
     }
 
@@ -192,17 +194,32 @@ const TradeExtension = {
     await Storage.removeConfig(TradeExtension.storageKey, 'de-filter');
     let deFilter = document.getElementById('de-filter');
     deFilter.value = 'de-disabled';
-    let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
-    if (filterEntryID !== 'vs-disabled') {
-      rows.forEach(row => {
-        if (filterEntryID === 'vs-all') {
-          if (new RegExp(TradeExtension.deRes.join("|")).test(row.children[1].innerText)) {
+    if (this.isRedesign) {
+      let entries = document.querySelectorAll('div.auk-karte');
+      if (filterEntryID !== 'vs-disabled') {
+        entries.forEach(entry => {
+          if (filterEntryID === 'vs-all') {
+            if (new RegExp(TradeExtension.deRes.join("|")).test(entry.children[1].innerText)) {
+              entry.classList.add('disabled-currency');
+            }
+          } else if (!new RegExp(filterText).test(entry.children[1].innerText)) {
+            entry.classList.add('disabled-currency');
+          }
+        })
+      }
+    } else {
+      let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (filterEntryID !== 'vs-disabled') {
+        rows.forEach(row => {
+          if (filterEntryID === 'vs-all') {
+            if (new RegExp(TradeExtension.deRes.join("|")).test(row.children[1].innerText)) {
+              row.classList.add('disabled-currency');
+            }
+          } else if (!new RegExp(filterText).test(row.children[1].innerText)) {
             row.classList.add('disabled-currency');
           }
-        } else if (!new RegExp(filterText).test(row.children[1].innerText)) {
-          row.classList.add('disabled-currency');
-        }
-      })
+        })
+      }
     }
   },
 
@@ -217,17 +234,32 @@ const TradeExtension = {
     await Storage.removeConfig(TradeExtension.storageKey, 'vs-filter');
     let vsFilter = document.getElementById('vs-filter');
     vsFilter.value = 'vs-disabled';
-    let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
-    if (filterEntryID !== 'de-disabled') {
-      rows.forEach(row => {
-        if (filterEntryID === 'de-all') {
-          if (new RegExp(TradeExtension.vsRes.join("|")).test(row.children[1].innerText)) {
+    if (this.isRedesign) {
+      let entries = document.querySelectorAll('div.auk-karte');
+      if (filterEntryID !== 'de-disabled') {
+        entries.forEach(entry => {
+          if (filterEntryID === 'de-all') {
+            if (new RegExp(TradeExtension.vsRes.join("|")).test(entry.children[1].innerText)) {
+              entry.classList.add('disabled-currency');
+            }
+          } else if (!new RegExp(filterText).test(entry.children[1].innerText)) {
+            entry.classList.add('disabled-currency');
+          }
+        })
+      }
+    } else {
+      let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (filterEntryID !== 'de-disabled') {
+        rows.forEach(row => {
+          if (filterEntryID === 'de-all') {
+            if (new RegExp(TradeExtension.vsRes.join("|")).test(row.children[1].innerText)) {
+              row.classList.add('disabled-currency');
+            }
+          } else if (!new RegExp(filterText).test(row.children[1].innerText)) {
             row.classList.add('disabled-currency');
           }
-        } else if (!new RegExp(filterText).test(row.children[1].innerText)) {
-          row.classList.add('disabled-currency');
-        }
-      })
+        })
+      }
     }
   },
 
@@ -242,17 +274,32 @@ const TradeExtension = {
     await Storage.removeConfig(TradeExtension.storageKey, 'article-other-filter');
     let otherFilter = document.getElementById('article-other-filter');
     otherFilter.value = 'art-oth-disabled';
-    let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
-    if (filterEntryID !== 'art-arti-disabled') {
-      rows.forEach(row => {
-        if (filterEntryID === 'art-arti-all') {
-          if (new RegExp(TradeExtension.artOthers.join("|")).test(row.children[0].innerText)) {
+    if (this.isRedesign) {
+      let entries = document.querySelectorAll('div.auk-karte');
+      if (filterEntryID !== 'art-arti-disabled') {
+        entries.forEach(entry => {
+          if (filterEntryID === 'art-arti-all') {
+            if (new RegExp(TradeExtension.vsRes.join("|")).test(entry.children[0].innerText)) {
+              entry.classList.add('disabled-article');
+            }
+          } else if (!new RegExp(filterText).test(entry.children[0].innerText)) {
+            entry.classList.add('disabled-article');
+          }
+        })
+      }
+    } else {
+      let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (filterEntryID !== 'art-arti-disabled') {
+        rows.forEach(row => {
+          if (filterEntryID === 'art-arti-all') {
+            if (new RegExp(TradeExtension.artOthers.join("|")).test(row.children[0].innerText)) {
+              row.classList.add('disabled-article');
+            }
+          } else if (!new RegExp(filterText).test(row.children[0].innerText)) {
             row.classList.add('disabled-article');
           }
-        } else if (!new RegExp(filterText).test(row.children[0].innerText)) {
-          row.classList.add('disabled-article');
-        }
-      })
+        })
+      }
     }
   },
 
@@ -267,17 +314,32 @@ const TradeExtension = {
     await Storage.removeConfig(TradeExtension.storageKey, 'article-arti-filter');
     let artiFilter = document.getElementById('article-arti-filter');
     artiFilter.value = 'art-arti-disabled';
-    let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
-    if (filterEntryID !== 'art-oth-disabled') {
-      rows.forEach(row => {
-        if (filterEntryID === 'art-oth-all') {
-          if (new RegExp(TradeExtension.artArtis.join("|")).test(row.children[0].innerText)) {
+    if (this.isRedesign) {
+      let entries = document.querySelectorAll('div.auk-karte');
+      if (filterEntryID !== 'art-oth-disabled') {
+        entries.forEach(entry => {
+          if (filterEntryID === 'art-oth-all') {
+            if (new RegExp(TradeExtension.artArtis.join("|")).test(entry.children[0].innerText)) {
+              entry.classList.add('disabled-article');
+            }
+          } else if (!new RegExp(filterText).test(entry.children[0].innerText)) {
+            entry.classList.add('disabled-article');
+          }
+        })
+      }
+    } else {
+      let rows = document.querySelectorAll('tr[style="text-align: right; vertical-align: middle;"]');
+      if (filterEntryID !== 'art-oth-disabled') {
+        rows.forEach(row => {
+          if (filterEntryID === 'art-oth-all') {
+            if (new RegExp(TradeExtension.artArtis.join("|")).test(row.children[0].innerText)) {
+              row.classList.add('disabled-article');
+            }
+          } else if (!new RegExp(filterText).test(row.children[0].innerText)) {
             row.classList.add('disabled-article');
           }
-        } else if (!new RegExp(filterText).test(row.children[0].innerText)) {
-          row.classList.add('disabled-article');
-        }
-      })
+        })
+      }
     }
   }
 };
