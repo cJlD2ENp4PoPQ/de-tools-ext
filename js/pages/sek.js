@@ -154,9 +154,9 @@ const SekExtension = {
 
       }
     })
-
+    let isRedesign = tableContent.length > 1 && tableContent[0].querySelector("td.sec-th") != null;
     let pointColumnIndex = alienSector ? 2 : 5;
-    let pointHeaderColumnIndex = alienSector ? 6 : 12;
+    let pointHeaderColumnIndex =  isRedesign ? (alienSector ? 3 : 6) : (alienSector ? 6 : 12);
     tableContent.forEach((node, i) => {
         if(i <= players.length && i > 0) {
           let kolliStep = 0;
@@ -177,7 +177,7 @@ const SekExtension = {
         } else if (i === 0) {
           let header = document.createElement("td");
           header.textContent = "Flottenpunkte"
-          header.setAttribute("class", "cell tac")
+          header.setAttribute("class", "cell sec-th")
           node.insertBefore(header, node.childNodes[pointHeaderColumnIndex]);
         }
       });
