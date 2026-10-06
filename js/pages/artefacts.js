@@ -16,10 +16,38 @@ const ArtefactsExtension = {
     'Sekkollus', 'Tronicar', 'Turak', 'Turla', 'Vakara', 'Waringa'
   ],
 
+  artifactImgMapping: {
+    '/gp/g/arte1.gif': 'Pesara',
+    '/gp/g/arte2.gif': 'Vakara',
+    '/gp/g/arte3.gif': 'Geangrus',
+    '/gp/g/arte4.gif': 'Geabwus',
+    '/gp/g/arte5.gif': 'Agsora',
+    '/gp/g/arte6.gif': 'Feuroka',
+    '/gp/g/arte7.gif': 'Bloroka',
+    '/gp/g/arte8.gif': 'Turak',
+    '/gp/g/arte9.gif': 'Turla',
+    '/gp/g/arte10.gif': 'Recarion',
+    '/gp/g/arte11.gif': 'Pekasch',
+    '/gp/g/arte12.gif': 'Pekek',
+    '/gp/g/arte13.gif': 'Empala',
+    '/gp/g/arte14.gif': 'Empdestro',
+    '/gp/g/arte15.gif': 'Recadesto',
+    '/gp/g/arte16.gif': 'Tronicar',
+    '/gp/g/arte17.gif': 'Artascendus',
+    '/gp/g/arte18.gif': 'Waringa',
+    '/gp/g/arte19.gif': 'Kollimania',
+    '/gp/g/arte20.gif': 'Sekkollus',
+    '/gp/g/arte21.gif': 'Troniccelerator',
+    '/gp/g/arte22.gif': 'Auctacon'
+  },
+
+  isRedesign: false,
+
   onPageLoad: async function (content) {
     if (content.querySelector('#artefacts-settings-hint')) {
       return;
     }
+    this.isRedesign = content.querySelector('.art-kopf') !== null;
     this.addSettingsHint(content);
     await this.guardMergeLink(content);
     this.observeMsgarea(content);
@@ -33,12 +61,21 @@ const ArtefactsExtension = {
   addSettingsHint: function (content) {
     let hint = content.createElement('div');
     hint.id = 'artefacts-settings-hint';
+    if (this.isRedesign) {
+      hint.classList.add('art-panel');
+    }
     hint.style.cssText = 'padding: 4px 6px; font-size: 11px; color: #9a9080;';
-
-    let text = content.createTextNode('Artefakt-Schutz: ');
+    let text = content.createElement('div');
+    text.classList.add('mod-typ');
+    text.innerText = 'Artefakt-Schutz:';
     let link = content.createElement('a');
     link.href = '#';
-    link.style.cssText = 'color: #c8b86a;';
+    if (this.isRedesign) {
+     link.classList.add('mod-btn');
+     link.style.cssText = 'margin-top: 10px; font-size: 11px; color: #c8b86a;';
+    } else {
+      link.style.cssText = 'color: #c8b86a;';
+    }
     link.innerText = 'Einstellungen öffnen';
     link.addEventListener('click', function (e) {
       e.preventDefault();
@@ -52,7 +89,7 @@ const ArtefactsExtension = {
     hint.insertBefore(text, null);
     hint.insertBefore(link, null);
 
-    let cell = content.querySelector('div.cell');
+    let cell = this.isRedesign ? content.querySelector('.art-kopf') : content.querySelector('div.cell');
     if (cell) {
       cell.parentNode.insertBefore(hint, cell);
     }
@@ -65,18 +102,33 @@ const ArtefactsExtension = {
    * @param {Document} content
    */
   observeMsgarea: function (content) {
-    let msgarea = content.querySelector('#msgarea');
-    if (!msgarea) {
-      return;
+    if (this.isRedesign) {
+      let msgarea = content.querySelector('#art-panel');
+      if (!msgarea) {
+        return;
+      }
+      let debounceTimer = null;
+      let observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          ArtefactsExtension.guardMergeLink(content);
+        }, 50);
+      });
+      observer.observe(msgarea, { childList: true, subtree: true, characterData: true });
+    } else {
+      let msgarea = content.querySelector('#msgarea');
+      if (!msgarea) {
+        return;
+      }
+      let debounceTimer = null;
+      let observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          ArtefactsExtension.guardMergeLink(content);
+        }, 50);
+      });
+      observer.observe(msgarea, { childList: true, subtree: true, characterData: true });
     }
-    let debounceTimer = null;
-    let observer = new MutationObserver(() => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        ArtefactsExtension.guardMergeLink(content);
-      }, 50);
-    });
-    observer.observe(msgarea, { childList: true, subtree: true, characterData: true });
   },
 
   /**
@@ -86,14 +138,24 @@ const ArtefactsExtension = {
    */
   getSelectedArtifactNames: function (content) {
     let names = [];
-    content.querySelectorAll('[id^="ac"]').forEach(el => {
-      if (el.style.borderColor === 'rgb(0, 255, 0)') {
-        let img = el.querySelector('img[alt]');
-        if (img && img.alt) {
-          names.push(img.alt);
+    if (this.isRedesign) {
+      content.querySelectorAll('.art-gewaehlt').forEach(el => {
+        let artImg = el.querySelector('img');
+        if (artImg) {
+          let artifactName = this.artifactImgMapping[new URL(artImg.src).pathname];
+          names.push(artifactName);
         }
-      }
-    });
+      });
+    } else {
+      content.querySelectorAll('[id^="ac"]').forEach(el => {
+        if (el.style.borderColor === 'rgb(0, 255, 0)') {
+          let img = el.querySelector('img[alt]');
+          if (img && img.alt) {
+            names.push(img.alt);
+          }
+        }
+      });
+    }
     return names;
   },
 
@@ -106,53 +168,104 @@ const ArtefactsExtension = {
    * @param {Document} content
    */
   guardMergeLink: async function (content) {
-    let msgarea = content.querySelector('#msgarea');
-    if (!msgarea) {
-      return;
-    }
-
-    // If our warning is currently displayed, the observer may have fired from
-    // our own innerHTML replacement — bail out only if the warning is still present.
-    // If ca() already replaced the content, the dataset property is stale; clean it up.
-    let warningActive = msgarea.dataset.extOriginalContent !== undefined;
-    if (warningActive) {
-      if (msgarea.querySelector('span[style*="ff4444"]') !== null) {
+    if (this.isRedesign) {
+      let msgarea = content.querySelector('#art-panel');
+      if (!msgarea) {
         return;
       }
-      // ca() replaced our warning with new game content — discard the stale snapshot.
-      delete msgarea.dataset.extOriginalContent;
-    }
 
-    let mergeLink = msgarea.querySelector('a');
-    if (!mergeLink) {
-      // No link present — fewer than 2 artifacts selected, nothing to guard.
-      return;
-    }
+      // If our warning is currently displayed, the observer may have fired from
+      // our own innerHTML replacement — bail out only if the warning is still present.
+      // If ca() already replaced the content, the dataset property is stale; clean it up.
+      let warningActive = msgarea.dataset.extOriginalContent !== undefined;
+      if (warningActive) {
+        if (msgarea.querySelector('span[style*="ff4444"]') !== null) {
+          return;
+        }
+        // ca() replaced our warning with new game content — discard the stale snapshot.
+        delete msgarea.dataset.extOriginalContent;
+      }
 
-    // "Artefakte fusionieren" has no onclick — only block the destructive
-    // "neues Artefakt erzeugen" action which carries onclick="return confirm(...)".
-    if (!mergeLink.hasAttribute('onclick')) {
-      this.clearWarning(msgarea);
-      return;
-    }
+      let mergeLink = msgarea.querySelector('a');
+      if (!mergeLink) {
+        // No link present — fewer than 2 artifacts selected, nothing to guard.
+        return;
+      }
 
-    let stored = await Storage.getConfig(this.storageKey, 'protected');
-    let protectedList = Array.isArray(stored) ? stored : [];
+      // "Artefakte fusionieren" has no onclick — only block the destructive
+      // "neues Artefakt erzeugen" action which carries onclick="return confirm(...)".
+      if (!mergeLink.hasAttribute('href')) {
+        this.clearWarning(msgarea);
+        return;
+      }
 
-    let selectedNames = this.getSelectedArtifactNames(content);
-    let anyProtected = selectedNames.length === 2 &&
-      (protectedList.includes(selectedNames[0]) ||
-       protectedList.includes(selectedNames[1]));
+      let stored = await Storage.getConfig(this.storageKey, 'protected');
+      let protectedList = Array.isArray(stored) ? stored : [];
 
-    if (anyProtected) {
-      // Save original content and replace with warning that fits the 64px box.
-      msgarea.dataset.extOriginalContent = msgarea.innerHTML;
-      msgarea.innerHTML =
-        '<span style="color: #ff4444; font-weight: bold; line-height: 64px;">' +
-        'Verschmelzung blockiert: eins der Artefakte ist gesch\u00fctzt.' +
-        '</span>';
+      let selectedNames = this.getSelectedArtifactNames(content);
+      let anyProtected = selectedNames.length === 2 &&
+          (protectedList.includes(selectedNames[0]) ||
+              protectedList.includes(selectedNames[1]));
+
+      if (anyProtected) {
+        // Save original content and replace with warning that fits the 64px box.
+        msgarea.dataset.extOriginalContent = msgarea.innerHTML;
+        msgarea.innerHTML =
+            '<span style="color: #ff4444; font-weight: bold; line-height: 64px;">' +
+            'Verschmelzung blockiert: eins der Artefakte ist gesch\u00fctzt.' +
+            '</span>';
+      } else {
+        this.clearWarning(msgarea);
+      }
     } else {
-      this.clearWarning(msgarea);
+      let msgarea = content.querySelector('#msgarea');
+      if (!msgarea) {
+        return;
+      }
+
+      // If our warning is currently displayed, the observer may have fired from
+      // our own innerHTML replacement — bail out only if the warning is still present.
+      // If ca() already replaced the content, the dataset property is stale; clean it up.
+      let warningActive = msgarea.dataset.extOriginalContent !== undefined;
+      if (warningActive) {
+        if (msgarea.querySelector('span[style*="ff4444"]') !== null) {
+          return;
+        }
+        // ca() replaced our warning with new game content — discard the stale snapshot.
+        delete msgarea.dataset.extOriginalContent;
+      }
+
+      let mergeLink = msgarea.querySelector('a');
+      if (!mergeLink) {
+        // No link present — fewer than 2 artifacts selected, nothing to guard.
+        return;
+      }
+
+      // "Artefakte fusionieren" has no onclick — only block the destructive
+      // "neues Artefakt erzeugen" action which carries onclick="return confirm(...)".
+      if (!mergeLink.hasAttribute('onclick')) {
+        this.clearWarning(msgarea);
+        return;
+      }
+
+      let stored = await Storage.getConfig(this.storageKey, 'protected');
+      let protectedList = Array.isArray(stored) ? stored : [];
+
+      let selectedNames = this.getSelectedArtifactNames(content);
+      let anyProtected = selectedNames.length === 2 &&
+          (protectedList.includes(selectedNames[0]) ||
+              protectedList.includes(selectedNames[1]));
+
+      if (anyProtected) {
+        // Save original content and replace with warning that fits the 64px box.
+        msgarea.dataset.extOriginalContent = msgarea.innerHTML;
+        msgarea.innerHTML =
+            '<span style="color: #ff4444; font-weight: bold; line-height: 64px;">' +
+            'Verschmelzung blockiert: eins der Artefakte ist gesch\u00fctzt.' +
+            '</span>';
+      } else {
+        this.clearWarning(msgarea);
+      }
     }
   },
 

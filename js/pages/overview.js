@@ -3,7 +3,9 @@
  */
 const OverviewExtension = {
   onPageLoad: async function(content) {
-    let infoBoxes = content.querySelectorAll('table[width="586"]');
+    let isRedesign = content.querySelector('table[width="586"]') === null;
+    let infoBoxes = isRedesign ? content.querySelectorAll('table[border="0"][cellpadding="0"][cellspacing="0"]')
+        : content.querySelectorAll('table[width="586"]');
     if(infoBoxes.length >= 2) {
         let infoContentLink = chrome.runtime.getURL("content/info.html");
         fetch(infoContentLink)
@@ -11,7 +13,7 @@ const OverviewExtension = {
             .then((text) =>
             {
                 let rows = Tables.createRow('Die Ewigen Extension ' + chrome.runtime.getManifest().version, text);
-                let infoTable = Tables.createContentTable(rows);
+                let infoTable = Tables.createContentTable(rows, isRedesign);
                 infoBoxes[0].parentElement.insertBefore(infoTable, infoBoxes[1]);
                 const settingsLink = infoTable.querySelector('#de-settings-link');
                 if (settingsLink) {
@@ -26,24 +28,33 @@ const OverviewExtension = {
                 }
             });
     }
-    if (await this.isNewRound(content)) {
+    if (await this.isNewRound(content, isRedesign)) {
       await this.cleanupStorage();
     }
   },
   
-  getRPs: function(content) {
-    let tdElements = content.getElementsByTagName("td");
-    for (let i = 0; i<=tdElements.length;i++) {
-      if (tdElements[i].innerText==="Rundenpunkte" && tdElements[i+1]) {
-        return parseInt(tdElements[i+1].innerText);
-      }
+  getRPs: function(content, isRedesign) {
+    if (isRedesign) {
+        let tdElements = content.querySelectorAll("div.ov-wert");
+        for (let i = 0; i<=tdElements.length;i++) {
+            if (tdElements[i].innerText.toLowerCase().includes("rundenpunkte") && tdElements[i].childNodes.length > 1) {
+                return parseInt(tdElements[i].childNodes[1].innerText);
+            }
+        }
+    } else {
+        let tdElements = content.getElementsByTagName("td");
+        for (let i = 0; i<=tdElements.length;i++) {
+            if (tdElements[i].innerText==="Rundenpunkte" && tdElements[i+1]) {
+                return parseInt(tdElements[i+1].innerText);
+            }
+        }
     }
     return null;
   },
   
-  isNewRound: async function(content) {
+  isNewRound: async function(content, isRedesign) {
     let previousRPs = await Storage.getConfig("overview","previousRPs");
-    let currentRPs = this.getRPs(content);
+    let currentRPs = this.getRPs(content, isRedesign);
     if (currentRPs != null && currentRPs != previousRPs) {
       await Storage.storeConfig("overview","previousRPs",currentRPs)
       return previousRPs != undefined;

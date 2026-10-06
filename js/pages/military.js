@@ -14,36 +14,63 @@ const MilitaryExtension = {
    */
   addDeksIntegration : function (content, deksOpen) {
     if(deksOpen) {
-      let tbodies = content.getElementsByTagName('tbody');
-      if(tbodies.length > 2) {
-        let fleetTable = tbodies.item(1);
-        let fleetrows = fleetTable.getElementsByTagName('tr');
-        let buttonRow = fleetrows.item(fleetrows.length - 1);
-        let deksTrAttacker = document.createElement('tr');
-        deksTrAttacker.align = 'center';
-        deksTrAttacker.classList = ['deks'];
-        let headerAtter = document.createElement('td');
-        headerAtter.classList = ['c1'];
-        headerAtter.innerHTML = 'Kampfsimulator (Atter)';
-        deksTrAttacker.insertBefore(headerAtter, null);
-        deksTrAttacker.insertBefore(this.createTd(0,'A', 'hinzufügen'), null);
-        deksTrAttacker.insertBefore(this.createTd(1,'A', 'hinzufügen'), null);
-        deksTrAttacker.insertBefore(this.createTd(2,'A', 'hinzufügen'), null);
-        deksTrAttacker.insertBefore(this.createTd(3,'A', 'hinzufügen'), null);
-        fleetTable.insertBefore(deksTrAttacker, buttonRow);
+      let isRedesign = content.querySelector('.mil-raster') != null;
+      if (isRedesign) {
+        let militaryInputs = content.querySelectorAll('input.mil-eingabe');
+        let actionRow = content.querySelector('.mil-befehlzeile');
+        let parentElement = actionRow.parentElement;
+        let label = this.createTextFlexSpan('deks mil-label mil-trenn mil-befehlzeile', 'Kampfsimulator (Atter)');
+        let button1 = this.createButtonSpan(0, 'A', 'hinzufügen');
+        let button2 = this.createButtonSpan(1, 'A', 'hinzufügen');
+        let button3 = this.createButtonSpan(2, 'A', 'hinzufügen');
+        let button4 = this.createButtonSpan(3, 'A', 'hinzufügen');
+        parentElement.insertBefore(label, actionRow);
+        parentElement.insertBefore(button1, actionRow);
+        parentElement.insertBefore(button2, actionRow);
+        parentElement.insertBefore(button3, actionRow);
+        parentElement.insertBefore(button4, actionRow);
+        let labelD = this.createTextFlexSpan('deks mil-label mil-trenn mil-befehlzeile', 'Kampfsimulator (Deffer)');
+        let buttonD1 = this.createButtonSpan(0, 'D', 'hinzufügen');
+        let buttonD2 = this.createButtonSpan(1, 'D', 'hinzufügen');
+        let buttonD3 = this.createButtonSpan(2, 'D', 'hinzufügen');
+        let buttonD4 = this.createButtonSpan(3, 'D', 'hinzufügen');
+        parentElement.insertBefore(labelD, actionRow);
+        parentElement.insertBefore(buttonD1, actionRow);
+        parentElement.insertBefore(buttonD2, actionRow);
+        parentElement.insertBefore(buttonD3, actionRow);
+        parentElement.insertBefore(buttonD4, actionRow);
+      } else {
+        let tbodies = content.getElementsByTagName('tbody');
+        if(tbodies.length > 2) {
+          let fleetTable = tbodies.item(1);
+          let fleetrows = fleetTable.getElementsByTagName('tr');
+          let buttonRow = fleetrows.item(fleetrows.length - 1);
+          let deksTrAttacker = document.createElement('tr');
+          deksTrAttacker.align = 'center';
+          deksTrAttacker.classList = ['deks'];
+          let headerAtter = document.createElement('td');
+          headerAtter.classList = ['c1'];
+          headerAtter.innerHTML = 'Kampfsimulator (Atter)';
+          deksTrAttacker.insertBefore(headerAtter, null);
+          deksTrAttacker.insertBefore(this.createTd(0,'A', 'hinzufügen'), null);
+          deksTrAttacker.insertBefore(this.createTd(1,'A', 'hinzufügen'), null);
+          deksTrAttacker.insertBefore(this.createTd(2,'A', 'hinzufügen'), null);
+          deksTrAttacker.insertBefore(this.createTd(3,'A', 'hinzufügen'), null);
+          fleetTable.insertBefore(deksTrAttacker, buttonRow);
 
-        let deksTrDeffer = document.createElement('tr');
-        deksTrDeffer.align = 'center';
-        deksTrDeffer.classList = ['deks'];
-        let headerDeffer = document.createElement('td');
-        headerDeffer.classList = ['c1'];
-        headerDeffer.innerHTML = 'Kampfsimulator (Deffer)';
-        deksTrDeffer.insertBefore(headerDeffer, null);
-        deksTrDeffer.insertBefore(this.createTd(0,'D', 'hinzufügen'), null);
-        deksTrDeffer.insertBefore(this.createTd(1,'D', 'hinzufügen'), null);
-        deksTrDeffer.insertBefore(this.createTd(2,'D', 'hinzufügen'), null);
-        deksTrDeffer.insertBefore(this.createTd(3,'D', 'hinzufügen'), null);
-        fleetTable.insertBefore(deksTrDeffer, buttonRow);
+          let deksTrDeffer = document.createElement('tr');
+          deksTrDeffer.align = 'center';
+          deksTrDeffer.classList = ['deks'];
+          let headerDeffer = document.createElement('td');
+          headerDeffer.classList = ['c1'];
+          headerDeffer.innerHTML = 'Kampfsimulator (Deffer)';
+          deksTrDeffer.insertBefore(headerDeffer, null);
+          deksTrDeffer.insertBefore(this.createTd(0,'D', 'hinzufügen'), null);
+          deksTrDeffer.insertBefore(this.createTd(1,'D', 'hinzufügen'), null);
+          deksTrDeffer.insertBefore(this.createTd(2,'D', 'hinzufügen'), null);
+          deksTrDeffer.insertBefore(this.createTd(3,'D', 'hinzufügen'), null);
+          fleetTable.insertBefore(deksTrDeffer, buttonRow);
+        }
       }
     }
   },
@@ -68,6 +95,26 @@ const MilitaryExtension = {
     td.insertBefore(button, null);
     return td;
   },
+
+  createButtonSpan: function (fleet, idSuffix, value) {
+    let htmlSpanElement = document.createElement('span');
+    htmlSpanElement.classList = 'deks mil-sp mil-sp-heim mil-trenn mil-befehlzeile';
+    let button = document.createElement('button');
+    button.id = idSuffix + fleet;
+    button.innerText = value;
+    button.classList = 'mod-btn mod-btn-leise mil-btn-voll';
+    button.addEventListener('click', this.pushToDeks, true);
+    htmlSpanElement.append(button);
+    return htmlSpanElement;
+  },
+
+  createTextFlexSpan: function (classes, value) {
+    let span = document.createElement('span');
+    span.classList = classes;
+    span.innerText = value;
+    return span;
+  },
+
 
   /**
    * Event listener add fleet to DEKS.

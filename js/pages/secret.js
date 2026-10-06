@@ -11,7 +11,10 @@ const SecretExtension = {
     if(!mobile) {
       this.addDeksIntegration(content, deksOpen);
     }
-    let tableHeader = content.querySelector('body > div > table > tbody > tr > td');
+    let tableHeader = content.querySelector('.geh-berichte > table');
+    if (!tableHeader) {
+      tableHeader =content.querySelector('body > div > table > tbody > tr > td');
+    }
     if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
       let storedProbes = await this.storeProbeResult(tableHeader.parentElement.parentElement);
       if(storedProbes.length > 1) {

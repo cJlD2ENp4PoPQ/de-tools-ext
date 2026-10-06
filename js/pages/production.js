@@ -103,8 +103,9 @@ const ProductionExtension = {
   },
 
   onPageLoad: function (content) {
-    this.addResDistrKey(content);
-    this.addSupportValues(content);
+    // disabled need major adjustments after redesign of production page
+    // this.addResDistrKey(content);
+    // this.addSupportValues(content);
   },
 
   /**

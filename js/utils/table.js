@@ -7,19 +7,34 @@ const Tables = {
   /**
    * Create a table HTML DOM element with given field rows
    * @param {HTMLTableRowElement[]} rows the table rows array.
+   * @param isRedesign boolean whether the redesign layout is used or not
    * @returns {HTMLTableElement}
    */
-  createContentTable: function (rows) {
+  createContentTable: function (rows, isRedesign = false) {
     let div = document.createElement('div');
     div.setAttribute('align', 'center');
     let table = document.createElement('table');
-    table.setAttribute('width', 586);
+    table.setAttribute('width', isRedesign ? 602 : 586);
     table.setAttribute('cellpadding', 0);
     table.setAttribute('cellspacing', 0);
     let tableBody = document.createElement('tbody');
     rows.forEach(row => {
       tableBody.append(row);
     });
+    let footerRow = document.createElement('tr');
+    let footerCell1 = document.createElement('td');
+    footerCell1.setAttribute('width', 13);
+    footerCell1.classList.add('rul');
+    footerCell1.textContent = '\u00A0';
+    let footerCell2 = document.createElement('td');
+    footerCell2.classList.add('ru');
+    footerCell2.textContent = '\u00A0';
+    let footerCell3 = document.createElement('td');
+    footerCell3.setAttribute('width', 13);
+    footerCell3.classList.add('rur');
+    footerCell3.innerHTML = '\u00A0';
+    footerRow.append(footerCell1, footerCell2, footerCell3);
+    tableBody.append(footerRow);
     table.append(tableBody);
     div.append(table);
     return div;
