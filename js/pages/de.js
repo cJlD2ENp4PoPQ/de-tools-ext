@@ -4,6 +4,7 @@ window.addEventListener("load", function load (event) {
 }, false);
 
 deksOpen = false;
+isRedesign = false;
 
 const deExtension = {
 
@@ -19,6 +20,7 @@ const deExtension = {
       MapExtension.onPageLoad(document);
     }
     if (appcontent) {
+      this.isRedesign = !!document.querySelector('.dm-menu');
       this.saveRace(false);
       this.addTimerSwitch();
       let overviewIframe = appcontent.querySelector('iframe[src="overview.php"]');
@@ -41,9 +43,9 @@ const deExtension = {
    */
   addMenuEntries: function (document) {
     //find any entry first (there isn't any selector to grab the navigation bar itself)
-    let techNode = document.evaluate("//span[text()='Technologien']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let techNode = this.isRedesign ? document.querySelector('nav.dm-menu') : document.evaluate("//span[text()='Technologien']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     if (techNode) {
-      let menu = techNode.parentNode;
+      let menu = this.isRedesign ? techNode : techNode.parentNode;
       let deksEntry = this.createMenuEntry("Kampfsimulator", "https://deks.popq.de", "deks");
       menu.insertBefore(deksEntry, null);
     }
@@ -57,14 +59,26 @@ const deExtension = {
    * @returns {HTMLSpanElement}
    */
   createMenuEntry: function (title, url, type) {
-    let entryNode = document.createElement("span");
-    entryNode.classList = ["btn"];
-    entryNode.id = "menu_deks";
-    entryNode.addEventListener("click", function (event) {
-      deExtension.onMenuEntrySelected(event, title, url, type);
-    }, true)
-    entryNode.textContent = title;
-    return entryNode;
+    if (this.isRedesign) {
+      let entryNode = document.createElement("a");
+      entryNode.classList = ["dm-reiter"];
+      entryNode.id = "menu_deks";
+      entryNode.href = "#";
+      entryNode.addEventListener("click", function (event) {
+        deExtension.onMenuEntrySelected(event, title, url, type);
+      }, true)
+      entryNode.textContent = title;
+      return entryNode;
+    } else {
+      let entryNode = document.createElement("span");
+      entryNode.classList = ["btn"];
+      entryNode.id = "menu_deks";
+      entryNode.addEventListener("click", function (event) {
+        deExtension.onMenuEntrySelected(event, title, url, type);
+      }, true)
+      entryNode.textContent = title;
+      return entryNode;
+    }
   },
 
   /**
@@ -157,6 +171,9 @@ const deExtension = {
    * adds a battle mode switch to the tick area.
    */
   addTimerSwitch: async function () {
+    if (this.isRedesign) {
+      // todo: redesign timer switch
+    } else {
     let element = document.querySelector('img[src="gp/g/tb_timedata.png"]');
     if(element) {
       element.src = chrome.runtime.getURL("icons/tb_timedata.png");
@@ -195,6 +212,7 @@ const deExtension = {
         }
       });
       tbTime.parentElement.parentElement.insertBefore(switcher, tbTime.parentElement)
+    }
     }
   },
 

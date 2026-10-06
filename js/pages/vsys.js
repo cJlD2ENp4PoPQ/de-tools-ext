@@ -6,21 +6,34 @@ const VSysExtension = {
 
   storageKey: 'Vsys',
 
+  isRedesign: false,
   /**
    * Add V-System extensions.
    * @param {Document} content
    */
   onPageLoad: async function (content) {
-    let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
+    this.isRedesign = content.querySelector('.mod .vs');
+    let sysElements;
+    if (this.isRedesign) {
+      sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
+    } else {
+      sysElements = content.querySelectorAll('.f_system:not([style*="display: none"])');
+    }
     if(sysElements && sysElements.length > 0) {
       //system overview page
       this.addFilterEventListener(content);
       content.querySelectorAll('a[href*="?id="]').forEach(a => {
           a.addEventListener('click', (event) => {
             event.stopImmediatePropagation();
-            let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
-            this.storeShownSystems(sysElements);
-            return true;
+            if (!!content.querySelector('.mod')) {
+              let sysElements = content.querySelectorAll('.f_system:not([style*="display: none"])');
+              this.storeShownSystems(sysElements);
+              return true;
+            } else {
+              let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
+              this.storeShownSystems(sysElements);
+              return true;
+            }
           });
         });
       await this.storeShownSystems(sysElements);
@@ -33,7 +46,7 @@ const VSysExtension = {
         Array.from(content.getElementsByTagName('a'))
           .filter(link => link.href.includes('?id='))
           .forEach(a => {
-          if(a.innerText.includes('<<')) {
+          if(a.innerText.includes('<<') || a.innerText.includes('«')) {
             a.href = '?id='+ systems[0];
           } else if(a.id === 'link_lower') {
             let lowerIndex = systems.indexOf(current);
@@ -49,7 +62,7 @@ const VSysExtension = {
             } else if(higherIndex < systems.length - 1) {
               a.href = '?id=' + systems[higherIndex + 1];
             }
-          } else if(a.innerText.includes('>>')) {
+          } else if(a.innerText.includes('>>') || a.innerText.includes('»')) {
             a.href = '?id=' + systems[systems.length - 1];
           }
         })
