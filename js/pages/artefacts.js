@@ -186,18 +186,23 @@ const ArtefactsExtension = {
         delete msgarea.dataset.extOriginalContent;
       }
 
-      let mergeLink = msgarea.querySelector('a');
-      if (!mergeLink) {
-        // No link present — fewer than 2 artifacts selected, nothing to guard.
+      let mergeLink = msgarea.querySelectorAll('a.mod-btn');
+      if (!mergeLink || mergeLink.length !== 1) {
+        // No link present or verschmelzen and benutzen
         return;
       }
 
       // "Artefakte fusionieren" has no onclick — only block the destructive
-      // "neues Artefakt erzeugen" action which carries onclick="return confirm(...)".
-      if (!mergeLink.hasAttribute('href')) {
+      // "neues Artefakt erzeugen" action which carries a data attribute".
+      if (!mergeLink[0].dataset.bestaetigen) {
         this.clearWarning(msgarea);
         return;
       }
+      if (!mergeLink[0].dataset.bestaetigen.included('verschmelzen')) {
+        this.clearWarning(msgarea);
+        return;
+      }
+      
 
       let stored = await Storage.getConfig(this.storageKey, 'protected');
       let protectedList = Array.isArray(stored) ? stored : [];
