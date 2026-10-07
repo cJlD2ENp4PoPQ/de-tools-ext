@@ -198,7 +198,7 @@ const ArtefactsExtension = {
         this.clearWarning(msgarea);
         return;
       }
-      if (!mergeLink[0].dataset.bestaetigen.included('verschmelzen')) {
+      if (!mergeLink[0].dataset.bestaetigen.includes('verschmelzen')) {
         this.clearWarning(msgarea);
         return;
       }
