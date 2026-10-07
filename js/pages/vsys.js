@@ -7,17 +7,34 @@ const VSysExtension = {
   storageKey: 'Vsys',
 
   isRedesign: false,
+
+  /**
+   * Observer for V-System overview page to detect changes when navigating through systems (not a page load, JS dom manipulation).
+   * Trigger the onPageLoad function when a change is detected.
+   */
+  observer: new MutationObserver(function(mutationsList) {
+    let ownerDocument = mutationsList[0].target.ownerDocument;
+    VSysExtension.onPageLoad(ownerDocument);
+  }),
   /**
    * Add V-System extensions.
    * @param {Document} content
    */
   onPageLoad: async function (content) {
-    this.isRedesign = content.querySelector('.mod .vs');
+    this.isRedesign = content.querySelector('.mod');
     let sysElements;
     if (this.isRedesign) {
-      sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
-    } else {
+      let mutationParent = content.querySelector('#vs-main');
+      if (mutationParent) {
+        //observe changes in the V-System detail changes
+        this.observer.observe(mutationParent, {
+          childList: true,
+          subtree: true
+        });
+      }
       sysElements = content.querySelectorAll('.f_system:not([style*="display: none"])');
+    } else {
+      sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
     }
     if(sysElements && sysElements.length > 0) {
       //system overview page
@@ -28,7 +45,7 @@ const VSysExtension = {
             if (!!content.querySelector('.mod')) {
               let sysElements = content.querySelectorAll('.f_system:not([style*="display: none"])');
               this.storeShownSystems(sysElements);
-              return true;
+              return false;
             } else {
               let sysElements = content.querySelectorAll('tr.f_system[style*="height: 30px;"]:not([style*="display: none"])');
               this.storeShownSystems(sysElements);
@@ -40,44 +57,54 @@ const VSysExtension = {
     } else {
       //system details page
       let higher = content.getElementById('link_higher');
-      let systems = await Storage.getConfig(this.storageKey,'syslist');
-      if(systems && systems.length > 0 && higher) {
+      let systems = await Storage.getConfig(this.storageKey, 'syslist');
+      if (systems && systems.length > 0 && higher) {
         let current = content.getElementById('input_system_id').value;
         Array.from(content.getElementsByTagName('a'))
-          .filter(link => link.href.includes('?id='))
-          .forEach(a => {
-          if(a.innerText.includes('<<') || a.innerText.includes('«')) {
-            a.href = '?id='+ systems[0];
-          } else if(a.id === 'link_lower') {
-            let lowerIndex = systems.indexOf(current);
-            if(lowerIndex === 0) {
-              a.href = '?id='+current;
-            } else if(lowerIndex > 0) {
-              a.href = '?id=' + systems[lowerIndex - 1];
-            }
-          } else if(a.id === 'link_higher') {
-            let higherIndex = systems.indexOf(current);
-             if(higherIndex >= systems.length - 1) {
-              a.href = '?id=' + current;
-            } else if(higherIndex < systems.length - 1) {
-              a.href = '?id=' + systems[higherIndex + 1];
-            }
-          } else if(a.innerText.includes('>>') || a.innerText.includes('»')) {
-            a.href = '?id=' + systems[systems.length - 1];
-          }
-        })
+            .filter(link => link.href.includes('?id='))
+            .forEach(a => {
+              if (a.innerText.includes('<<') || a.innerText.includes('«')) {
+                a.href = '?id=' + systems[0];
+              } else if (a.id === 'link_lower') {
+                let lowerIndex = systems.indexOf(current);
+                if (lowerIndex === 0) {
+                  a.href = '?id=' + current;
+                } else if (lowerIndex > 0) {
+                  a.href = '?id=' + systems[lowerIndex - 1];
+                }
+              } else if (a.id === 'link_higher') {
+                let higherIndex = systems.indexOf(current);
+                if (higherIndex >= systems.length - 1) {
+                  a.href = '?id=' + current;
+                } else if (higherIndex < systems.length - 1) {
+                  a.href = '?id=' + systems[higherIndex + 1];
+                }
+              } else if (a.innerText.includes('>>') || a.innerText.includes('»')) {
+                a.href = '?id=' + systems[systems.length - 1];
+              }
+            })
       }
-      const findingHeadline = Array.from(content.querySelectorAll('div'))
-          .filter(div => div.textContent.includes('Fundstücke:')).pop()
       const arrayOfFindings = []
-      if (findingHeadline) {
-        let finding = findingHeadline.nextSibling;
-        while (finding) {
-          let tokens = finding.textContent.split(' ');
-          if (tokens.length > 2 && tokens[0] === 'Feld') {
-            arrayOfFindings.push({buildingId: tokens[1].replace(':', '')});
+      if (this.isRedesign) {
+        const findings = Array.from(content.querySelectorAll('.ms-fund'));
+        for (let i = 0; i < findings.length; i++) {
+          const findingElement = findings[i];
+          const fieldElement = findingElement.querySelector('.bk-leise');
+          const fieldId = fieldElement?.textContent?.split(' ')[1];
+          arrayOfFindings.push({buildingId: fieldId});
+        }
+      } else {
+        const findingHeadline = Array.from(content.querySelectorAll('div'))
+            .filter(div => div.textContent.includes('Fundstücke:')).pop()
+        if (findingHeadline) {
+          let finding = findingHeadline.nextSibling;
+          while (finding) {
+            let tokens = finding.textContent.split(' ');
+            if (tokens.length > 2 && tokens[0] === 'Feld') {
+              arrayOfFindings.push({buildingId: tokens[1].replace(':', '')});
+            }
+            finding = finding.nextSibling;
           }
-          finding = finding.nextSibling;
         }
       }
       for (let i = 0; i < arrayOfFindings.length; i++) {
@@ -99,6 +126,10 @@ const VSysExtension = {
     let vsf0a = content.getElementById('vsf0a');
     let vsf0b = content.getElementById('vsf0b');
     let vsf0c = content.getElementById('vsf0c');
+    let resetButton = content.querySelector('.vs-filter > button');
+    if (resetButton) {
+        resetButton.addEventListener('click', this.onUpdate)
+    }
     if(vsf0a) {
       vsf0a.addEventListener('change', this.onUpdate)
     }
