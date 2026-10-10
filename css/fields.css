@@ -32,3 +32,15 @@ fieldset legend {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.ally-zeile-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+}
+
+/* Optional für die Ausrichtung der Spalten-Inhalte */
+.ally-zeile-grid span:nth-child(1) { text-align: left; }
+.ally-zeile-grid span:nth-child(2) { text-align: center; justify-self: center; }
+.ally-zeile-grid span:nth-child(3) { text-align: right; justify-self: end; }

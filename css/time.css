@@ -1,4 +1,4 @@
-.highlight {
+#topbar .dm-zeiten b.highlight {
     color: #ff767e;
     animation: blinker 2s linear infinite;
 }
@@ -7,4 +7,29 @@
     50% {
         opacity: 0;
     }
+}
+
+.dm-switcher {
+    position: absolute;
+    top: 2px;
+    right: 127px;
+    width: 32px;
+    height: 63px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-content: center;
+    align-items: center;
+    gap: 1px 6px;
+    padding: 0 0px;
+    border-left: 1px solid rgba(160, 200, 255, 0.12);
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    background-image: linear-gradient(145deg, #161f29, #0d1218 60%);
+}
+
+.dm-switcher:hover {
+    border-color: #3399FF;
+    box-shadow: 0 0 8px;
+    color: #ffffff;
+    transform: translateY(-1px);
 }

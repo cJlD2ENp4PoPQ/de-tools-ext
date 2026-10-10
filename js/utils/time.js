@@ -185,7 +185,7 @@ const Time = {
         let ktTimer = document.getElementById('tb_time3');
         ktTimer.innerHTML = 'T - ' + nextKt;
         if (nextKt === 1) {
-          ktTimer.classList.add('highlight')
+          ktTimer.classList.add('highlight');
         } else {
           ktTimer.classList.remove('highlight')
         }
@@ -194,7 +194,7 @@ const Time = {
         let ktTimer = document.getElementById('tb_time3');
         ktTimer.innerHTML = 'T - ' + nextKt;
         if (nextKt <= 10) {
-          ktTimer.classList.add('highlight')
+          ktTimer.classList.add('highlight');
         } else {
           ktTimer.classList.remove('highlight')
         }

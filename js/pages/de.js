@@ -172,7 +172,44 @@ const deExtension = {
    */
   addTimerSwitch: async function () {
     if (this.isRedesign) {
-      // todo: redesign timer switch
+      document.querySelector('.dm-menu').style = 'right: 160px;';
+      let timeDiv = document.querySelector('.dm-zeiten');
+      timeDiv.style = 'right: 45px;';
+      let topbar = document.querySelector('#topbar');
+      let switcher = document.createElement('div');
+      switcher.id = 'time_mode_switch'
+      switcher.classList = 'dm-switcher';
+      let switcherIcon = document.createElement('img');
+      switcherIcon.style = 'user-select: none;width: 35px; padding-left: 2px; padding-top: 0px; padding-bottom: 5px;';
+      switcherIcon.src = chrome.runtime.getURL("icons/flight.svg");
+      switcher.insertBefore(switcherIcon, null);
+      topbar.append(switcher);
+      let config = await Storage.getConfig('de', 'time');
+      if (config && config.battleMode === true) {
+        Time.startTime();
+        switcher.style = 'background-image:linear-gradient(145deg, #161f29, #0d1218 60%)';
+        document.querySelector('#tb_time3').style = 'text-align: left';
+        document.querySelector('#tb_time2').style = 'text-align: left';
+      }
+      switcher.addEventListener('click', async ev => {
+        let config = await Storage.getConfig('de', 'time');
+        let switcher = ev.target.ownerDocument.querySelector('#time_mode_switch');
+        if (config && config.battleMode === true) {
+          ev.target.ownerDocument.querySelector('#tb_time3').style = '';
+          ev.target.ownerDocument.querySelector('#tb_time2').style = '';
+          config.battleMode = false;
+          await Storage.storeConfig('de', 'time', config);
+          Time.stopTime();
+          switcher.style = 'background-image:linear-gradient(145deg, #161f29, #0d1218 60%)';
+        } else {
+          ev.target.ownerDocument.querySelector('#tb_time3').style = 'text-align: left';
+          ev.target.ownerDocument.querySelector('#tb_time2').style = 'text-align: left';
+          config = {battleMode: true};
+          await Storage.storeConfig('de', 'time', config);
+          Time.startTime();
+          switcher.style = 'background-image: linear-gradient(145deg, rgba(166, 166, 166, 0.22), rgb(13, 18, 24) 75%);';
+        }
+      });
     } else {
     let element = document.querySelector('img[src="gp/g/tb_timedata.png"]');
     if(element) {

@@ -8,19 +8,97 @@ const AllyExtension = {
     ],
 
     onPageLoad: async function (content) {
-        let allyInfosRows = content.querySelectorAll('tr.cl');
-        let allyInfo = {};
-        if(allyInfosRows && allyInfosRows.length > 0) {
-            let allyTable = allyInfosRows[0].parentElement;
-            allyInfosRows.forEach((entry, i) => {
-                let rowCells = entry.querySelectorAll('td');
-                if(rowCells.length > 1 && rowCells[0].innerText.includes('Allytag')) {
-                    allyInfo.tag = rowCells[1].innerText;
-                }
-            })
-            await this.addAllianceStatus(allyInfosRows, allyInfo)
-            await this.addallianceMembers(allyInfosRows, allyInfo)
+        let allyCards = content.querySelector('.ally-kacheln');
+        if (allyCards) {
+            let allyRows = allyCards.parentNode;
+            let allyTag = content.querySelector('.ally-tag').innerText;
+            await this.addAllianceStatusRedesign(allyRows, allyCards, {tag: allyTag});
+            await this.addAllianceMembersRedesign(allyRows, allyCards, {tag: allyTag});
+        } else {
+            let allyInfosRows = content.querySelectorAll('tr.cl');
+            let allyInfo = {};
+            if (allyInfosRows && allyInfosRows.length > 0) {
+                let allyTable = allyInfosRows[0].parentElement;
+                allyInfosRows.forEach((entry, i) => {
+                    let rowCells = entry.querySelectorAll('td');
+                    if (rowCells.length > 1 && rowCells[0].innerText.includes('Allytag')) {
+                        allyInfo.tag = rowCells[1].innerText;
+                    }
+                })
+                await this.addAllianceStatus(allyInfosRows, allyInfo)
+                await this.addallianceMembers(allyInfosRows, allyInfo)
+            }
         }
+    },
+
+    /**
+     * Add ally relationship status option.
+     * @param allyInfosRows
+     * @param allyCards
+     */
+    addAllianceStatusRedesign: async function (allyInfosRows, allyCards, allyInfo) {
+
+        let config = await Storage.getConfig('ally','info', {});
+        if(!config[allyInfo.tag]) {
+            config[allyInfo.tag] = { relation: 'neutral'};
+            await Storage.storeConfig('ally', 'info', config);
+        }
+        const areaDiv = document.createElement('div');
+        areaDiv.classList.add('ally-abschnitt')
+        areaDiv.textContent = 'Einstellungen'
+
+        let statusLabel = document.createElement('div');
+        statusLabel.setAttribute('class', 'ally-hinweis');
+        statusLabel.style = 'display: grid; grid-template-columns: auto 1fr; align-items: center;'
+        statusLabel.innerText = 'Beziehungsstatus';
+        let selectField = fields.createSelectField('relation', this.relationStates, this.changeAllyStatus, config[allyInfo.tag].relation);
+        selectField.style = "justify-self: end;";
+        selectField.setAttribute('tag', allyInfo.tag);
+        statusLabel.append(selectField);
+        areaDiv.append(statusLabel);
+        allyInfosRows.insertBefore(areaDiv, allyCards.nextSibling)
+    },
+
+    /**
+     * Add ally relationship status option.
+     * @param allyInfosRows
+     * @param allyCards
+     */
+    addAllianceMembersRedesign: async function (allyInfosRows, allyCards, allyInfo) {
+        let allyTags = await Storage.getConfig('ally','tags', {});
+        const areaDiv = document.createElement('div');
+        areaDiv.classList.add('ally-abschnitt')
+        areaDiv.textContent = 'Bekannte Mitglieder'
+        const membersDiv = document.createElement('div');
+        membersDiv.classList.add('ally-zeilen')
+        areaDiv.append(membersDiv)
+
+        let allyTagMembers = allyTags[allyInfo.tag];
+        if(allyTagMembers) {
+            allyTagMembers.sort((a,b) => {
+                let x = a.x - b.x;
+                if(x === 0) {
+                    return a.y - b.y;
+                }
+                return x;
+            }).forEach((entry, i) => {
+                let memberContainer = document.createElement('div');
+                memberContainer.classList.add('ally-zeile-grid');
+                let memberName = document.createElement('span');
+                memberName.classList.add('ally-mitglied-name');
+                memberName.innerText = entry.name;
+                let memberCoords = document.createElement('span');
+                memberCoords.classList.add('ally-zahl');
+                memberCoords.innerText = entry.x + ':' + entry.y;
+                let emptyNode = document.createElement('span');
+                emptyNode.classList.add('ally-zahl');
+                memberContainer.insertBefore(emptyNode, null)
+                memberContainer.insertBefore(memberCoords, emptyNode)
+                memberContainer.insertBefore(memberName, memberCoords)
+                membersDiv.insertBefore(memberContainer, null)
+            });
+        }
+        allyInfosRows.insertBefore(areaDiv, allyCards.nextSibling.nextSibling);
     },
 
     /**
