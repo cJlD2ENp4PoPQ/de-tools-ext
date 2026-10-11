@@ -15,9 +15,18 @@ const NewsExtension = {
    * @param {Document} content the content which contains the news list.
    */
   addAgentCalculation : function (content) {
-    Array.from(content.querySelectorAll('table table tr td'))
-      .filter(td => td.innerText.includes('Geheimdiensteinsatz'))
-      .forEach(td => NewsExtension.addUsedAgentsText(td));
+    const newsElements = content.querySelectorAll('div.sn-text');
+    const isRedesign = newsElements != null && newsElements.length > 0;
+    if (isRedesign) {
+      Array.from(newsElements)
+          .filter(td => td.innerText.includes('Geheimdiensteinsatz'))
+          .forEach(td => NewsExtension.addUsedAgentsText(td));
+    } else {
+      Array.from(content.querySelectorAll('table table tr td'))
+          .filter(td => td.innerText.includes('Geheimdiensteinsatz'))
+          .forEach(td => NewsExtension.addUsedAgentsText(td));
+    }
+
   },
 
   /**
