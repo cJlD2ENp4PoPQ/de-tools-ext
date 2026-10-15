@@ -11,53 +11,108 @@ const SecretExtension = {
     if(!mobile) {
       this.addDeksIntegration(content, deksOpen);
     }
-    let tableHeader = content.querySelector('.geh-berichte > table');
-    if (!tableHeader) {
-      tableHeader =content.querySelector('body > div > table > tbody > tr > td');
-    }
-    if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
-      let storedProbes = await this.storeProbeResult(tableHeader.parentElement.parentElement);
-      if(storedProbes.length > 1) {
-        let lastProbe = storedProbes[storedProbes.length - 1];
-        let previousProbe = storedProbes[storedProbes.length - 2];
-        let ticks = Time.getWTAmountBetween(window.server, new Date(previousProbe.c), new Date(lastProbe.c));
-        if(ticks < 10 && ticks > 0) {
-          let mDiff = lastProbe.m - previousProbe.m;
-          let dDiff = lastProbe.d - previousProbe.d;
-          let iDiff = lastProbe.i - previousProbe.i;
-          let eDiff = lastProbe.e - previousProbe.e;
-          if (mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
-            let pointsPerTick = (mDiff / ticks + 2 * dDiff / ticks + 3 * iDiff /  ticks+ 4 * eDiff / ticks) / 10
-            let amountOfTicks = Time.getAmountOfTicks(window.server);
-            amountOfTicks = amountOfTicks ? amountOfTicks / 2 : 15000 / 2;
-            let stepSize;
-            if (amountOfTicks < 10000) {
-              stepSize = 1000;
-            } else if (amountOfTicks < 20000) {
-              stepSize = 2000;
-            } else {
-              stepSize = 5000;
+    let probeHeader = content.querySelector('.geh-berichte');
+    if (probeHeader) {
+      // redesign probe result page
+      const probeHeader = content.querySelector('.gb-ziel');
+      const probeFields = content.querySelectorAll('.gb-wert');
+      if (probeHeader && probeFields && probeFields.length > 10) {
+        const storedProbes = await this.storeProbeResultRedesign(probeHeader, probeFields);
+        if (storedProbes.length > 1) {
+          let lastProbe = storedProbes[storedProbes.length - 1];
+          let previousProbe = storedProbes[storedProbes.length - 2];
+          let ticks = Time.getWTAmountBetween(window.server, new Date(previousProbe.c), new Date(lastProbe.c));
+          if (ticks < 10 && ticks > 0) {
+            let mDiff = lastProbe.m - previousProbe.m;
+            let dDiff = lastProbe.d - previousProbe.d;
+            let iDiff = lastProbe.i - previousProbe.i;
+            let eDiff = lastProbe.e - previousProbe.e;
+            if (mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
+              let pointsPerTick = (mDiff / ticks + 2 * dDiff / ticks + 3 * iDiff / ticks + 4 * eDiff / ticks) / 10
+              let amountOfTicks = Time.getAmountOfTicks(window.server);
+              amountOfTicks = amountOfTicks ? amountOfTicks / 2 : 15000 / 2;
+              let stepSize;
+              if (amountOfTicks < 10000) {
+                stepSize = 1000;
+              } else if (amountOfTicks < 20000) {
+                stepSize = 2000;
+              } else {
+                stepSize = 5000;
+              }
+              let footer = content.querySelector('.gb-fuss');
+              let lastArea = footer.previousElementSibling;
+              let lastAreaRows = lastArea.querySelectorAll('.gb-wert');
+              let pointCalculationSpacer = document.createElement('div');
+              pointCalculationSpacer.classList.add('gb-abschnitt');
+              let pointCalulationHeader = document.createElement('span');
+              pointCalulationHeader.innerText = 'Punktehochrechnung (letzte Sonde vor ' + ticks + ' WT)';
+              pointCalculationSpacer.append(pointCalulationHeader);
+              lastArea.insertBefore(pointCalculationSpacer, null);
+
+              let currentPoints = lastProbe.p + (lastProbe.m + 2 * lastProbe.d + 3 * lastProbe.i + 4 * lastProbe.e) / 10
+              let formatter = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
+              for (let i = stepSize; i < amountOfTicks; i = i + stepSize) {
+                let tick = Math.ceil(i / 1000) * 1000;
+                let row = document.createElement('div');
+                row.classList.add('gb-wert');
+                let label = document.createElement('span');
+                label.innerText = 'nach ' + tick + ' Ticks';
+                let value = document.createElement('b');
+                value.innerText = formatter.format(tick * Math.round(pointsPerTick) + currentPoints);
+                row.insertBefore(label, null);
+                row.insertBefore(value, null);
+                lastArea.insertBefore(row, null);
+              }
             }
-            let lastRow = content.querySelector('tr[class="cell"][align="center"]').previousSibling;
-            let parent = lastRow.parentElement;
-            let headRow = document.createElement('tr');
-            let headline = document.createElement('td');
-            headline.setAttribute('colspan',2);
-            headline.setAttribute('width','100%');
-            headline.classList = ['tc']
-            headline.innerHTML = 'Punktehochrechnung (' + ticks + ' WT)'
-            headRow.insertBefore(headline, null);
-            parent.insertBefore(headRow, lastRow.nextSibling);
-            let currentPoints = lastProbe.p + (lastProbe.m + 2 * lastProbe.d + 3 * lastProbe.i + 4 * lastProbe.e) / 10
-            let formatter = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
-            for (let i = amountOfTicks; i >= 0; i = i - stepSize) {
-              let tick = Math.ceil(i / 1000) * 1000;
-              let row = document.createElement('tr');
-              let label = this.createProbeTd('nach ' + tick + ' Ticks');
-              let value = this.createProbeTd(formatter.format(tick * Math.round(pointsPerTick) + currentPoints))
-              row.insertBefore(label, null);
-              row.insertBefore(value, null);
-              parent.insertBefore(row, lastRow.nextSibling.nextSibling);
+          }
+        }
+      }
+    } else {
+      const tableHeader =content.querySelector('body > div > table > tbody > tr > td');
+      if(tableHeader && tableHeader.innerText.includes('Sondenbericht')) {
+        let storedProbes = await this.storeProbeResult(tableHeader.parentElement.parentElement);
+        if(storedProbes.length > 1) {
+          let lastProbe = storedProbes[storedProbes.length - 1];
+          let previousProbe = storedProbes[storedProbes.length - 2];
+          let ticks = Time.getWTAmountBetween(window.server, new Date(previousProbe.c), new Date(lastProbe.c));
+          if(ticks < 10 && ticks > 0) {
+            let mDiff = lastProbe.m - previousProbe.m;
+            let dDiff = lastProbe.d - previousProbe.d;
+            let iDiff = lastProbe.i - previousProbe.i;
+            let eDiff = lastProbe.e - previousProbe.e;
+            if (mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
+              let pointsPerTick = (mDiff / ticks + 2 * dDiff / ticks + 3 * iDiff /  ticks+ 4 * eDiff / ticks) / 10
+              let amountOfTicks = Time.getAmountOfTicks(window.server);
+              amountOfTicks = amountOfTicks ? amountOfTicks / 2 : 15000 / 2;
+              let stepSize;
+              if (amountOfTicks < 10000) {
+                stepSize = 1000;
+              } else if (amountOfTicks < 20000) {
+                stepSize = 2000;
+              } else {
+                stepSize = 5000;
+              }
+              let lastRow = content.querySelector('tr[class="cell"][align="center"]').previousSibling;
+              let parent = lastRow.parentElement;
+              let headRow = document.createElement('tr');
+              let headline = document.createElement('td');
+              headline.setAttribute('colspan',2);
+              headline.setAttribute('width','100%');
+              headline.classList = ['tc']
+              headline.innerHTML = 'Punktehochrechnung (' + ticks + ' WT)'
+              headRow.insertBefore(headline, null);
+              parent.insertBefore(headRow, lastRow.nextSibling);
+              let currentPoints = lastProbe.p + (lastProbe.m + 2 * lastProbe.d + 3 * lastProbe.i + 4 * lastProbe.e) / 10
+              let formatter = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
+              for (let i = amountOfTicks; i >= 0; i = i - stepSize) {
+                let tick = Math.ceil(i / 1000) * 1000;
+                let row = document.createElement('tr');
+                let label = this.createProbeTd('nach ' + tick + ' Ticks');
+                let value = this.createProbeTd(formatter.format(tick * Math.round(pointsPerTick) + currentPoints))
+                row.insertBefore(label, null);
+                row.insertBefore(value, null);
+                parent.insertBefore(row, lastRow.nextSibling.nextSibling);
+              }
             }
           }
         }
@@ -72,12 +127,12 @@ const SecretExtension = {
    */
   addDeksIntegration : function (content, deksOpen) {
     if (deksOpen) {
-      if (content.evaluate("//b[contains(., 'Flottenaufstellung')]", content, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue) {
+      if (content.evaluate("//span[contains(., 'Flottenaufstellung')]", content, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue) {
         let tbodies = content.getElementsByTagName('tbody');
         if (tbodies.length > 1) {
           let fleetTable = tbodies.item(0);
           let fleetrows = fleetTable.getElementsByTagName('tr');
-          let buttonRow = fleetrows.item(fleetrows.length - 1);
+          let buttonRow = fleetrows.item(fleetrows.length);
           let deksTrAttacker = document.createElement('tr');
           deksTrAttacker.align = 'center';
           deksTrAttacker.classList = ['deks'];
@@ -137,14 +192,14 @@ const SecretExtension = {
     let id = event.target.id;
     let lines = event.target.parentNode.parentNode.parentNode.children;
     let fleet = [];
-    for(let i = 2; i <= 11; i++) {
-      if(i === 8) {
+    for(let i = 0; i <= 9; i++) {
+      if(i === 6) {
         continue; //skip Transmitter
       }
       let col = lines[i].children[parseInt(id[1]) + 1];
       fleet.push(parseInt(col.innerText.toString().split('.').join("")))
     }
-    let raceKey = lines[2].children[0].innerText;
+    let raceKey = lines[0].children[0].innerText;
     let deksEnabled = document.getElementById('ext-iframe');
     if(deksEnabled) {
       deksEnabled.contentWindow.postMessage({
@@ -219,6 +274,104 @@ const SecretExtension = {
     }
   },
 
+  async storeProbeResultRedesign (probeHeader, probeFields) {
+    if(probeFields && probeFields.length > 10) { //
+      let headerMatcher = probeHeader.innerText.match('^(.+?)\\s*\\((\\d+):(\\d+)\\)$'); // DX*Ol-Zaxtas (7:12)
+      if(headerMatcher) {
+        let name = headerMatcher[1];
+        let sector = headerMatcher[2];
+        let sys = headerMatcher[3];
+        let points = parseInt(probeFields[0].lastElementChild.innerText.toString().split('.').join(""));
+        let ships = parseInt(probeFields[1].lastElementChild.innerText.toString().split('.').join(""));
+        let defs = parseInt(probeFields[2].lastElementChild.innerText.toString().split('.').join(""));
+        let builds = parseInt(probeFields[3].lastElementChild.innerText.toString().split('.').join(""));
+        let collectors = parseInt(probeFields[4].lastElementChild.innerText.toString().split('.').join(""));
+        let race = probeFields[5].lastElementChild.innerText.toString().trim().substr(0,1);
+        let m = parseInt(probeFields[6].lastElementChild.innerText.toString().split('.').join(""));
+        let d = parseInt(probeFields[7].lastElementChild.innerText.toString().split('.').join(""));
+        let i = parseInt(probeFields[8].lastElementChild.innerText.toString().split('.').join(""));
+        let e = parseInt(probeFields[9].lastElementChild.innerText.toString().split('.').join(""));
+        let t = parseInt(probeFields[10].lastElementChild.innerText.toString().split('.').join(""));
+        let result = {c:new Date().toISOString(), p: points, s: ships, def: defs, b: builds, col:collectors,
+          r:race, m:m, d:d, i:i, e:e, t:t, x:sector, y:sys};
+        let config = await Storage.getConfig(this.storageKey, 'secrets');
+        if(config) {
+          let player = config[name];
+          if(player) {
+            let probes = player.probes;
+            if(probes) {
+              this.displayDiffsRedesign(probeFields[0].parentElement, probeFields[6].parentElement, probeHeader.parentElement, probes, result)
+              probes.push(result);
+            } else {
+              player.probes = [result];
+            }
+          } else {
+            player = {probes: [result]};
+          }
+          config[name] = player;
+        } else {
+          config = {};
+          config[name] = {probes: [result]};
+        }
+        if(config[name].probes.length > 10) {
+          config[name].probes.shift();
+        }
+        await Storage.storeConfig(this.storageKey, 'secrets', config);
+        return config[name].probes;
+      }
+    }
+  },
+
+  displayDiffsRedesign (areaMain, areaRes, areaHeader, probes, currentProbe) {
+    if(probes.length > 0) {
+      let lastProbe = probes[probes.length -1];
+      let formatter = new Intl.NumberFormat(undefined, {
+        signDisplay: 'exceptZero'
+      });
+      for(let i = 0; i < areaMain.childNodes.length; i++) {
+        if (areaMain.childNodes[i].classList.contains('gb-wert')) {
+            areaMain.childNodes[i].classList.remove('gb-wert');
+          areaMain.childNodes[i].classList.add('gb-wert-3');
+        }
+      }
+      for(let i = 0; i < areaRes.childNodes.length; i++) {
+        if (areaRes.childNodes[i].classList.contains('gb-wert')) {
+          areaRes.childNodes[i].classList.remove('gb-wert');
+          areaRes.childNodes[i].classList.add('gb-wert-3');
+        }
+      }
+      areaHeader.insertBefore(this.createProbeValue('Differenz der Berichte seit: ' + new Date(lastProbe.c).toLocaleString()), null);
+      areaMain.childNodes[0].insertBefore(this.createProbeValue(formatter.format(currentProbe.p - lastProbe.p)), null);
+      areaMain.childNodes[1].insertBefore(this.createProbeValue(formatter.format(currentProbe.s - lastProbe.s)), null);
+      areaMain.childNodes[2].insertBefore(this.createProbeValue(formatter.format(currentProbe.def - lastProbe.def)), null);
+      areaMain.childNodes[3].insertBefore(this.createProbeValue(formatter.format(currentProbe.b - lastProbe.b)), null);
+      areaMain.childNodes[4].insertBefore(this.createProbeValue(formatter.format(currentProbe.col - lastProbe.col)), null);
+      let mDiff = currentProbe.m - lastProbe.m;
+      let dDiff = currentProbe.d - lastProbe.d;
+      let iDiff = currentProbe.i - lastProbe.i;
+      let eDiff = currentProbe.e - lastProbe.e;
+      areaRes.childNodes[0].insertBefore(this.createProbeValue(formatter.format(mDiff)), null);
+      areaRes.childNodes[1].insertBefore(this.createProbeValue(formatter.format(dDiff)), null);
+      areaRes.childNodes[2].insertBefore(this.createProbeValue(formatter.format(iDiff)), null);
+      areaRes.childNodes[3].insertBefore(this.createProbeValue(formatter.format(eDiff)), null);
+      areaRes.childNodes[4].insertBefore(this.createProbeValue(formatter.format(currentProbe.t - lastProbe.t)), null);
+      if(mDiff > 0 && dDiff > 0 && iDiff > 0 && eDiff > 0) {
+        let wtAmountBetween = Time.getWTAmountBetween(window.server, new Date(lastProbe.c), new Date(currentProbe.c));
+        if(wtAmountBetween < 10 && wtAmountBetween > 0) {
+          let sum = mDiff / wtAmountBetween + dDiff * 2 / wtAmountBetween + iDiff * 3 / wtAmountBetween + eDiff * 4 / wtAmountBetween;
+          let outRow = document.createElement('div');
+          outRow.classList.add('gb-wert');
+          let label = document.createElement('span');
+          label.innerText = 'Gesamt-Output:';
+          let value = this.createProbeValue(formatter.format(sum));
+          outRow.insertBefore(label, null);
+          outRow.insertBefore(value, null);
+          areaRes.insertBefore(outRow, null);
+        }
+      }
+    }
+  },
+
   displayDiffs (rows, probes, currentProbe) {
     if(probes.length > 0) {
       let lastProbe = probes[probes.length -1];
@@ -255,6 +408,12 @@ const SecretExtension = {
   createProbeTd (text) {
     let cell = document.createElement('td');
     cell.classList = ['cc'];
+    cell.innerText = text;
+    return cell;
+  },
+
+  createProbeValue (text) {
+    let cell = document.createElement('b');
     cell.innerText = text;
     return cell;
   }

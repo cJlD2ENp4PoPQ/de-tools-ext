@@ -34,9 +34,9 @@ const TradeExtension = {
   optionsArticleOther: [
     {id: 'art-oth-disabled', value: 'Deaktiviert'},
     {id: 'art-oth-all', value: 'Nur sonstige Waren'},
-    {id: 'art-oth-titan', value: '2 Titanen-Energiekern'},
-    {id: 'art-oth-palenium', value: '500 Palenium'},
-    {id: 'art-oth-tronic', value: '25 Tronic'}
+    {id: 'art-oth-titan', value: 'Titanen-Energiekern'},
+    {id: 'art-oth-palenium', value: 'Palenium'},
+    {id: 'art-oth-tronic', value: 'Tronic'}
   ],
 
 
@@ -67,7 +67,7 @@ const TradeExtension = {
   deRes: ['Multiplex', 'Dyharra', 'Iradium', 'Eternium', 'Credits'],
   vsRes: ['Eisen', 'Titan', 'Mexit', 'Dulexit', 'Tekranit', 'Ylesenium', 'Serodium', 'Rowalganium', 'Sextagit', 'Octagium'],
   artArtis: ['Agsora', 'Geabwus', 'Auctacon', 'Artascendus', 'Sekkollus','Pesara','Geangrus','Troniccelerator','Pekasch','Vakara','Empdestro','Recarion','Empala','Turla','Pekek','Tronicar','Feuroka','Bloroka','Recadesto','Turak','Waringa','Kollimania'],
-  artOthers: ['2 Titanen-Energiekern', '500 Palenium', '25 Tronic'],
+  artOthers: ['Titanen-Energiekern', 'Palenium', 'Tronic'],
 
   storageKey: 'Trade',
   isRedesign: false,
@@ -158,7 +158,7 @@ const TradeExtension = {
     if (articleOtherFilter) {
       let option = selectOther.querySelector('#' + articleOtherFilter);
       if (option) {
-        this.filterArticleArtiEntries(articleOtherFilter, option.innerText, content)
+        this.filterArticleOtherEntries(articleOtherFilter, option.innerText, content)
       }
     }
   },
@@ -312,6 +312,7 @@ const TradeExtension = {
   filterArticleOtherEntries: async function (filterEntryID, filterText, document) {
     await Storage.storeConfig(TradeExtension.storageKey, 'article-other-filter', filterEntryID);
     await Storage.removeConfig(TradeExtension.storageKey, 'article-arti-filter');
+
     let artiFilter = document.getElementById('article-arti-filter');
     artiFilter.value = 'art-arti-disabled';
     if (this.isRedesign) {
@@ -320,6 +321,11 @@ const TradeExtension = {
         entries.forEach(entry => {
           if (filterEntryID === 'art-oth-all') {
             if (new RegExp(TradeExtension.artArtis.join("|")).test(entry.children[0].innerText)) {
+              entry.classList.add('disabled-article');
+            }
+          } else if (filterEntryID === 'art-oth-tronic') {
+            let element = entry.querySelector('.auk-name');
+            if (element && element.innerText !== 'Tronic') {
               entry.classList.add('disabled-article');
             }
           } else if (!new RegExp(filterText).test(entry.children[0].innerText)) {
